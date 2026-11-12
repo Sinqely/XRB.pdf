@@ -1,6 +1,6 @@
 # Behov: PDF-bagaren (XRB.pdf)
 
-> Version: 1.0 · Status: Approved · Senast ändrad: 2026-11-12
+> Version: 1.1 · Status: Approved · Senast ändrad: 2026-11-12
 > Underlag: intervju med ägaren 2026-11-12. Systemkontext: docs/systemkontext.md.
 
 ## Ändringslogg
@@ -8,6 +8,7 @@
 | :-- | :-- | :-- | :-- |
 | 0.1 | 2026-11-12 | Första utkast ur intervju 1. | Behovsfångst steg 4 påbörjat |
 | 0.2 | 2026-11-12 | La till BH-007 (genomskinliga områden) och BH-008 (opacitet) för vattenstämpel. | Ägarens tillägg |
+| 1.1 | 2026-11-12 | La till BH-020 (tydliga felbesked), FV-003 (svenskt gränssnitt) och FV-004 (arbetsdator). | CHG-001 |
 | 1.0 | 2026-11-12 | Fastställd som behovsbaslinje. | G0 Behov, godkänd med anmärkning |
 | 0.21 | 2026-11-12 | BH-019 höjd till Måste. BG-003 bekräftad. Alla uppgifter bekräftade. | Ägarens svar |
 | 0.20 | 2026-11-12 | FV-001 bekräftad med mätbart kriterium (5 minuter). | Ägarens svar |
@@ -66,6 +67,9 @@ Rangordning av de viktigaste behoven (ägaren 2026-11-12: "Användbarhet, ingen 
 | BH-015 | Behov | "Ja storlek på vattenstämpel (obs bild!) ska kunna ändras av användaren på ett intuitivt sätt." (2026-11-12) | Användaren behöver kunna ändra storleken på vattenstämpelns bild på ett sätt som känns självklart. | Måste | En kollega som inte sett appen förut gör stämpeln större och mindre utan hjälp, och storleken i den sparade filen är densamma som i förhandsvisningen. Bilden behåller sina proportioner om inte användaren vill annat. | MF-01, MF-02 | Dra i hörnet i förhandsvisningen | Bekräftad |
 | BH-017 | Behov | "Utgå från de krav som härstammar från Arkivlagen (1990:782) samt Riksarkivets föreskrifter … (RA-FS 2009:2)" (2026-11-12) | Användaren behöver att den färdiga filen kan bevaras i det digitala arkivet enligt arkivreglerna. | Måste | Den färdiga filen godkänns vid en kontroll mot PDF/A-2 (t.ex. med en PDF/A-validerare) och tas emot av organisationens digitala arkiv. | MF-02 | Spara som PDF/A-2 | Bekräftad (PDF/A-2 beslutad 2026-11-12; arkivets mottagande oklart, ägaren: "utgå från det") |
 | BH-018 | Behov | "Dold information behöver kontrolleras. Det vill säga att sådan data uppmärksammas användaren innan filen sätts samman."; "Användaren måste både kunna se sådan data samt kunna ändra den, i alla fall om det är text." (2026-11-12) | Användaren behöver att appen, innan resultatet sätts samman, visar dold information i de inlästa filerna och låter hen ändra den när det är text: metadata som titel, författare, ämne och nyckelord samt text i kommentarer. Övrig dold information (bifogade filer, formulärfält, inbäddade skript) visas och kan tas bort; skript och bilagor som PDF/A-2 inte tillåter tas bort och användaren får veta det (ägaren 2026-11-12: "Ja"). | Måste | Med en testfil som innehåller metadata, en kommentar, en bilaga och ett skript visar appen allt detta innan filen sparas. Användaren ändrar författare och titel, och den sparade filen har de nya värdena. Det som tagits bort finns inte kvar i filen. | MF-02 | Panel "Dold information" före sparande | Bekräftad |
+| BH-020 | Behov | Felscenariot DS-04 (bekräftat 2026-11-12); ägarens beslut i CHG-001 (2026-11-12) | Användaren behöver få ett tydligt besked när en fil eller bild inte kan användas eller när sparandet misslyckas: vad som är fel, vilken fil det gäller och hur hen går vidare, utan att annat arbete går förlorat. | Måste | Användaren lägger in en fil som inte är PDF, en skadad PDF, en lösenordsskyddad PDF och en för stor fil, och väljer en bild i fel format. Varje gång visas ett besked som namnger filen och orsaken, och de andra filerna och valen är oförändrade. | MF-01 | | Bekräftad |
+| FV-003 | Förväntning | Användarbeskrivningen IN-02; ägarens beslut i CHG-001 (2026-11-12) | Användaren förväntar sig att hela appen, med knappar, meddelanden och hjälp, är på svenska. | Måste | En genomgång av alla vyer, meddelanden och hjälptexter hittar ingen text på något annat språk. | MF-01 | | Bekräftad |
+| FV-004 | Förväntning | Användarbeskrivningen IN-02 och webbläsarvalet (BG-005, BG-006); ägarens beslut i CHG-001 (2026-11-12) | Användaren förväntar sig att använda appen på sin arbetsdator. Mobil och surfplatta behövs inte. | Måste | DS-01 och DS-02 genomförs utan problem i ett webbläsarfönster på 1 280 × 720 pixlar. | MF-01 | | Bekräftad |
 | FV-001 | Förväntning | "kollegor utan särskild datorvana"; "första gången lyckas"; "Vi kan sätta 5 minuter för att slå samman tre sidor från en pdf med 2 sidor från en annan med en textetikett på en förvald position (centrerat sidhuvud)" (2026-11-12) | Användaren förväntar sig att förstå appen direkt, utan instruktioner eller utbildning. | Måste | En kollega som inte sett appen förut, utan hjälp eller instruktioner, sätter på högst 5 minuter samman tre sidor ur en PDF med två sidor ur en annan och lägger en textetikett centrerat i sidhuvudet, och resultatet blir rätt. | MF-01 | | Bekräftad |
 
 ### IN-03 Ägaren (förvaltare)
@@ -110,13 +114,14 @@ En kollega lägger in en fil som inte går att läsa, till exempel en lösenords
 | BH-017 / BG-009 / OM-01 | Appen kan inte garantera att godtyckliga inlästa PDF:er uppfyller PDF/A-2, till exempel om de saknar inbäddade typsnitt. Att rätta det skulle kräva att sidan ändras, vilket BG-009 inte tillåter. | `[TO VERIFY]` hanteras i arkitekturen. Förslag: BG-009 går före; appen varnar när en sida hindrar PDF/A-2, i stället för att göra om sidan. |
 
 ## 5. Spårbarhet: behov → krav → validering
-Kraven är hämtade ur kolumnen Source i docs/rtm.md (SRS-utkast 2026-11-12). Krav med prioritet Won't räknas inte som täckning. Valideringstest skrivs inför samlad acceptans.
+Kraven är hämtade ur kolumnen Source i docs/rtm.md. Krav med prioritet Won't räknas inte som täckning. Valideringstest skrivs inför samlad acceptans.
 
 | Behov | Prio | Krav (SRS) | Valideringstest | Resultat |
 | :-- | :-- | :-- | :-- | :-- |
 | BG-001 | Måste | FR-SPA-001, FR-ALM-008, FR-DOK-005, FR-DOK-007, NFR-SEC-001..002, NFR-PRIV-001..002 | Ej utförd | Ej utförd |
-| BG-002 | Måste | Avgränsningen i SRS 1.2 och Won't-kraven; prövas med ägarens helhetsbedömning; Won't: FR-STA-013  | Ej utförd | Ej utförd |
+| BG-002 | Måste | Avgränsningen i SRS 1.2 och Won't-kraven; prövas med ägarens helhetsbedömning; Won't: FR-STA-013 | Ej utförd | Ej utförd |
 | BG-003 | Måste | FR-STA-009, FR-STA-012, FR-TXT-014, FR-PLC-001, FR-PLC-008 | Ej utförd | Ej utförd |
+| BG-004 | Måste | FR-FIL-013, FR-SID-008, FR-SID-014, FR-FHV-008..009, FR-STA-006, FR-TXT-010, FR-PLC-003, FR-ALM-006, FR-ALM-010, FR-DOK-008..010, NFR-ACC-001..002 | Ej utförd | Ej utförd |
 | BG-005 | Måste | NFR-COMP-001 | Ej utförd | Ej utförd |
 | BG-006 | Bör | NFR-COMP-002 | Ej utförd | Ej utförd |
 | BG-007 | Måste | FR-TXT-007, NFR-SEC-002, NFR-SEC-004, NFR-MAINT-001 | Ej utförd | Ej utförd |
@@ -124,26 +129,28 @@ Kraven är hämtade ur kolumnen Source i docs/rtm.md (SRS-utkast 2026-11-12). Kr
 | BG-009 | Måste | FR-SPA-005, FR-SPA-007 | Ej utförd | Ej utförd |
 | BH-001 | Måste | FR-FIL-001..003, FR-FIL-005, FR-FIL-012, FR-SID-002..005, FR-SID-007, FR-SID-009, FR-SID-013, FR-SPA-001, NFR-PERF-002..003 | Ej utförd | Ej utförd |
 | BH-002 | Måste | FR-FIL-004, FR-SID-001, FR-SID-006, FR-SID-011..012, FR-FHV-003, FR-FHV-007 | Ej utförd | Ej utförd |
-| BH-003 | Måste | FR-FIL-005, FR-FHV-001..006, FR-FHV-008, FR-TXT-013, FR-SPA-008, NFR-PERF-001; Won't: FR-FHV-011  | Ej utförd | Ej utförd |
+| BH-003 | Måste | FR-FIL-005, FR-FHV-001..006, FR-FHV-008, FR-TXT-013, FR-SPA-008, NFR-PERF-001; Won't: FR-FHV-011 | Ej utförd | Ej utförd |
 | BH-004 | Måste | FR-STA-001, FR-STA-007..010, FR-STA-012 | Ej utförd | Ej utförd |
-| BH-007 | Måste | FR-STA-002 | Ej utförd | Ej utförd |
-| BH-008 | Måste | FR-STA-003..004 | Ej utförd | Ej utförd |
 | BH-005 | Måste | FR-TXT-001..002, FR-TXT-009..014 | Ej utförd | Ej utförd |
 | BH-006 | Måste | FR-SPA-007 | Ej utförd | Ej utförd |
+| BH-007 | Måste | FR-STA-002 | Ej utförd | Ej utförd |
+| BH-008 | Måste | FR-STA-003..004 | Ej utförd | Ej utförd |
 | BH-009 | Måste | FR-PLC-002..003, FR-PLC-008, FR-PLC-012 | Ej utförd | Ej utförd |
 | BH-010 | Måste | FR-PLC-009..011 | Ej utförd | Ej utförd |
-| BH-019 | Måste | FR-PLC-004..007 | Ej utförd | Ej utförd |
 | BH-011 | Måste | FR-SPA-006, FR-SPA-009, NFR-COMP-005 | Ej utförd | Ej utförd |
-| BH-012 | Måste | FR-TXT-003..006, FR-TXT-008; Won't: FR-TXT-015  | Ej utförd | Ej utförd |
+| BH-012 | Måste | FR-TXT-003..006, FR-TXT-008; Won't: FR-TXT-015 | Ej utförd | Ej utförd |
 | BH-013 | Bör | FR-TXT-003, FR-TXT-007 | Ej utförd | Ej utförd |
 | BH-014 | Bör | FR-SID-010 | Ej utförd | Ej utförd |
 | BH-015 | Måste | FR-STA-005..006 | Ej utförd | Ej utförd |
+| BH-016 | Måste | NFR-PERF-004, NFR-MAINT-001..002 | Ej utförd | Ej utförd |
 | BH-017 | Måste | FR-DOL-010, FR-DOL-012, FR-SPA-004..006, NFR-COMP-004 | Ej utförd | Ej utförd |
 | BH-018 | Måste | FR-DOL-001..015, NFR-SEC-003 | Ej utförd | Ej utförd |
+| BH-019 | Måste | FR-PLC-004..007 | Ej utförd | Ej utförd |
+| BH-020 | Måste | FR-FIL-006..010, FR-STA-011, FR-SPA-012; Won't: FR-FIL-014 | Ej utförd | Ej utförd |
 | FV-001 | Måste | FR-FIL-002, FR-FIL-006, FR-FIL-011, FR-SID-004, FR-SID-011, FR-FHV-010, FR-PLC-006, FR-DOL-014, FR-SPA-002..003, FR-SPA-010..011, FR-SPA-013, FR-ALM-001..006, FR-DOK-001..003, NFR-PERF-002, NFR-PERF-004, NFR-USE-001 | Ej utförd | Ej utförd |
-| BH-016 | Måste | NFR-PERF-004, NFR-MAINT-001..002 | Ej utförd | Ej utförd |
 | FV-002 | Bör | FR-ALM-009, NFR-USE-002 | Ej utförd | Ej utförd |
-| BG-004 | Måste | FR-FIL-013, FR-SID-008, FR-SID-014, FR-FHV-008..009, FR-STA-006, FR-TXT-010, FR-PLC-003, FR-ALM-006, FR-ALM-010, FR-DOK-008..010, NFR-ACC-001..002 | Ej utförd | Ej utförd |
+| FV-003 | Måste | FR-ALM-007 | Ej utförd | Ej utförd |
+| FV-004 | Måste | NFR-COMP-003 | Ej utförd | Ej utförd |
 
 ### Krav som hanterar omgivningen
 | Krav | Omgivning |
@@ -155,20 +162,8 @@ Kraven är hämtade ur kolumnen Source i docs/rtm.md (SRS-utkast 2026-11-12). Kr
 | :-- | :-- | :-- |
 
 ### Behov utan krav
-Inga. BG-002 täcks av avgränsningen och ägarens helhetsbedömning.
+Inga.
 
 ### Krav utan behov
-- FR-FIL-007 (källa: DS-04)
-- FR-FIL-008 (källa: DS-04)
-- FR-FIL-009 (källa: DS-04)
-- FR-FIL-010 (källa: DS-04)
-- FR-FIL-014 (källa: DS-04)
-- FR-STA-011 (källa: DS-04)
-- FR-SPA-012 (källa: DS-04)
-- FR-ALM-007 (källa: IN-02)
-- FR-DOK-004 (källa: UB-01)
-- FR-DOK-011 (källa: UB-01)
-- NFR-SEC-005 (källa: UB-02)
-- NFR-COMP-003 (källa: IN-02)
-- NFR-MAINT-003 (källa: UB-01)
-- NFR-MAINT-004 (källa: UB-01)
+Krav som bygger på behov på utvecklingen (accepterade av ägaren 2026-11-12, CHG-001): FR-DOK-004, FR-DOK-011, NFR-SEC-005, NFR-MAINT-003, NFR-MAINT-004.
+Övriga: inga.

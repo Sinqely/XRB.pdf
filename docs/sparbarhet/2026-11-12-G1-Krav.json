@@ -5,16 +5,16 @@
  "baslinje": "baseline/G1-v1.0",
  "summa": {
   "alla": {
-   "totalt": 30,
-   "bekraftade": 30,
-   "tackta": 30,
+   "totalt": 33,
+   "bekraftade": 33,
+   "tackta": 33,
    "verifierade": 0,
    "validerade": 0
   },
   "Måste": {
-   "totalt": 26,
-   "bekraftade": 26,
-   "tackta": 26,
+   "totalt": 29,
+   "bekraftade": 29,
+   "tackta": 29,
    "verifierade": 0,
    "validerade": 0
   },
@@ -30,18 +30,9 @@
   "aktiva": 153,
   "verifierade": 0,
   "utan_behov": [
-   "FR-FIL-007",
-   "FR-FIL-008",
-   "FR-FIL-009",
-   "FR-FIL-010",
-   "FR-FIL-014",
-   "FR-STA-011",
-   "FR-SPA-012",
-   "FR-ALM-007",
    "FR-DOK-004",
    "FR-DOK-011",
    "NFR-SEC-005",
-   "NFR-COMP-003",
    "NFR-MAINT-003",
    "NFR-MAINT-004"
   ],

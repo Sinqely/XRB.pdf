@@ -2,7 +2,7 @@
 
 > Version: 1.0 · Status: Reviewed · Last updated: 2026-11-12
 > Requirement syntax: EARS
-> Underlag: docs/systemkontext.md v1.0 och docs/behov.md v1.0 (baslinje G0, 2026-11-12). Varje krav anger sin källa (BH/FV/BG/UB/OM) i kolumnen Notes.
+> Underlag: docs/systemkontext.md v1.0 och docs/behov.md v1.1 (baslinje G0, 2026-11-12). Varje krav anger sin källa (BH/FV/BG/UB/OM) i kolumnen Notes.
 
 ## Revision History
 | Version | Date | Author | Changes |
@@ -88,15 +88,15 @@ Kraven skrivs i EARS: *När* (händelse), *Medan* (tillstånd), *Där* (valbar f
 | FR-FIL-003 | När användaren läser in filer medan arbetsytan redan innehåller filer ska appen lägga till de nya filerna och behålla de befintliga filerna och användarens val oförändrade. | Must | Active | Källa: BH-001 (två eller fler filer). |
 | FR-FIL-004 | När en fil har lästs in ska appen visa filens namn och antal sidor på arbetsytan. | Must | Active | Källa: BH-002. |
 | FR-FIL-005 | När användaren väljer att ta bort en inläst fil ska appen ta bort filen och alla dess sidor från arbetsytan, resultatet och förhandsvisningen. | Must | Active | Källa: BH-001, BH-003. |
-| FR-FIL-006 | Om användaren försöker läsa in en fil som inte är en PDF så ska appen avvisa filen och visa ett meddelande som namnger filen och förklarar att bara PDF-filer kan läsas in. | Must | Active | Källa: DS-04, FV-001. Avgörs av filens innehåll, inte bara filändelsen. |
-| FR-FIL-007 | Om en fil är skadad eller inte går att läsa så ska appen avvisa filen, visa ett meddelande som namnger filen och orsaken, och behålla övriga filer oförändrade. | Must | Active | Källa: DS-04. |
-| FR-FIL-008 | Om en fil är lösenordsskyddad så ska appen avvisa filen och visa ett meddelande som namnger filen och förklarar att lösenordsskyddade filer inte kan läsas in. | Must | Active | Källa: DS-04. Upplåsning med lösenord är Won't i version 1 (se FR-FIL-014). |
-| FR-FIL-009 | Om en fil är större än 100 MB så ska appen avvisa filen och visa ett meddelande som namnger filen och anger gränsen. | Must | Active | Källa: DS-04. Gränsen bekräftad av ägaren 2026-11-12. |
-| FR-FIL-010 | Om en inläsning skulle göra att arbetsytan innehåller fler än 500 sidor totalt så ska appen avvisa filen och visa ett meddelande som anger gränsen och hur många sidor som redan finns. | Must | Active | Källa: DS-04. |
+| FR-FIL-006 | Om användaren försöker läsa in en fil som inte är en PDF så ska appen avvisa filen och visa ett meddelande som namnger filen och förklarar att bara PDF-filer kan läsas in. | Must | Active | Källa: DS-04, BH-020, FV-001. Avgörs av filens innehåll, inte bara filändelsen. |
+| FR-FIL-007 | Om en fil är skadad eller inte går att läsa så ska appen avvisa filen, visa ett meddelande som namnger filen och orsaken, och behålla övriga filer oförändrade. | Must | Active | Källa: DS-04, BH-020. |
+| FR-FIL-008 | Om en fil är lösenordsskyddad så ska appen avvisa filen och visa ett meddelande som namnger filen och förklarar att lösenordsskyddade filer inte kan läsas in. | Must | Active | Källa: DS-04, BH-020. Upplåsning med lösenord är Won't i version 1 (se FR-FIL-014). |
+| FR-FIL-009 | Om en fil är större än 100 MB så ska appen avvisa filen och visa ett meddelande som namnger filen och anger gränsen. | Must | Active | Källa: DS-04, BH-020. Gränsen bekräftad av ägaren 2026-11-12. |
+| FR-FIL-010 | Om en inläsning skulle göra att arbetsytan innehåller fler än 500 sidor totalt så ska appen avvisa filen och visa ett meddelande som anger gränsen och hur många sidor som redan finns. | Must | Active | Källa: DS-04, BH-020. |
 | FR-FIL-011 | Medan en fil läses in ska appen visa en väntindikator som namnger filen. | Should | Active | Källa: FV-001. |
 | FR-FIL-012 | När användaren läser in samma fil mer än en gång ska appen visa varje inläsning som ett separat dokument. | Should | Active | Källa: BH-001. Dokumenten skiljs åt med löpnummer i namnet, inte bara med färg (BG-004). |
 | FR-FIL-013 | När en fil har lästs in eller avvisats ska appen meddela utfallet i ett statusmeddelande som skärmläsare läser upp. | Must | Active | Källa: BG-004. |
-| FR-FIL-014 | Där upplåsning av lösenordsskyddade filer ingår ska appen låta användaren skriva in lösenordet för att läsa in filen. | Won't | Active | Källa: DS-04. Inte i version 1 (ägaren 2026-11-12). |
+| FR-FIL-014 | Där upplåsning av lösenordsskyddade filer ingår ska appen låta användaren skriva in lösenordet för att läsa in filen. | Won't | Active | Källa: DS-04, BH-020. Inte i version 1 (ägaren 2026-11-12). |
 
 #### 3.1.2 SID – Sidval, ordning och rotation
 
@@ -147,7 +147,7 @@ Kraven skrivs i EARS: *När* (händelse), *Medan* (tillstånd), *Där* (valbar f
 | FR-STA-008 | När användaren markerar eller avmarkerar en sida i resultatraden för vattenstämpeln ska appen lägga till eller ta bort stämpeln på just den sidan. | Must | Active | Källa: BH-004. Valet görs med tangentbord eller mus (BG-004). |
 | FR-STA-009 | När användaren väljer en ny bild medan en vattenstämpel finns ska appen ersätta den tidigare bilden och behålla opacitet, storleksförhållande, placering och sidval. | Must | Active | Källa: BH-004 (en stämpel per fil), BG-003. |
 | FR-STA-010 | När användaren väljer att ta bort vattenstämpeln ska appen ta bort stämpeln från alla sidor. | Must | Active | Källa: BH-004. |
-| FR-STA-011 | Om användaren väljer en bildfil som inte är PNG eller JPEG, är skadad eller är större än 20 MB så ska appen avvisa bilden och visa ett meddelande som namnger filen och orsaken. | Must | Active | Källa: DS-04. |
+| FR-STA-011 | Om användaren väljer en bildfil som inte är PNG eller JPEG, är skadad eller är större än 20 MB så ska appen avvisa bilden och visa ett meddelande som namnger filen och orsaken. | Must | Active | Källa: DS-04, BH-020. |
 | FR-STA-012 | Medan "alla sidor" är valt för vattenstämpeln, när en sida läggs till i resultatet, ska appen lägga stämpeln även på den nya sidan. | Must | Active | Källa: BH-004, BG-003. |
 | FR-STA-013 | Där vridning av vattenstämpeln ingår ska appen låta användaren vrida stämpeln. | Won't | Active | Källa: BG-002. Inte i version 1 (ägaren 2026-11-12). |
 
@@ -223,7 +223,7 @@ Kraven skrivs i EARS: *När* (händelse), *Medan* (tillstånd), *Där* (valbar f
 | FR-SPA-009 | Appen ska skapa resultatfilen utan kryptering, lösenord eller behörighetsbegränsningar. | Must | Active | Källa: BH-011 (ska kunna signeras digitalt efteråt). |
 | FR-SPA-010 | Medan resultatet saknar sidor ska appen visa "Baka ihop och spara" som inaktiv tillsammans med en förklaring av varför. | Must | Active | Källa: FV-001. |
 | FR-SPA-011 | Medan resultatfilen skapas ska appen visa en väntindikator. | Must | Active | Källa: FV-001. |
-| FR-SPA-012 | Om skapandet av resultatfilen misslyckas så ska appen visa ett felmeddelande som förklarar vad som hände och behålla arbetsytan oförändrad. | Must | Active | Källa: DS-04. |
+| FR-SPA-012 | Om skapandet av resultatfilen misslyckas så ska appen visa ett felmeddelande som förklarar vad som hände och behålla arbetsytan oförändrad. | Must | Active | Källa: DS-04, BH-020. |
 | FR-SPA-013 | När resultatfilen har sparats ska appen behålla arbetsytan så att användaren kan ändra och spara igen. | Must | Active | Källa: FV-001. |
 
 #### 3.1.9 ALM – Allmänt: tillstånd, ångra och meddelanden
@@ -236,7 +236,7 @@ Kraven skrivs i EARS: *När* (händelse), *Medan* (tillstånd), *Där* (valbar f
 | FR-ALM-004 | Om användaren stänger eller laddar om fliken medan arbetsytan innehåller arbete som inte har sparats så ska appen låta webbläsaren fråga om användaren vill lämna sidan. | Must | Active | Källa: FV-001. |
 | FR-ALM-005 | Medan arbetsytan saknar inlästa filer ska appen visa en kort förklaring av hur appen används och en yta med texten "Dra in PDF-filer här eller välj filer". | Must | Active | Källa: FV-001, MF-01. |
 | FR-ALM-006 | Appen ska formulera alla meddelanden på svenska i klartext så att de anger vad som hände och hur användaren kan gå vidare. | Must | Active | Källa: FV-001, BG-004. |
-| FR-ALM-007 | Appen ska visa hela gränssnittet på svenska. | Must | Active | Källa: IN-02. |
+| FR-ALM-007 | Appen ska visa hela gränssnittet på svenska. | Must | Active | Källa: IN-02, FV-003. |
 | FR-ALM-008 | Appen ska inte spara dokument, sidor, bilder eller metadata i webbläsarens beständiga lagring. | Must | Active | Källa: BG-001, OM-09, IN-06. Inget finns kvar när fliken stängs. |
 | FR-ALM-009 | När användaren väljer ljust tema ska appen visa gränssnittet i GP MS ljusa tema tills användaren väljer mörkt tema igen. | Must | Active | Källa: FV-002. Mörkt tema är standard. Ägaren 2026-11-12: Must. Valet av tema får sparas i webbläsaren (inte dokumentdata). |
 | FR-ALM-010 | När användaren väljer att visa kortkommandon ska appen visa en lista med alla kortkommandon. | Should | Active | Källa: BG-004. |
@@ -301,7 +301,7 @@ Mätvillkor där inget annat anges: en vanlig arbetsdator i organisationen med a
 | NFR-ACC-002 | Tillgänglighet | DS-01 och DS-02 kan genomföras helt med tangentbord samt med skärmläsaren NVDA i Edge och VoiceOver i Safari. | Must | Källa: BG-004. |
 | NFR-COMP-001 | Kompatibilitet | Alla Must-krav uppfylls i de två senaste huvudversionerna av Microsoft Edge på Windows. | Must | Källa: BG-005. |
 | NFR-COMP-002 | Kompatibilitet | Alla Must-krav uppfylls i de två senaste huvudversionerna av Safari på macOS. | Should | Källa: BG-006. |
-| NFR-COMP-003 | Kompatibilitet | Appen är fullt användbar i webbläsarfönster från 1 280 × 720 pixlar; mobil och surfplatta ingår inte. | Must | Källa: IN-02. |
+| NFR-COMP-003 | Kompatibilitet | Appen är fullt användbar i webbläsarfönster från 1 280 × 720 pixlar; mobil och surfplatta ingår inte. | Must | Källa: IN-02, FV-004. |
 | NFR-COMP-004 | Kompatibilitet | En fil sparad som PDF/A-2b godkänns som PDF/A-2b av valideringsverktyget veraPDF. | Must | Källa: BH-017. |
 | NFR-COMP-005 | Kompatibilitet | Den sparade filen visas med samma sidor, ordning, stämpel och etikett i Adobe Acrobat Reader, Edges PDF-visare och Förhandsvisning på macOS. | Must | Källa: BH-011, MF-02. |
 | NFR-MAINT-001 | Förvaltningsbarhet | Appen levereras som en enda HTML-fil som innehåller all kod, alla bibliotek och alla typsnitt. | Must | Källa: BH-016, BG-007. |

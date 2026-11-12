@@ -10,15 +10,15 @@
 | FR-FIL-003 | Lägga till de nya filerna och behålla de befintliga filerna och användarens val oföränd… | Must | Active | BH-001 | UC-001 | _TBD_ | _TBD_ | _TBD_ |
 | FR-FIL-004 | Visa filens namn och antal sidor på arbetsytan | Must | Active | BH-002 | UC-001 | _TBD_ | _TBD_ | _TBD_ |
 | FR-FIL-005 | Ta bort filen och alla dess sidor från arbetsytan, resultatet och förhandsvisningen | Must | Active | BH-001, BH-003 | UC-001 | _TBD_ | _TBD_ | _TBD_ |
-| FR-FIL-006 | Avvisa filen och visa ett meddelande som namnger filen och förklarar att bara PDF-filer… | Must | Active | DS-04, FV-001 | UC-001 | _TBD_ | _TBD_ | _TBD_ |
-| FR-FIL-007 | Avvisa filen, visa ett meddelande som namnger filen och orsaken, och behålla övriga fil… | Must | Active | DS-04 | UC-001 | _TBD_ | _TBD_ | _TBD_ |
-| FR-FIL-008 | Avvisa filen och visa ett meddelande som namnger filen och förklarar att lösenordsskydd… | Must | Active | DS-04 | UC-001 | _TBD_ | _TBD_ | _TBD_ |
-| FR-FIL-009 | Avvisa filen och visa ett meddelande som namnger filen och anger gränsen | Must | Active | DS-04 | UC-001 | _TBD_ | _TBD_ | _TBD_ |
-| FR-FIL-010 | Avvisa filen och visa ett meddelande som anger gränsen och hur många sidor som redan finns | Must | Active | DS-04 | UC-001 | _TBD_ | _TBD_ | _TBD_ |
+| FR-FIL-006 | Avvisa filen och visa ett meddelande som namnger filen och förklarar att bara PDF-filer… | Must | Active | DS-04, BH-020, FV-001 | UC-001 | _TBD_ | _TBD_ | _TBD_ |
+| FR-FIL-007 | Avvisa filen, visa ett meddelande som namnger filen och orsaken, och behålla övriga fil… | Must | Active | DS-04, BH-020 | UC-001 | _TBD_ | _TBD_ | _TBD_ |
+| FR-FIL-008 | Avvisa filen och visa ett meddelande som namnger filen och förklarar att lösenordsskydd… | Must | Active | DS-04, BH-020 | UC-001 | _TBD_ | _TBD_ | _TBD_ |
+| FR-FIL-009 | Avvisa filen och visa ett meddelande som namnger filen och anger gränsen | Must | Active | DS-04, BH-020 | UC-001 | _TBD_ | _TBD_ | _TBD_ |
+| FR-FIL-010 | Avvisa filen och visa ett meddelande som anger gränsen och hur många sidor som redan finns | Must | Active | DS-04, BH-020 | UC-001 | _TBD_ | _TBD_ | _TBD_ |
 | FR-FIL-011 | Visa en väntindikator som namnger filen | Should | Active | FV-001 | UC-001 | _TBD_ | _TBD_ | _TBD_ |
 | FR-FIL-012 | Visa varje inläsning som ett separat dokument | Should | Active | BH-001 | UC-001 | _TBD_ | _TBD_ | _TBD_ |
 | FR-FIL-013 | Meddela utfallet i ett statusmeddelande som skärmläsare läser upp | Must | Active | BG-004 | UC-001 | _TBD_ | _TBD_ | _TBD_ |
-| FR-FIL-014 | Låta användaren skriva in lösenordet för att läsa in filen | Won't | Active | DS-04 | UC-001 | _TBD_ | _TBD_ | _TBD_ |
+| FR-FIL-014 | Låta användaren skriva in lösenordet för att läsa in filen | Won't | Active | DS-04, BH-020 | UC-001 | _TBD_ | _TBD_ | _TBD_ |
 | FR-SID-001 | Visa filens sidor som miniatyrer, var och en märkt med dokumentets namn och sidnummer | Must | Active | BH-002 | UC-001 | _TBD_ | _TBD_ | _TBD_ |
 | FR-SID-002 | Lägga till sidan sist i resultatet | Must | Active | BH-001 | UC-002 | _TBD_ | _TBD_ | _TBD_ |
 | FR-SID-003 | Ta bort sidan ur resultatet | Must | Active | BH-001 | UC-002 | _TBD_ | _TBD_ | _TBD_ |
@@ -54,7 +54,7 @@
 | FR-STA-008 | Lägga till eller ta bort stämpeln på just den sidan | Must | Active | BH-004 | UC-003 | _TBD_ | _TBD_ | _TBD_ |
 | FR-STA-009 | Ersätta den tidigare bilden och behålla opacitet, storleksförhållande, placering och si… | Must | Active | BH-004, BG-003 | UC-003 | _TBD_ | _TBD_ | _TBD_ |
 | FR-STA-010 | Ta bort stämpeln från alla sidor | Must | Active | BH-004 | UC-003 | _TBD_ | _TBD_ | _TBD_ |
-| FR-STA-011 | Avvisa bilden och visa ett meddelande som namnger filen och orsaken | Must | Active | DS-04 | UC-003 | _TBD_ | _TBD_ | _TBD_ |
+| FR-STA-011 | Avvisa bilden och visa ett meddelande som namnger filen och orsaken | Must | Active | DS-04, BH-020 | UC-003 | _TBD_ | _TBD_ | _TBD_ |
 | FR-STA-012 | Lägga stämpeln även på den nya sidan | Must | Active | BH-004, BG-003 | UC-003 | _TBD_ | _TBD_ | _TBD_ |
 | FR-STA-013 | Låta användaren vrida stämpeln | Won't | Active | BG-002 | UC-003 | _TBD_ | _TBD_ | _TBD_ |
 | FR-TXT-001 | Lägga texten som en textetikett på en rad på de sidor som är valda för etiketten | Must | Active | BH-005 | UC-004 | _TBD_ | _TBD_ | _TBD_ |
@@ -110,7 +110,7 @@
 | FR-SPA-009 | Skapa resultatfilen utan kryptering, lösenord eller behörighetsbegränsningar | Must | Active | BH-011 | UC-007 | _TBD_ | _TBD_ | _TBD_ |
 | FR-SPA-010 | Visa "Baka ihop och spara" som inaktiv tillsammans med en förklaring av varför | Must | Active | FV-001 | UC-007 | _TBD_ | _TBD_ | _TBD_ |
 | FR-SPA-011 | Visa en väntindikator | Must | Active | FV-001 | UC-007 | _TBD_ | _TBD_ | _TBD_ |
-| FR-SPA-012 | Visa ett felmeddelande som förklarar vad som hände och behålla arbetsytan oförändrad | Must | Active | DS-04 | UC-007 | _TBD_ | _TBD_ | _TBD_ |
+| FR-SPA-012 | Visa ett felmeddelande som förklarar vad som hände och behålla arbetsytan oförändrad | Must | Active | DS-04, BH-020 | UC-007 | _TBD_ | _TBD_ | _TBD_ |
 | FR-SPA-013 | Behålla arbetsytan så att användaren kan ändra och spara igen | Must | Active | FV-001 | UC-007 | _TBD_ | _TBD_ | _TBD_ |
 | FR-ALM-001 | Återställa den senaste ändringen av sidval, sidordning, rotation, vattenstämpel, textet… | Must | Active | FV-001 | UC-008 | _TBD_ | _TBD_ | _TBD_ |
 | FR-ALM-002 | Göra om den senast ångrade ändringen | Must | Active | FV-001 | UC-008 | _TBD_ | _TBD_ | _TBD_ |
@@ -118,7 +118,7 @@
 | FR-ALM-004 | Låta webbläsaren fråga om användaren vill lämna sidan | Must | Active | FV-001 | UC-007, UC-008 | _TBD_ | _TBD_ | _TBD_ |
 | FR-ALM-005 | Visa en kort förklaring av hur appen används och en yta med texten "Dra in PDF-filer hä… | Must | Active | FV-001, MF-01 | UC-001 | _TBD_ | _TBD_ | _TBD_ |
 | FR-ALM-006 | Formulera alla meddelanden på svenska i klartext så att de anger vad som hände och hur… | Must | Active | FV-001, BG-004 | — | _TBD_ | _TBD_ | _TBD_ |
-| FR-ALM-007 | Visa hela gränssnittet på svenska | Must | Active | IN-02 | — | _TBD_ | _TBD_ | _TBD_ |
+| FR-ALM-007 | Visa hela gränssnittet på svenska | Must | Active | IN-02, FV-003 | — | _TBD_ | _TBD_ | _TBD_ |
 | FR-ALM-008 | Inte spara dokument, sidor, bilder eller metadata i webbläsarens beständiga lagring | Must | Active | BG-001, OM-09, IN-06 | — | _TBD_ | _TBD_ | _TBD_ |
 | FR-ALM-009 | Visa gränssnittet i GP MS ljusa tema tills användaren väljer mörkt tema igen | Must | Active | FV-002 | UC-009 | _TBD_ | _TBD_ | _TBD_ |
 | FR-ALM-010 | Visa en lista med alla kortkommandon | Should | Active | BG-004 | UC-009 | _TBD_ | _TBD_ | _TBD_ |
@@ -148,7 +148,7 @@
 | NFR-ACC-002 | DS-01 och DS-02 kan genomföras helt med tangentbord samt med skärmläsaren NVDA i Edge o… | Must | Active | BG-004 | UC-005 | _TBD_ | _TBD_ | _TBD_ |
 | NFR-COMP-001 | Alla Must-krav uppfylls i de två senaste huvudversionerna av Microsoft Edge på Windows | Must | Active | BG-005 | — | _TBD_ | _TBD_ | _TBD_ |
 | NFR-COMP-002 | Alla Must-krav uppfylls i de två senaste huvudversionerna av Safari på macOS | Should | Active | BG-006 | — | _TBD_ | _TBD_ | _TBD_ |
-| NFR-COMP-003 | Appen är fullt användbar i webbläsarfönster från 1 280 × 720 pixlar; mobil och surfplat… | Must | Active | IN-02 | — | _TBD_ | _TBD_ | _TBD_ |
+| NFR-COMP-003 | Appen är fullt användbar i webbläsarfönster från 1 280 × 720 pixlar; mobil och surfplat… | Must | Active | IN-02, FV-004 | — | _TBD_ | _TBD_ | _TBD_ |
 | NFR-COMP-004 | En fil sparad som PDF/A-2b godkänns som PDF/A-2b av valideringsverktyget veraPDF | Must | Active | BH-017 | UC-007 | _TBD_ | _TBD_ | _TBD_ |
 | NFR-COMP-005 | Den sparade filen visas med samma sidor, ordning, stämpel och etikett i Adobe Acrobat R… | Must | Active | BH-011, MF-02 | UC-007 | _TBD_ | _TBD_ | _TBD_ |
 | NFR-MAINT-001 | Appen levereras som en enda HTML-fil som innehåller all kod, alla bibliotek och alla ty… | Must | Active | BH-016, BG-007 | UC-010 | _TBD_ | _TBD_ | _TBD_ |
