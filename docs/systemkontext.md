@@ -7,6 +7,7 @@
 | :-- | :-- | :-- | :-- |
 | 0.1 | 2026-11-12 | Första utkast ur ägarens beskrivning, före intervju. | Behovsfångst startad |
 | 0.2 | 2026-11-12 | Syfte, avgränsning och mått på framgång från intervju 1. Förslag till intressenter och omgivning. | Behovsfångst steg 1–3 |
+| 0.3 | 2026-11-12 | Förvaltare och publicering (SharePoint) bekräftade, mottagare och digitalt arkiv tillagda, signaturfrågan avgjord. | Intervju 3 |
 
 > `[TO VERIFY]` = härlett, inte bekräftat.
 
@@ -25,15 +26,15 @@ Systemet ska inte vara: "Det får aldrig bli så mycket funktioner som gör att 
 
 ## 3. Systemet i fokus (SoI)
 Ingår `[TO VERIFY]`: en webbapplikation som körs helt i användarens webbläsare. Den läser in flera PDF-filer från användarens dator, visar sidorna, låter användaren välja (och ev. ordna) sidor, lägger vattenstämpel (bild) och/eller text på alla eller valda sidor, förhandsvisar resultatet och sparar det som en ny PDF på användarens dator.
-Ligger utanför (fast) `[TO VERIFY]`: webbläsaren och arbetsdatorn, källfilerna och hur de skapats (t.ex. skanner), PDF-formatet, platsen där appen publiceras, och vart den färdiga filen tar vägen efteråt (e-post, diarium, arkiv). Ingen server tar emot eller behandlar dokument.
+Ligger utanför (fast) `[TO VERIFY]`: webbläsaren och arbetsdatorn, källfilerna och hur de skapats (t.ex. skanner), PDF-formatet, SharePoint-sidan där appen publiceras, och vart den färdiga filen tar vägen efteråt (e-post, diarium, arkiv). Ingen server tar emot eller behandlar dokument.
 
 ## 4. Intressentregister
 | ID | Intressent | Kategori | Roll gentemot systemet | Intresse | Inflytande (och hur) | Påverkas av systemet | Talesperson / källa | Status |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
 | IN-01 | GenesisAI (ägare) | Ägare eller beställare | Beslutar, prioriterar, godkänner | Ett enkelt verktyg som kollegor faktiskt kan använda | Hög: beslutar och godkänner vid grindar | – | Användaren själv | Bekräftad |
 | IN-02 | Kollegor utan särskild datorvana | Användare | Använder appen för att sätta ihop och märka PDF:er | Få rätt dokument snabbt utan att behöva lära sig ett verktyg | Medel: om de inte klarar det har appen misslyckats (MF-01) | Sparar tid, slipper skicka filer till externa tjänster | GenesisAI som företrädare | Bekräftad |
-| IN-03 | Förvaltare | Förvaltare | Publicerar appen och uppdaterar den | Låg förvaltningsbörda | `[TO VERIFY]` | | `[TO VERIFY]` vem? | Förslag [TO VERIFY] |
-| IN-04 | Mottagare av den sammanslagna filen (t.ex. diarium, part i ett ärende) | Berörda utan att använda | Får och läser resultatet | Läsbar, sökbar fil där det tydligt framgår vad som är beslut och signatur | Låg | Får ett annat dokument än originalen | `[TO VERIFY]` | Förslag [TO VERIFY] |
+| IN-03 | GenesisAI (förvaltare), tillsammans med Claude | Förvaltare | Lägger upp appen på SharePoint, uppdaterar och vidareutvecklar den när nya behov dyker upp | Att det går att ändra appen enkelt och säkert | Hög: beslutar om ändringar | Behöver kunna byta version utan krångel | Användaren själv: "Det är jag, som tillsammans med dig, håller den uppdaterad och utvecklar den om nya behov kommer fram under användning." | Bekräftad |
+| IN-04 | Mottagare av den färdiga filen (digitalt arkiv, e-postmottagare, den som signerar) | Berörda utan att använda | Får, arkiverar, läser eller signerar resultatet | En vanlig, fungerande PDF som kan arkiveras, mejlas och signeras | Låg till medel: ett arkiv kan ställa krav på format `[TO VERIFY]` | Får ett sammansatt dokument | GenesisAI: "Den slutliga filen kan användas på många sätt, t.ex. i ett digitalt arkiv … mailas etcetera." | Bekräftad |
 | IN-05 | Organisationens IT/informationssäkerhet | Ägare av möjliggörande system / regelägare | Kan behöva godkänna att appen används på arbetsdatorer | Att känsliga handlingar inte läcker | `[TO VERIFY]` kan stoppa | | `[TO VERIFY]` | Förslag [TO VERIFY] |
 | IN-06 | Personer som nämns i dokumenten | Den som kan skadas | Ingen | Att deras uppgifter inte sprids | Låg, men tungt vägande | Skadas om filer läcker | Företräds genom BG-001 | Förslag [TO VERIFY] |
 
