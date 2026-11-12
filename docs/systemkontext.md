@@ -1,6 +1,6 @@
 # Systemkontext: PDF-bagaren (XRB.pdf)
 
-> Version: 0.1 · Status: Draft · Senast ändrad: 2026-11-12
+> Version: 1.0 · Status: Approved · Senast ändrad: 2026-11-12
 
 ## Ändringslogg
 | Version | Datum | Ändring | Orsak (grind eller CHG) |
@@ -10,6 +10,7 @@
 | 0.3 | 2026-11-12 | Förvaltare och publicering (SharePoint) bekräftade, mottagare och digitalt arkiv tillagda, signaturfrågan avgjord. | Intervju 3 |
 | 0.4 | 2026-11-12 | SharePoint kör HTML bekräftat. Arkivregler (Arkivlagen, RA-FS 2009:2) tillagda i omgivningen. | Intervju 4 |
 | 0.5 | 2026-11-12 | La till IN-07 Organisationen (grafisk profil) och OM-08 tillgänglighetskrav. | Ägarens tillägg |
+| 1.0 | 2026-11-12 | Fastställd som behovsbaslinje. | G0 Behov, godkänd med anmärkning |
 | 0.10 | 2026-11-12 | Kvarvarande [TO VERIFY] i intressentregister och omgivning avgjorda. | Förberedelse G0 |
 | 0.9 | 2026-11-12 | OM-04 preciserad (bibliotek), OM-09 webbläsardata tillagd. | Ägarens svar |
 | 0.8 | 2026-11-12 | Webbläsare bekräftade, IN-05 bortvald, arkivets PDF/A-2 antagen. | Ägarens svar |

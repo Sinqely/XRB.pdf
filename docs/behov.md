@@ -1,6 +1,6 @@
 # Behov: PDF-bagaren (XRB.pdf)
 
-> Version: 0.1 · Status: Draft · Senast ändrad: 2026-11-12
+> Version: 1.0 · Status: Approved · Senast ändrad: 2026-11-12
 > Underlag: intervju med ägaren 2026-11-12. Systemkontext: docs/systemkontext.md.
 
 ## Ändringslogg
@@ -8,6 +8,7 @@
 | :-- | :-- | :-- | :-- |
 | 0.1 | 2026-11-12 | Första utkast ur intervju 1. | Behovsfångst steg 4 påbörjat |
 | 0.2 | 2026-11-12 | La till BH-007 (genomskinliga områden) och BH-008 (opacitet) för vattenstämpel. | Ägarens tillägg |
+| 1.0 | 2026-11-12 | Fastställd som behovsbaslinje. | G0 Behov, godkänd med anmärkning |
 | 0.21 | 2026-11-12 | BH-019 höjd till Måste. BG-003 bekräftad. Alla uppgifter bekräftade. | Ägarens svar |
 | 0.20 | 2026-11-12 | FV-001 bekräftad med mätbart kriterium (5 minuter). | Ägarens svar |
 | 0.19 | 2026-11-12 | BH-006 bekräftad. La till BG-009 (sidornas konstruktion ändras inte, ingen OCR). | Ägarens svar |
