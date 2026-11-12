@@ -208,3 +208,17 @@ p, h2, h3, ul, ol { margin: 0; }
 .dold-lista li.borttagen .textyta { text-decoration: line-through; }
 .dold-skript { margin: var(--space-1) 0 0; padding-left: var(--space-6); }
 .textyta { height: auto; min-height: calc(var(--storlek-kontroll-hojd) * 1.5); padding: var(--space-2) var(--space-3); resize: vertical; }
+
+/* Hjälp SCR-APP-008 och kortkommandon SCR-APP-013 (FEAT-010) */
+.visuellt-dold { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.kolumnhuvud { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); }
+.hjalp-innehall { display: grid; gap: var(--space-4); max-height: min(60vh, 640px); overflow-y: auto; padding-right: var(--space-2); }
+.hjalp-innehall section { display: grid; gap: var(--space-2); }
+.hjalp-innehall p { margin: 0; }
+.hjalp-steg { margin: 0; padding-left: var(--space-6); display: grid; gap: var(--space-1); }
+.kortkommandon { display: grid; gap: var(--space-4); }
+.kortkommandotabell { border-collapse: collapse; width: 100%; }
+.kortkommandotabell caption { text-align: left; padding-bottom: var(--space-1); }
+.kortkommandotabell th, .kortkommandotabell td { text-align: left; padding: var(--space-1) var(--space-2) var(--space-1) 0; vertical-align: top; border-top: var(--storlek-kant-bredd) solid var(--ui-kant); font-weight: 400; }
+.kortkommandotabell th { width: 45%; }
+kbd { font: inherit; font-weight: 700; }

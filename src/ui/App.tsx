@@ -22,6 +22,7 @@ import { etikettSyns } from '../karna/markning'
 import { EtikettPanel } from './EtikettPanel'
 import { useSnitt } from './typsnitt'
 import { DoldDialog } from './DoldDialog'
+import { HjalpDialog, KortkommandoDialog, type Hjalpavsnitt } from './Hjalp'
 
 const tillstand = skapaTillstand()
 
@@ -41,6 +42,15 @@ export function App() {
   const filval = useRef<HTMLInputElement>(null)
   const bakaKnapp = useRef<HTMLButtonElement>(null)
   const doldKnapp = useRef<HTMLButtonElement>(null)
+  /** Hjälpen (med avsnitt) och kortkommandona (FEAT-010); fokus går tillbaka dit det var. */
+  const [hjalp, sattHjalp] = useState<null | { avsnitt: Hjalpavsnitt | null }>(null)
+  const [kortkommandon, sattKortkommandon] = useState(false)
+  const hjalpFore = useRef<HTMLElement | null>(null)
+  const oppnaHjalp = (avsnitt: Hjalpavsnitt | null) => {
+    hjalpFore.current = document.activeElement as HTMLElement | null
+    sattHjalp({ avsnitt })
+  }
+  const tillbaka = () => hjalpFore.current?.focus()
 
   useEffect(
     () =>
@@ -77,6 +87,13 @@ export function App() {
     const tangent = (e: KeyboardEvent) => {
       const mal = e.target as HTMLElement
       if (mal.closest('input, textarea, dialog')) return
+      // ? visar kortkommandona (FR-ALM-010), utanför textfält och dialoger.
+      if (e.key === '?' && !e.ctrlKey && !e.metaKey && !e.altKey && !document.querySelector('dialog[open]')) {
+        e.preventDefault()
+        hjalpFore.current = document.activeElement as HTMLElement | null
+        sattKortkommandon(true)
+        return
+      }
       const mod = e.ctrlKey || e.metaKey
       if (!mod) return
       const k = e.key.toLowerCase()
@@ -228,6 +245,10 @@ export function App() {
             <Ikon namn="skold" />
             {texter.doldVerktyg}
           </button>
+          <button type="button" class="knapp-text" aria-keyshortcuts="Shift+Slash" onClick={() => oppnaHjalp(null)}>
+            <Ikon namn="hjalp" />
+            {texter.hjalp}
+          </button>
           <button type="button" class="knapp-text" onClick={() => sattTemaVal(tema === 'mork' ? 'ljus' : 'mork')}>
             <Ikon namn={tema === 'mork' ? 'sol' : 'mane'} />
             {tema === 'mork' ? texter.temaLjust : texter.temaMorkt}
@@ -257,6 +278,7 @@ export function App() {
           andra={andra}
           oppnaFilval={() => filval.current?.click()}
           dragOver={dragOver}
+          hjalp={oppnaHjalp}
           lasesIn={lasesIn}
           fel={fel}
           stangFel={(i) => sattFel((f) => f.filter((_, j) => j !== i))}
@@ -276,7 +298,7 @@ export function App() {
         />
 
         <section class="kolumn kolumn-mitt" aria-labelledby="rubrik-resultat">
-          <Resultatrad yta={yta} andra={andra} aktivId={aktivId} sattAktiv={sattAktiv} />
+          <Resultatrad yta={yta} andra={andra} aktivId={aktivId} sattAktiv={sattAktiv} hjalp={oppnaHjalp} />
           <Forhandsvisning
             yta={yta}
             aktivId={aktivId}
@@ -287,6 +309,7 @@ export function App() {
 
         <Markning
           inaktiv={tomt}
+          hjalp={oppnaHjalp}
           stampel={<StampelPanel yta={yta} andra={andra} aktivId={aktivId} aktivMatt={aktivMatt} naraKant={stampelNaraKant} status={sattStatus} />}
           etikett={<EtikettPanel yta={yta} andra={andra} andraText={andraText} aktivId={aktivId} naraKant={etikettNaraKant} overlapp={overlapp} />}
         />
@@ -296,6 +319,28 @@ export function App() {
         {status && <Ikon namn="bock" storlek={16} />}
         {status}
       </div>
+
+      {hjalp && (
+        <HjalpDialog
+          avsnitt={hjalp.avsnitt}
+          stang={() => {
+            sattHjalp(null)
+            tillbaka()
+          }}
+          visaKortkommandon={() => {
+            sattHjalp(null)
+            sattKortkommandon(true)
+          }}
+        />
+      )}
+      {kortkommandon && (
+        <KortkommandoDialog
+          stang={() => {
+            sattKortkommandon(false)
+            tillbaka()
+          }}
+        />
+      )}
 
       {borjaOmFraga && (
         <Bekrafta

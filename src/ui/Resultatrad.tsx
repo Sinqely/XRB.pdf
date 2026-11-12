@@ -3,6 +3,7 @@ import { Fragment } from 'preact'
 import { useEffect, useRef, useState } from 'preact/hooks'
 import { vaxlaPaSida } from '../karna/markning'
 import { texter } from '../karna/texter'
+import { Hjalpknapp, type Hjalpavsnitt } from './Hjalp'
 import { flyttaSida, flyttaSteg, taBortResultatsida, type Andring } from '../karna/arbetsyta'
 import type { Arbetsyta } from '../karna/typer'
 import { Ikon } from './ikoner'
@@ -10,13 +11,15 @@ import { miniatyr, useMiniatyrer } from './dokumentregister'
 import { Sidbild } from './Filkolumn'
 
 interface Props {
+  /** Öppnar hjälpen vid ett avsnitt (FR-DOK-001). */
+  hjalp?: (a: Hjalpavsnitt) => void
   yta: Arbetsyta
   andra: (fn: (y: Arbetsyta) => Andring) => void
   aktivId: string | null
   sattAktiv: (id: string) => void
 }
 
-export function Resultatrad({ yta, andra, aktivId, sattAktiv }: Props) {
+export function Resultatrad({ yta, andra, aktivId, sattAktiv, hjalp }: Props) {
   useMiniatyrer()
   const [dras, sattDras] = useState<string | null>(null)
   const [markor, sattMarkor] = useState<number | null>(null)
@@ -50,11 +53,14 @@ export function Resultatrad({ yta, andra, aktivId, sattAktiv }: Props) {
 
   return (
     <div class="resultat">
-      <h2 id="rubrik-resultat" class="kolumnrubrik" tabIndex={-1} ref={rubrik}>
-        <span class="steg" aria-hidden="true">2</span>
-        {texter.kolumnResultat}
-        <span class="rubrikantal">{texter.sidor(total)}</span>
-      </h2>
+      <div class="kolumnhuvud">
+        <h2 id="rubrik-resultat" class="kolumnrubrik" tabIndex={-1} ref={rubrik}>
+          <span class="steg" aria-hidden="true">2</span>
+          {texter.kolumnResultat}
+          <span class="rubrikantal">{texter.sidor(total)}</span>
+        </h2>
+        {hjalp && <Hjalpknapp avsnitt="valja" oppna={hjalp} />}
+      </div>
       {total === 0 ? (
         <p class="dampad resultattom">{texter.resultatTomt}</p>
       ) : (

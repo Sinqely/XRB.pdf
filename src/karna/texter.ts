@@ -12,7 +12,7 @@ export const texter = {
   valjFiler: 'Välj filer',
   slappForsta: 'Dra in PDF-filer här',
   slappFler: 'Dra in fler PDF-filer här',
-  slappEllerKlicka: 'eller klicka för att välja',
+  slappEllerKlicka: 'eller välj filer',
   slappNu: 'Släpp för att läsa in',
   ingress: 'Allt sker i din webbläsare. Inga filer skickas någonstans.',
   markningSenare: 'Vattenstämpel och textetikett kommer i en senare version.',
@@ -269,6 +269,113 @@ export const texter = {
         return `Privata uppgifter från programmet som skapade sidan${var_}.`
     }
   },
+  // Hjälp SCR-APP-008 och kortkommandon SCR-APP-013 (FEAT-010)
+  hjalp: 'Hjälp',
+  hjalpRubrik: 'Hjälp',
+  hjalpOm: (steg: string) => `Hjälp om ${steg}`,
+  hjalpStegNamn: { lasaIn: 'att läsa in filer', valja: 'att välja och ordna sidor', marka: 'vattenstämpel och textetikett' },
+  hjalpIngress: 'PDF-bagaren sätter ihop sidor ur flera PDF-filer och lägger på vattenstämpel och textetikett. Allt sker i din webbläsare; inga filer skickas någonstans.',
+  hjalpAvsnitt: [
+    {
+      id: 'lasaIn',
+      rubrik: '1 Läs in filer',
+      text: [
+        'Dra in en eller flera PDF-filer till kolumnen Filer, eller välj dem med knappen "Välj filer".',
+        'Varje fil visas med namn, antal sidor och storlek och en miniatyr av varje sida. Filer med lösenord och skadade filer går inte att läsa in; du får ett meddelande om varför.',
+      ],
+    },
+    {
+      id: 'valja',
+      rubrik: '2 Välj och ordna sidor',
+      text: [
+        'Klicka på en miniatyr för att lägga till sidan sist i resultatet, och klicka igen för att ta bort den. "Lägg till alla sidor" tar med hela filen.',
+        'Ordna sidorna i resultatraden genom att dra dem, med pilknapparna eller med Alt och piltangenterna. Förhandsvisningen visar den valda sidan stort.',
+      ],
+    },
+    {
+      id: 'marka',
+      rubrik: '3 Vattenstämpel och textetikett',
+      text: [
+        'Under Märkning väljer du en bild som vattenstämpel (PNG eller JPEG) och skriver en textetikett. Välj storlek, färg och en av sex placeringar, eller dra objektet i förhandsvisningen.',
+        'Som förval hamnar de på alla sidor. Kryssrutorna under varje sida i resultatraden styr vilka sidor som får dem.',
+      ],
+    },
+    {
+      id: 'spara',
+      rubrik: '4 Baka ihop och spara',
+      text: [
+        'Välj "Baka ihop och spara". Först visas den dolda informationen, till exempel titel, författare och kommentarer, så att du kan ändra eller ta bort det som inte ska med.',
+        'Spara sedan i arkivformat PDF/A (rekommenderas) eller som vanlig PDF. Sidorna ändras aldrig; de kopieras som de är.',
+      ],
+    },
+  ],
+  hjalpFall: [
+    {
+      id: 'ds01',
+      rubrik: 'Beslut med inskannad namnteckning',
+      steg: [
+        'Dra in beslutet och den inskannade filen med namnteckningen.',
+        'Välj "Lägg till alla sidor" på beslutet.',
+        'Ta bort sidan som ska bytas ut: välj krysset på sidan i resultatraden, eller markera den och tryck Delete.',
+        'Klicka på den inskannade sidan, så hamnar den sist i resultatet.',
+        'Flytta den till rätt plats med pilknapparna eller Alt och piltangenterna.',
+        'Vrid sidan om den ligger fel.',
+        'Bläddra igenom förhandsvisningen och kontrollera sidorna.',
+        'Välj "Baka ihop och spara", granska den dolda informationen och spara i arkivformat.',
+      ],
+    },
+    {
+      id: 'ds02',
+      rubrik: 'Märka en PDF',
+      steg: [
+        'Dra in PDF-filen och välj "Lägg till alla sidor".',
+        'Under Märkning, Vattenstämpel: välj bilden och ställ in opacitet, storlek och placering.',
+        'Under Textetikett: skriv texten och välj storlek, färg, typsnitt och placering.',
+        'Kontrollera i förhandsvisningen. Dra stämpeln eller etiketten om de ska ligga någon annanstans.',
+        'Välj "Baka ihop och spara".',
+      ],
+    },
+  ],
+  kortkommandon: 'Kortkommandon',
+  visaKortkommandon: 'Visa alla kortkommandon',
+  kortkommandoGrupper: [
+    {
+      rubrik: 'Allmänt',
+      rader: [
+        ['Ctrl+Z (Cmd+Z på Mac)', 'Ångra'],
+        ['Ctrl+Y eller Cmd+Skift+Z', 'Gör om'],
+        ['?', 'Visa kortkommandon'],
+        ['Esc', 'Stäng dialogen'],
+        ['Tab och Skift+Tab', 'Gå till nästa eller föregående kontroll'],
+      ],
+    },
+    {
+      rubrik: 'Sidor',
+      rader: [
+        ['Enter eller blanksteg på en miniatyr', 'Lägg till eller ta bort sidan'],
+        ['Alt+vänster- eller högerpil', 'Flytta sidan i resultatet'],
+        ['Delete eller Backsteg', 'Ta bort sidan ur resultatet'],
+      ],
+    },
+    {
+      rubrik: 'Förhandsvisning',
+      rader: [
+        ['Vänster- och högerpil, Page Up och Page Down', 'Föregående och nästa sida'],
+        ['Home och End', 'Första och sista sidan'],
+      ],
+    },
+    {
+      rubrik: 'Vattenstämpel och textetikett',
+      rader: [
+        ['Piltangenterna', 'Flytta 1 mm'],
+        ['Skift+piltangenterna', 'Flytta 10 mm'],
+        ['Piltangenterna i placering och färg', 'Välj placering eller färg'],
+        ['Enter i ett sifferfält', 'Använd värdet'],
+      ],
+    },
+  ],
+  kortkommandoTangent: 'Tangent',
+  kortkommandoGor: 'Gör',
 } as const
 
 /** "sida 2", "sidorna 2 och 5", "sidorna 1, 3 och 4". */

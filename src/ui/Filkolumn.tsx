@@ -1,11 +1,14 @@
 // Kolumn 1 Filer i SCR-APP-001 (FEAT-001 ui-design.md): släppyta, dokumentkort och miniatyrrutnät.
 import { texter } from '../karna/texter'
+import { Hjalpknapp, type Hjalpavsnitt } from './Hjalp'
 import { arVald, laggTillAlla, taBortAlla, taBortDokument, vaxlaSida, type Andring } from '../karna/arbetsyta'
 import type { Arbetsyta, Dokument } from '../karna/typer'
 import { Ikon } from './ikoner'
 import { miniatyr, useMiniatyrer } from './dokumentregister'
 
 interface Props {
+  /** Öppnar hjälpen vid ett avsnitt (FR-DOK-001). */
+  hjalp: (a: Hjalpavsnitt) => void
   yta: Arbetsyta
   andra: (fn: (y: Arbetsyta) => Andring) => void
   oppnaFilval: () => void
@@ -15,15 +18,18 @@ interface Props {
   stangFel: (i: number) => void
 }
 
-export function Filkolumn({ yta, andra, oppnaFilval, dragOver, lasesIn, fel, stangFel }: Props) {
+export function Filkolumn({ yta, andra, oppnaFilval, dragOver, lasesIn, fel, stangFel, hjalp }: Props) {
   useMiniatyrer()
   const tom = yta.dokument.length === 0 && !lasesIn
   return (
     <section class="kolumn" aria-labelledby="rubrik-filer" aria-busy={lasesIn ? 'true' : undefined}>
-      <h2 id="rubrik-filer" class="kolumnrubrik">
-        <span class="steg" aria-hidden="true">1</span>
-        {texter.kolumnFiler}
-      </h2>
+      <div class="kolumnhuvud">
+        <h2 id="rubrik-filer" class="kolumnrubrik">
+          <span class="steg" aria-hidden="true">1</span>
+          {texter.kolumnFiler}
+        </h2>
+        <Hjalpknapp avsnitt="lasaIn" oppna={hjalp} />
+      </div>
       {fel.map((f, i) => (
         <div key={`${i}-${f}`} class="meddelande meddelande-fel" role="alert">
           <p>{f}</p>

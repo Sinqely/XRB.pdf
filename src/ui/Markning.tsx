@@ -2,6 +2,7 @@
 import { useRef, useState } from 'preact/hooks'
 import type { ComponentChildren } from 'preact'
 import { texter } from '../karna/texter'
+import { Hjalpknapp, type Hjalpavsnitt } from './Hjalp'
 
 type Flik = 'stampel' | 'etikett'
 
@@ -9,9 +10,11 @@ interface Props {
   inaktiv: boolean
   stampel: ComponentChildren
   etikett: ComponentChildren
+  /** Öppnar hjälpen vid ett avsnitt (FR-DOK-001). */
+  hjalp: (a: Hjalpavsnitt) => void
 }
 
-export function Markning({ inaktiv, stampel, etikett }: Props) {
+export function Markning({ inaktiv, stampel, etikett, hjalp }: Props) {
   const [flik, sattFlik] = useState<Flik>('stampel')
   const knappar = useRef<Record<Flik, HTMLButtonElement | null>>({ stampel: null, etikett: null })
   const flikar: [Flik, string][] = [
@@ -27,10 +30,13 @@ export function Markning({ inaktiv, stampel, etikett }: Props) {
   }
   return (
     <section class="kolumn" aria-labelledby="rubrik-markning">
-      <h2 id="rubrik-markning" class="kolumnrubrik">
-        <span class="steg" aria-hidden="true">3</span>
-        {texter.kolumnMarkning}
-      </h2>
+      <div class="kolumnhuvud">
+        <h2 id="rubrik-markning" class="kolumnrubrik">
+          <span class="steg" aria-hidden="true">3</span>
+          {texter.kolumnMarkning}
+        </h2>
+        <Hjalpknapp avsnitt="marka" oppna={hjalp} />
+      </div>
       {inaktiv ? (
         <p class="ingress-latt dampad">{texter.markningInaktiv}</p>
       ) : (
