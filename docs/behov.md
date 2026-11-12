@@ -8,6 +8,7 @@
 | :-- | :-- | :-- | :-- |
 | 0.1 | 2026-11-12 | Första utkast ur intervju 1. | Behovsfångst steg 4 påbörjat |
 | 0.2 | 2026-11-12 | La till BH-007 (genomskinliga områden) och BH-008 (opacitet) för vattenstämpel. | Ägarens tillägg |
+| 0.8 | 2026-11-12 | FV-002 bekräftad (Bör, GP MS, bara appen). BG-004 tillgänglighet föreslagen. | Ägarens svar |
 | 0.7 | 2026-11-12 | La till IN-07 Organisationen och FV-002 (grafisk profil). | Ägarens tillägg |
 | 0.6 | 2026-11-12 | Konflikten om arkivformat avgjord: PDF/A-2. BH-017 bekräftad. | Ägarens beslut |
 | 0.5 | 2026-11-12 | Rangordning. La till BH-015 (stämpelstorlek), BH-016 (enkel publicering), BH-017 (arkivbeständighet) och konflikten om PDF/A och genomskinlighet. | Intervju 4 |
@@ -54,7 +55,9 @@ Rangordning av de viktigaste behoven (ägaren 2026-11-12: "Användbarhet, ingen 
 ### IN-07 Organisationen
 | ID | Slag | Egna ord / källa | Tolkning ("… behöver att systemet …") | Prio | Valideringskriterium | MF | Lösningsidé | Status |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| FV-002 | Förväntning | "Det kan handla om att användargränssnittet har vissa färger och typsnitt." (2026-11-12) | Organisationen förväntar sig att appens gränssnitt följer den grafiska profilen, med dess färger och typsnitt. | Bör `[TO VERIFY]` | Ägaren jämför appen med den grafiska manualen: färger och typsnitt stämmer. Typsnitten följer med appen och hämtas inte från en extern server (BG-001, BH-016). | MF-01 | Profilens färger och typsnitt inbyggda i appen | Förslag [TO VERIFY] |
+| FV-002 | Förväntning | "Det kan handla om att användargränssnittet har vissa färger och typsnitt."; "Du kan använda det som finns i GP-MS så länge."; "det är bara appen"; prio "Bör" (2026-11-12) | Organisationen förväntar sig att appens gränssnitt (inte de sidor användaren skapar) följer den grafiska profilen GP MS (Grafisk profil materielsystem): dess åtta färger och regler för kontrast och viktning. Typsnitt saknas i GP MS och tas fram av ägaren `[TO VERIFY]`. | Bör | Ägaren jämför appen med GP MS: färger och viktning stämmer, och typsnitten följer med appen och hämtas inte från en extern server (BG-001, BH-016). | MF-01 | Sidbakgrund sten-ljus, text skiffer, primär knapp gron, fokus petrol (enligt GP MS) | Bekräftad |
+
+| BG-004 | Begränsning | Lagen (2018:1937) om tillgänglighet till digital offentlig service, via EN 301 549 och WCAG 2.1 nivå AA (OM-08) | Organisationen kan behöva att appen uppfyller tillgänglighetskraven, bland annat att allt går att göra med tangentbord, att dra och släpp har ett alternativ, att information inte bara visas med färg och att appen fungerar med skärmläsare. | `[TO VERIFY]` | Kontroll mot WCAG 2.1 AA, t.ex. att hela DS-01 och DS-02 går att genomföra med bara tangentbord. | MF-01 | | Förslag [TO VERIFY] |
 
 ## 2. Behov på utvecklingen (inte systemkrav)
 | ID | Egna ord | Vad det betyder för metoden |
