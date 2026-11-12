@@ -152,7 +152,7 @@ Kraven skrivs i EARS: *När* (händelse), *Medan* (tillstånd), *Där* (valbar f
 | FR-TXT-005 | När användaren väljer en av de förvalda färgerna eller anger en egen färg som textfärg ska appen visa etikettens text i den färgen. | Must | Active | Källa: BH-012. |
 | FR-TXT-006 | När användaren väljer en bakgrundsfärg för etiketten ska appen visa en fylld yta i den färgen bakom texten. | Must | Active | Källa: BH-012 ("för ökad synlighet"). Alternativet "ingen" tar bort ytan. |
 | FR-TXT-007 | När användaren väljer ett typsnitt bland appens inbakade typsnitt ska appen visa etiketten i det typsnittet. | Should | Active | Källa: BH-013, BG-007, BG-008. Urval: Carlito, ett typsnitt med seriffer och ett med fast teckenbredd, alla med tillåtande licens och möjliga att bädda in i PDF/A-2. |
-| FR-TXT-008 | När användaren slår på fetstil eller kursiv ska appen visa etiketten med vald stil. | Could | Active | Källa: BH-012. |
+| FR-TXT-008 | När användaren slår på fetstil eller kursiv ska appen visa etiketten med vald stil. | Must | Active | Källa: BH-012. Must enligt ägaren 2026-11-12. Varje inbakat typsnitt behöver snitten normal, fet, kursiv och fet kursiv. |
 | FR-TXT-009 | När användaren väljer "alla sidor" för textetiketten ska appen lägga etiketten på alla sidor i resultatet. | Must | Active | Källa: BH-005. |
 | FR-TXT-010 | När användaren markerar eller avmarkerar en sida i resultatraden för textetiketten ska appen lägga till eller ta bort etiketten på just den sidan, oberoende av vattenstämpelns sidval. | Must | Active | Källa: BH-005, BG-004. |
 | FR-TXT-011 | När användaren väljer att ta bort textetiketten ska appen ta bort etiketten från alla sidor. | Must | Active | Källa: BH-005. |
