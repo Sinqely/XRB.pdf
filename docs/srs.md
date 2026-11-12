@@ -178,6 +178,26 @@ Kraven skrivs i EARS: *När* (händelse), *Medan* (tillstånd), *Där* (valbar f
 | FR-PLC-011 | Om en flytt, storleksändring eller ändrad text skulle göra att vattenstämpeln eller textetiketten hamnar helt eller delvis utanför någon av sina sidor så ska appen hålla objektet innanför sidkanten. | Must | Active | Källa: BH-010. |
 | FR-PLC-012 | Om vattenstämpeln och textetiketten överlappar varandra på någon sida så ska appen visa en varning som anger vilka sidor det gäller. | Could | Active | Källa: BH-009. |
 
+#### 3.1.7 DOL – Dold information
+
+| ID | Requirement | Priority | Status | Notes / rules |
+| :-- | :---------- | :------- | :----- | :------------ |
+| FR-DOL-001 | När användaren väljer att spara resultatet ska appen, innan filen skapas, visa en panel "Dold information" för de dokument vars sidor ingår i resultatet. | Must | Active | Källa: BH-018. Panelen kan också öppnas när som helst. |
+| FR-DOL-002 | Medan panelen "Dold information" visas ska appen för varje berört dokument visa titel, författare, ämne, nyckelord, programmet som skapade filen samt skapad- och ändringsdatum. | Must | Active | Källa: BH-018. |
+| FR-DOL-003 | När resultatet får sin första sida ska appen förifylla resultatets titel, författare, ämne och nyckelord med värdena från det dokument som sidan kommer från. | Must | Active | Källa: BH-018. Förifyllning bekräftad av ägaren 2026-11-12. |
+| FR-DOL-004 | När användaren ändrar eller tömmer resultatets titel, författare, ämne eller nyckelord ska appen använda de nya värdena i den sparade filen. | Must | Active | Källa: BH-018. |
+| FR-DOL-005 | Medan panelen "Dold information" visas ska appen lista kommentarer på resultatets sidor med sin text och vilken resultatsida de finns på. | Must | Active | Källa: BH-018. |
+| FR-DOL-006 | När användaren ändrar texten i en kommentar ska appen använda den nya texten i den sparade filen. | Must | Active | Källa: BH-018. |
+| FR-DOL-007 | När användaren väljer att ta bort en kommentar ska appen utelämna kommentaren ur den sparade filen. | Must | Active | Källa: BH-018. Förval: kommentarer behålls. |
+| FR-DOL-008 | Medan panelen "Dold information" visas ska appen lista bifogade filer i de berörda dokumenten med namn och storlek. | Must | Active | Källa: BH-018. |
+| FR-DOL-009 | När användaren väljer att ta bort en bifogad fil ska appen utelämna den ur den sparade filen. | Must | Active | Källa: BH-018. |
+| FR-DOL-010 | Om en bifogad fil inte är tillåten i PDF/A-2 så ska appen utelämna den ur den sparade filen och i panelen ange att den tas bort och varför. | Must | Active | Källa: BH-018, BH-017. |
+| FR-DOL-011 | Medan panelen "Dold information" visas ska appen lista formulärfält på resultatets sidor och låta användaren välja om de ska behållas eller tas bort. | Must | Active | Källa: BH-018. |
+| FR-DOL-012 | Om ett berört dokument innehåller skript eller andra aktiva element så ska appen utelämna dem ur den sparade filen och i panelen ange att de tas bort och varför. | Must | Active | Källa: BH-018, BH-017. |
+| FR-DOL-013 | Appen ska utelämna kommentarer, formulärfält och annan information som hör till sidor som inte ingår i resultatet ur den sparade filen. | Must | Active | Källa: BH-018, OM-05. |
+| FR-DOL-014 | Medan inga berörda dokument innehåller dold information utöver metadata ska appen visa "Ingen dold information hittades" i panelen. | Must | Active | Källa: BH-018, FV-001. |
+| FR-DOL-015 | Där bevarande av bokmärken ingår ska appen behålla bokmärken som pekar på sidor i resultatet och låta dem peka på sidornas nya plats. | Could | Active | Källa: BH-018. Byggs det inte tas alla bokmärken bort. |
+
 ### 3.2 External interface requirements
 *(fas 4)*
 
