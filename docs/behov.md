@@ -8,10 +8,11 @@
 | :-- | :-- | :-- | :-- |
 | 0.1 | 2026-11-12 | Första utkast ur intervju 1. | Behovsfångst steg 4 påbörjat |
 | 0.2 | 2026-11-12 | La till BH-007 (genomskinliga områden) och BH-008 (opacitet) för vattenstämpel. | Ägarens tillägg |
+| 0.5 | 2026-11-12 | Rangordning. La till BH-015 (stämpelstorlek), BH-016 (enkel publicering), BH-017 (arkivbeständighet) och konflikten om PDF/A och genomskinlighet. | Intervju 4 |
 | 0.4 | 2026-11-12 | BH-001 utökad (fler än två filer, valfri ordning). La till BH-011–BH-014, BG-003, UB-01, utkast till driftbild, signaturkonflikten avgjord. | Intervju 3 |
 | 0.3 | 2026-11-12 | BH-003 skärpt (ständig förhandsvisning med stämplar och text). La till BH-009 (styrd placering) och BH-010 (inte för nära kanten). | Ägarens tillägg |
 
-Rangordning av de viktigaste behoven: `[TO VERIFY]` väntar på ägaren.
+Rangordning av de viktigaste behoven (ägaren 2026-11-12: "Användbarhet, ingen data skickas externt, enkel deployering."): 1. Användbarhet (FV-001, BH-002, BH-003). 2. BG-001 ingen data skickas externt. 3. BH-016 enkel publicering.
 
 ## 1. Behov, förväntningar och begränsningar per intressent
 
@@ -39,7 +40,14 @@ Rangordning av de viktigaste behoven: `[TO VERIFY]` väntar på ägaren.
 | BH-012 | Behov | "Textstorlek, färg och eventuellt bakgrundsfärg (för ökad synlighet) måste kunna väljas." (2026-11-12) | Användaren behöver kunna välja textetikettens storlek och färg, och en bakgrundsfärg bakom texten så att den syns bättre. | Måste | Användaren ändrar storlek, färg och bakgrundsfärg och ser resultatet i förhandsvisningen och i den sparade filen. Texten går att läsa på både ljusa och mörka delar av en sida. | MF-02 | | Bekräftad |
 | BH-013 | Behov | "I den mån det är möjligt även typsnitt." (2026-11-12) | Användaren vill kunna välja typsnitt för textetiketten. | Bör | Användaren väljer mellan några typsnitt och ser valet i den sparade filen. Å, ä och ö visas korrekt. | MF-02 | Ett litet urval typsnitt | Bekräftad |
 | BH-014 | Behov | "Det är dock bra om sidor kan roteras mellan landskap och porträtt." (2026-11-12) | Användaren vill kunna vrida en sida mellan liggande och stående. | Bör | En liggande inskannad sida vrids till stående och är rättvänd i den sparade filen. | MF-02 | | Bekräftad |
+| BH-015 | Behov | "Ja storlek på vattenstämpel (obs bild!) ska kunna ändras av användaren på ett intuitivt sätt." (2026-11-12) | Användaren behöver kunna ändra storleken på vattenstämpelns bild på ett sätt som känns självklart. | Måste | En kollega som inte sett appen förut gör stämpeln större och mindre utan hjälp, och storleken i den sparade filen är densamma som i förhandsvisningen. Bilden behåller sina proportioner om inte användaren vill annat. | MF-01, MF-02 | Dra i hörnet i förhandsvisningen | Bekräftad |
+| BH-017 | Behov | "Utgå från de krav som härstammar från Arkivlagen (1990:782) samt Riksarkivets föreskrifter … (RA-FS 2009:2)" (2026-11-12) | Användaren behöver att den färdiga filen kan bevaras i det digitala arkivet enligt arkivreglerna. | Måste | Filen godkänns av organisationens arkiv eller av en kontroll mot den PDF/A-version arkivet kräver. Version avgörs i konflikten mellan BH-017 och BH-007/BH-008. | MF-02 | Spara som PDF/A | Förslag [TO VERIFY] |
 | FV-001 | Förväntning | "kollegor utan särskild datorvana"; "första gången lyckas" | Användaren förväntar sig att förstå appen direkt, utan instruktioner eller utbildning. | Måste | Ägarens helhetsbedömning efter test med en kollega (MF-01). | MF-01 | | Förslag [TO VERIFY] |
+
+### IN-03 GenesisAI (förvaltare)
+| ID | Slag | Egna ord / källa | Tolkning ("… behöver att systemet …") | Prio | Valideringskriterium | MF | Lösningsidé | Status |
+| :-- | :-- | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
+| BH-016 | Behov | "Appen ska kunna nås på en gemensam sharepoint-sida där den helt enkelt läggs upp."; rangordning: "enkel deployering" (2026-11-12) | Förvaltaren behöver kunna publicera och byta version av appen genom att bara lägga upp den på SharePoint, utan server, installation eller byggsteg. | Måste | Ägaren lägger själv upp en ny version på SharePoint, och en kollega kan använda den direkt utan att installera något. | MF-01 | En enda HTML-fil | Bekräftad |
 
 ## 2. Behov på utvecklingen (inte systemkrav)
 | ID | Egna ord | Vad det betyder för metoden |
@@ -65,7 +73,9 @@ En kollega lägger in en fil som inte går att läsa, till exempel en lösenords
 | Mellan | Konflikt | Avgörande (datum) |
 | :-- | :-- | :-- |
 | BH-001 / OM-01 | Om en sida tas ur en digitalt signerad PDF eller filen ändras (stämpel, text) slutar den digitala signaturen att gälla. En inskannad, handskriven signatur påverkas inte. | Avgjort 2026-11-12: appen behöver inte hantera redan digitalt signerade filer. Digital signering sker efteråt på filen som appen skapat (BH-011). Signaturfallet i appen gäller inskannade namnteckningar. |
-| BG-001 / OM-03 | Appen ska ligga på SharePoint, men SharePoint kan vara inställt så att det inte kör webbappar. Då behöver appen kunna laddas ned och öppnas lokalt, utan att något skickas iväg. | `[TO VERIFY]` |
+| BG-001 / OM-03 | Appen ska ligga på SharePoint, men SharePoint kan vara inställt så att det inte kör webbappar. | Avgjort 2026-11-12: HTML-filer körs på SharePoint. |
+| BH-017 / BH-007, BH-008 / OM-07 | RA-FS 2009:2 anger PDF/A-1, som inte tillåter genomskinlighet. Genomskinliga stämplar och valbar opacitet går då inte att spara som PDF/A-1 utan att sidan görs om till en bild, och då försvinner sökbar text (BH-006). PDF/A-2 tillåter genomskinlighet. | `[TO VERIFY]` väntar på ägarens beslut |
+| BH-017 / OM-01 | Appen kan inte garantera att godtyckliga inlästa PDF:er uppfyller PDF/A, till exempel om de saknar inbäddade typsnitt. | `[TO VERIFY]` hanteras i arkitekturen |
 
 ## 5. Spårbarhet: behov → krav → validering
 | Behov | Prio | Krav (SRS) | Valideringstest | Resultat |

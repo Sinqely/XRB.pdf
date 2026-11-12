@@ -8,6 +8,7 @@
 | 0.1 | 2026-11-12 | Första utkast ur ägarens beskrivning, före intervju. | Behovsfångst startad |
 | 0.2 | 2026-11-12 | Syfte, avgränsning och mått på framgång från intervju 1. Förslag till intressenter och omgivning. | Behovsfångst steg 1–3 |
 | 0.3 | 2026-11-12 | Förvaltare och publicering (SharePoint) bekräftade, mottagare och digitalt arkiv tillagda, signaturfrågan avgjord. | Intervju 3 |
+| 0.4 | 2026-11-12 | SharePoint kör HTML bekräftat. Arkivregler (Arkivlagen, RA-FS 2009:2) tillagda i omgivningen. | Intervju 4 |
 
 > `[TO VERIFY]` = härlett, inte bekräftat.
 
