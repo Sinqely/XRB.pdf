@@ -1,7 +1,7 @@
 # Software Requirements Specification: PDF-bagaren (XRB.pdf)
 
 > Version: 0.1 · Status: Draft · Last updated: 2026-11-12
-> Requirement syntax: *(väljs i slutet av fas 1)*
+> Requirement syntax: EARS
 > Underlag: docs/systemkontext.md v1.0 och docs/behov.md v1.0 (baslinje G0, 2026-11-12). Varje krav anger sin källa (BH/FV/BG/UB/OM) i kolumnen Notes.
 
 ## Revision History
