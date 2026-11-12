@@ -41,8 +41,8 @@ test('visa en sida stort från miniatyren och från förhandsvisningen, stäng m
   const d = page.getByRole('dialog', { name: 'Sida 2 ur beslut.pdf' })
   await expect(d).toBeVisible()
   await expect(d.locator('canvas')).toBeVisible()
-  const b = await d.locator('canvas').boundingBox()
-  expect(b!.height).toBeGreaterThan(400)
+  // Vänta tills sidan är ritad; en tom canvas är 150 px hög.
+  await expect.poll(async () => (await d.locator('canvas').boundingBox())?.height ?? 0).toBeGreaterThan(400)
   expect((await new AxeBuilder({ page }).withTags(tagg).analyze()).violations).toEqual([])
   await page.keyboard.press('Escape')
   await expect(d).toBeHidden()
