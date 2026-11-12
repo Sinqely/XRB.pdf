@@ -23,6 +23,7 @@ export async function oppnaPdf(bytes: Uint8Array): Promise<OppnatDokument> {
   // pdf.js tar över bufferten, så den får en egen kopia; originalet behövs vid sparande.
   const uppgift = getDocument({
     data: bytes.slice(),
+    // Ingen skriptmotor (pdf.sandbox byggs aldrig in, R6): skript i filen körs aldrig (NFR-SEC-003).
     enableXfa: false,
     useSystemFonts: true,
     stopAtErrors: false,

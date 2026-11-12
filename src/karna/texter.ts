@@ -376,6 +376,24 @@ export const texter = {
   ],
   kortkommandoTangent: 'Tangent',
   kortkommandoGor: 'Gör',
+  // Om PDF-bagaren SCR-APP-009..011 (FEAT-011)
+  om: 'Om PDF-bagaren',
+  omRubrik: 'Om PDF-bagaren',
+  omVersion: (version: string, datum: string) => `version ${version}${datum ? `, ${new Date(`${datum}T12:00:00`).toLocaleDateString('sv-SE', { dateStyle: 'long' })}` : ' (inte släppt)'}`,
+  omInget: 'Inga filer eller uppgifter lämnar din dator. Allt sker i webbläsaren, och appen kan inte ansluta till internet.',
+  omVisaRapport: 'Visa verifieringsrapporten',
+  omVisaTillganglighet: 'Visa tillgänglighetsredogörelsen',
+  omRapport: 'Verifieringsrapport',
+  omTillganglighet: 'Tillgänglighetsredogörelse',
+  omTillbaka: 'Tillbaka',
+  omLicenser: 'Licenser',
+  omLicenserIngress: 'Appen bygger på fri programvara och fria typsnitt. Välj ett namn för att läsa licensen.',
+  omNamn: 'Namn',
+  omVersionKolumn: 'Version',
+  omLicens: 'Licens',
+  omTyp: 'Typ',
+  omLicensFor: (namn: string) => `Licens för ${namn}`,
+  omTypNamn: { bibliotek: 'Bibliotek', typsnitt: 'Typsnitt', ikoner: 'Ikoner' },
 } as const
 
 /** "sida 2", "sidorna 2 och 5", "sidorna 1, 3 och 4". */

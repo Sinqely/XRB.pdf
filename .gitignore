@@ -23,7 +23,7 @@ dist-ssr
 *.sln
 *.sw?
 
-# Genereras ur docs/tokens.json
+# Genereras ur docs/tokens.json och av scripts/om-data.mjs
 src/ui/tokens.css
 src/karna/etikett-tokens.ts
 # Testresultat
@@ -31,3 +31,4 @@ test-results
 playwright-report
 verktyg/verapdf/lib/
 verktyg/verapdf/target/
+src/karna/om-data.ts

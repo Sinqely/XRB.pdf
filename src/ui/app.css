@@ -222,3 +222,16 @@ p, h2, h3, ul, ol { margin: 0; }
 .kortkommandotabell th, .kortkommandotabell td { text-align: left; padding: var(--space-1) var(--space-2) var(--space-1) 0; vertical-align: top; border-top: var(--storlek-kant-bredd) solid var(--ui-kant); font-weight: 400; }
 .kortkommandotabell th { width: 45%; }
 kbd { font: inherit; font-weight: 700; }
+
+/* Om PDF-bagaren SCR-APP-009..011 (FEAT-011) */
+.om-version { font: var(--text-ingress-latt); }
+.licenstabell, .dokumenttext table { border-collapse: collapse; width: 100%; }
+.licenstabell th, .licenstabell td, .dokumenttext th, .dokumenttext td { text-align: left; vertical-align: top; padding: var(--space-2) var(--space-2) var(--space-2) 0; border-top: var(--storlek-kant-bredd) solid var(--ui-kant); }
+.licenstabell tbody th, .dokumenttext tbody th { font-weight: 400; }
+.licenstabell summary { cursor: pointer; font-weight: 700; }
+.licenstext { white-space: pre-wrap; font: var(--text-liten); max-height: 240px; overflow-y: auto; margin: var(--space-2) 0 0; }
+.dokumenttext { display: grid; gap: var(--space-3); }
+.dokumenttext h3 { font: var(--text-kolumnrubrik); margin: var(--space-2) 0 0; }
+.dokumenttext p, .dokumenttext ul { margin: 0; }
+.dokumenttext ul { padding-left: var(--space-6); }
+.tabellyta { overflow-x: auto; }

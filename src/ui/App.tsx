@@ -22,6 +22,7 @@ import { etikettSyns } from '../karna/markning'
 import { EtikettPanel } from './EtikettPanel'
 import { useSnitt } from './typsnitt'
 import { DoldDialog } from './DoldDialog'
+import { OmDialog } from './Om'
 import { HjalpDialog, KortkommandoDialog, type Hjalpavsnitt } from './Hjalp'
 
 const tillstand = skapaTillstand()
@@ -45,6 +46,7 @@ export function App() {
   /** Hjälpen (med avsnitt) och kortkommandona (FEAT-010); fokus går tillbaka dit det var. */
   const [hjalp, sattHjalp] = useState<null | { avsnitt: Hjalpavsnitt | null }>(null)
   const [kortkommandon, sattKortkommandon] = useState(false)
+  const [om, sattOm] = useState(false)
   const hjalpFore = useRef<HTMLElement | null>(null)
   const oppnaHjalp = (avsnitt: Hjalpavsnitt | null) => {
     hjalpFore.current = document.activeElement as HTMLElement | null
@@ -249,6 +251,17 @@ export function App() {
             <Ikon namn="hjalp" />
             {texter.hjalp}
           </button>
+          <button
+            type="button"
+            class="knapp-text"
+            onClick={() => {
+              hjalpFore.current = document.activeElement as HTMLElement | null
+              sattOm(true)
+            }}
+          >
+            <Ikon namn="info" />
+            {texter.om}
+          </button>
           <button type="button" class="knapp-text" onClick={() => sattTemaVal(tema === 'mork' ? 'ljus' : 'mork')}>
             <Ikon namn={tema === 'mork' ? 'sol' : 'mane'} />
             {tema === 'mork' ? texter.temaLjust : texter.temaMorkt}
@@ -330,6 +343,14 @@ export function App() {
           visaKortkommandon={() => {
             sattHjalp(null)
             sattKortkommandon(true)
+          }}
+        />
+      )}
+      {om && (
+        <OmDialog
+          stang={() => {
+            sattOm(false)
+            tillbaka()
           }}
         />
       )}

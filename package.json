@@ -4,7 +4,7 @@
   "version": "0.2.0",
   "type": "module",
   "scripts": {
-    "tokens": "node scripts/tokens-till-css.mjs",
+    "tokens": "node scripts/tokens-till-css.mjs && node scripts/om-data.mjs",
     "predev": "npm run tokens",
     "dev": "vite",
     "prebuild": "npm run tokens",
