@@ -1,6 +1,6 @@
 # UX-grund: PDF-bagaren
 
-> Status: Draft · Senast uppdaterad: 2026-11-12
+> Status: Approved (G2-tillägg, 2026-11-12) · Version 1.0 · Senast uppdaterad: 2026-11-12
 > Underlag: [srs.md](srs.md) v1.0 · [architecture.md](architecture.md) v1.0 · [use-cases.md](use-cases.md) v1.0
 > Designsystem: **[design.md](design.md) + [tokens.json](tokens.json)** (enda källan för färger, typsnitt, mått och komponenter; det här dokumentet hänvisar dit och upprepar inga värden)
 
