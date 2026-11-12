@@ -88,6 +88,25 @@ Kraven skrivs i EARS: *När* (händelse), *Medan* (tillstånd), *Där* (valbar f
 | FR-FIL-013 | När en fil har lästs in eller avvisats ska appen meddela utfallet i ett statusmeddelande som skärmläsare läser upp. | Must | Active | Källa: BG-004. |
 | FR-FIL-014 | Där upplåsning av lösenordsskyddade filer ingår ska appen låta användaren skriva in lösenordet för att läsa in filen. | Won't | Active | Källa: DS-04. Inte i version 1 (ägaren 2026-11-12). |
 
+#### 3.1.2 SID – Sidval, ordning och rotation
+
+| ID | Requirement | Priority | Status | Notes / rules |
+| :-- | :---------- | :------- | :----- | :------------ |
+| FR-SID-001 | När en fil har lästs in ska appen visa filens sidor som miniatyrer, var och en märkt med dokumentets namn och sidnummer. | Must | Active | Källa: BH-002. Märkningen är text, inte bara färg (BG-004). |
+| FR-SID-002 | När användaren väljer en sida i ett inläst dokument ska appen lägga till sidan sist i resultatet. | Must | Active | Källa: BH-001. |
+| FR-SID-003 | När användaren väljer bort en sida som finns i resultatet ska appen ta bort sidan ur resultatet. | Must | Active | Källa: BH-001. |
+| FR-SID-004 | När användaren väljer "välj alla" för ett dokument ska appen lägga till dokumentets ännu inte valda sidor sist i resultatet i dokumentets ordning. | Must | Active | Källa: BH-001, FV-001. |
+| FR-SID-005 | När användaren väljer "välj bort alla" för ett dokument ska appen ta bort dokumentets alla sidor ur resultatet. | Must | Active | Källa: BH-001. |
+| FR-SID-006 | Appen ska visa resultatets sidor i en egen rad i resultatordning, där varje sida är märkt med ursprungsdokumentets namn och sidnummer. | Must | Active | Källa: BH-002, MF-01. Ubiquitous: gäller hela tiden. |
+| FR-SID-007 | När användaren drar en sida i resultatraden och släpper den på en ny plats ska appen flytta sidan dit. | Must | Active | Källa: BH-001 ("drag and drop"). |
+| FR-SID-008 | När användaren väljer "flytta upp" eller "flytta ner" för en sida i resultatraden, med knapp eller tangentbord, ska appen flytta sidan ett steg i vald riktning. | Must | Active | Källa: BG-004 (alternativ till dra och släpp). |
+| FR-SID-009 | När användaren väljer att ta bort en sida ur resultatraden ska appen ta bort sidan ur resultatet. | Must | Active | Källa: BH-001. Sidan finns kvar i sitt ursprungsdokument och kan väljas igen. |
+| FR-SID-010 | När användaren väljer att vrida en sida åt höger eller vänster ska appen vrida sidan 90 grader i vald riktning i resultatet. | Should | Active | Källa: BH-014, DS-01. Vridningen ändrar sidans visningsriktning, inte dess innehåll (BG-009). |
+| FR-SID-011 | Appen ska visa antalet sidor i resultatet. | Must | Active | Källa: BH-002, FV-001. |
+| FR-SID-012 | När användaren väljer att förstora en miniatyr ska appen visa sidan i större format tills användaren stänger visningen. | Should | Active | Källa: BH-002, DS-01. Stängs med knapp eller Esc (BG-004). |
+| FR-SID-013 | När användaren väljer en sida som redan finns i resultatet en gång till ska appen lägga till ytterligare en förekomst av sidan i resultatet. | Could | Active | Källa: BH-001. Ägaren 2026-11-12: Could. Om Could inte byggs gäller FR-SID-002 och FR-SID-003 som val/bortval. |
+| FR-SID-014 | När användaren flyttar, lägger till, tar bort eller vrider en sida ska appen meddela ändringen i ett statusmeddelande som skärmläsare läser upp. | Must | Active | Källa: BG-004. T.ex. "Sida 2 ur Beslut.pdf flyttad till plats 4". |
+
 ### 3.2 External interface requirements
 *(fas 4)*
 
