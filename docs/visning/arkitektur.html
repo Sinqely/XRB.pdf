@@ -33,10 +33,10 @@ a:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 <nav class="toc" aria-label="Innehåll"><div class="rubrik">Innehåll</div><ol><li><a href="#1-inledning-och-mål">1. Inledning och mål</a></li><li><a href="#2-begränsningar">2. Begränsningar</a></li><li><a href="#3-kontext-och-avgränsning">3. Kontext och avgränsning</a></li><li><a href="#4-lösningsstrategi">4. Lösningsstrategi</a></li><li><a href="#5-byggblock">5. Byggblock</a></li><li><a href="#6-körning">6. Körning</a></li><li><a href="#7-driftsättning">7. Driftsättning</a></li><li><a href="#8-tvärgående-principer">8. Tvärgående principer</a></li><li><a href="#9-arkitekturbeslut">9. Arkitekturbeslut</a></li><li><a href="#10-kvalitetsscenarier">10. Kvalitetsscenarier</a></li><li><a href="#11-risker-och-teknisk-skuld">11. Risker och teknisk skuld</a></li><li><a href="#12-ordlista">12. Ordlista</a></li></ol></nav>
 
 <blockquote>
-<p>Status: Approved (G2, 2026-11-12) · Version 1.0 · Senast uppdaterad:
-2026-11-12 · Författare: Claude tillsammans med Ägaren Underlag: <a
-href="srs.md">docs/srs.md</a> v1.0 (G1 godkänd), <a
-href="use-cases.md">docs/use-cases.md</a> v1.0, <a
+<p>Status: Approved (G2, 2026-11-12) · Version 1.0.1 (risk nedgraderad
+2026-11-12) · Senast uppdaterad: 2026-11-12 · Författare: Claude
+tillsammans med Ägaren Underlag: <a href="srs.md">docs/srs.md</a> v1.0
+(G1 godkänd), <a href="use-cases.md">docs/use-cases.md</a> v1.0, <a
 href="systemkontext.md">docs/systemkontext.md</a> v1.0</p>
 </blockquote>
 <h2 id="1-inledning-och-mål">1. Inledning och mål</h2>
@@ -737,9 +737,9 @@ Nackdel: kräver installation och IT, strider mot BH-016.</li>
 </ul>
 <p><strong>Konsekvenser</strong> Publicering är en filuppladdning.
 Datamängden begränsas av webbläsarens minne, därav gränserna 100 MB och
-500 sidor. Risken att SharePoint inte kör HTML-filen som en sida behöver
-prövas tidigt (se avsnitt 11). Omprövas om appen behöver funktioner som
-inte går att göra i en webbläsare.</p>
+500 sidor. Att SharePoint kör HTML-sidor har Ägaren prövat (avsnitt 11).
+Omprövas om appen behöver funktioner som inte går att göra i en
+webbläsare.</p>
 <h3
 id="adr-002-nätverksspärr-med-innehållspolicy-och-kodregler">ADR-002:
 Nätverksspärr med innehållspolicy och kodregler</h3>
@@ -1138,15 +1138,12 @@ byte för byte desamma som i källan.</td>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;"><strong>SharePoint kör kanske inte
-HTML-filen som en sida.</strong> SharePoint Online laddar ofta ner
-HTML-filer i stället för att visa dem, beroende på inställningar för
-anpassade skript. Ägaren har uppgett att HTML körs, men det är inte
-prövat med den här typen av fil.</td>
-<td style="text-align: left;">Hög: hela publiceringsmodellen</td>
-<td style="text-align: left;">Första bygget (gångbart skelett) läggs i
-test-SharePoint och prövas innan funktioner byggs. Reserv: filen sparas
-lokalt eller öppnas från en mapp som synkas med OneDrive.</td>
+<td style="text-align: left;">SharePoint kör HTML-filen som en sida.
+Ägaren har prövat att SharePoint-miljön kör webbsidor och inte laddar
+ner dem (2026-11-12).</td>
+<td style="text-align: left;">Låg (nedgraderad från hög)</td>
+<td style="text-align: left;">Skelettet prövas ändå i test-SharePoint
+tillsammans med risken nedan.</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">SharePoint kan skicka en egen

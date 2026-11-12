@@ -1,6 +1,6 @@
 # Arkitektur: PDF-bagaren
 
-> Status: Approved (G2, 2026-11-12) · Version 1.0 · Senast uppdaterad: 2026-11-12 · Författare: Claude tillsammans med Ägaren
+> Status: Approved (G2, 2026-11-12) · Version 1.0.1 (risk nedgraderad 2026-11-12) · Senast uppdaterad: 2026-11-12 · Författare: Claude tillsammans med Ägaren
 > Underlag: [docs/srs.md](srs.md) v1.0 (G1 godkänd), [docs/use-cases.md](use-cases.md) v1.0, [docs/systemkontext.md](systemkontext.md) v1.0
 
 ## 1. Inledning och mål
@@ -385,7 +385,7 @@ Vi bygger en ren klientapp som levereras som en enda HTML-fil. All bearbetning s
 - **Installerat program** – full tillgång till datorn. Nackdel: kräver installation och IT, strider mot BH-016.
 
 **Konsekvenser**
-Publicering är en filuppladdning. Datamängden begränsas av webbläsarens minne, därav gränserna 100 MB och 500 sidor. Risken att SharePoint inte kör HTML-filen som en sida behöver prövas tidigt (se avsnitt 11). Omprövas om appen behöver funktioner som inte går att göra i en webbläsare.
+Publicering är en filuppladdning. Datamängden begränsas av webbläsarens minne, därav gränserna 100 MB och 500 sidor. Att SharePoint kör HTML-sidor har Ägaren prövat (avsnitt 11). Omprövas om appen behöver funktioner som inte går att göra i en webbläsare.
 
 ### ADR-002: Nätverksspärr med innehållspolicy och kodregler
 
@@ -584,7 +584,7 @@ Verifieringsrapporten följer med exakt den version den gäller. De manuella kon
 
 | Risk eller skuld | Påverkan | Åtgärd |
 | :-- | :-- | :-- |
-| **SharePoint kör kanske inte HTML-filen som en sida.** SharePoint Online laddar ofta ner HTML-filer i stället för att visa dem, beroende på inställningar för anpassade skript. Ägaren har uppgett att HTML körs, men det är inte prövat med den här typen av fil. | Hög: hela publiceringsmodellen | Första bygget (gångbart skelett) läggs i test-SharePoint och prövas innan funktioner byggs. Reserv: filen sparas lokalt eller öppnas från en mapp som synkas med OneDrive. |
+| SharePoint kör HTML-filen som en sida. Ägaren har prövat att SharePoint-miljön kör webbsidor och inte laddar ner dem (2026-11-12). | Låg (nedgraderad från hög) | Skelettet prövas ändå i test-SharePoint tillsammans med risken nedan. |
 | SharePoint kan skicka en egen innehållspolicy som krockar med appens arbetstrådar eller inbakade skript. | Medel | Prövas i samma steg; arbetstrådar kan vid behov köras i huvudtråden till priset av sämre svarstid. |
 | pdf-lib har inget eget PDF/A-stöd och forken har en mindre användarbas. | Medel | Egen PDF/A-modul och veraPDF i CI; originalet pdf-lib som reserv med samma API. |
 | Sårbarheter i pdf.js upptäcks löpande. | Medel | Låsta versioner, sårbarhetskontroll i CI, uppdatering inför varje release (NFR-SEC-004). |

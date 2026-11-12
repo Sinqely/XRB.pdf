@@ -5,7 +5,7 @@
 
 ## 1. Översikt
 
-Planen bygger PDF-bagaren i tunna, genomgående funktioner, var och en från gränssnitt till sparad fil. Ordningen styrs först av **risk**: det mest osäkra prövas först, alltså att SharePoint kör HTML-filen (architecture.md avsnitt 11), att sidor kan kopieras orörda (ADR-004) och att arkivformatet PDF/A-2b går att uppfylla (ADR-005). Därefter styr beroenden och prioritet (Must före Should före Could).
+Planen bygger PDF-bagaren i tunna, genomgående funktioner, var och en från gränssnitt till sparad fil. Ordningen styrs först av **risk**: det mest osäkra prövas först, alltså att appens nätverksspärr och arbetstrådar fungerar när filen körs från SharePoint, att sidor kan kopieras orörda (ADR-004) och att arkivformatet PDF/A-2b går att uppfylla (ADR-005). Att SharePoint kör HTML-sidor har Ägaren redan prövat (2026-11-12). Därefter styr beroenden och prioritet (Must före Should före Could).
 
 Planen har fem delmål. Efter delmål 1 kan en kollega göra DS-01 utom arkivformatet, efter delmål 3 även DS-02, och efter delmål 5 är alla Must-krav byggda och version 1.0 kan gå till grind G6. Inga datum är satta; ordningen efter de närmaste funktionerna kan ändras när vi lär oss mer.
 
@@ -29,7 +29,7 @@ Det minsta som går hela vägen och prövar de största riskerna innan någon fu
 3. Webbläsarens nätverkslogg visar inga anrop efter laddning, och appen fungerar med nätverket avstängt.
 4. Starttiden från SharePoint är mätt och noterad (mål ≤ 3 s, NFR-PERF-004).
 
-Om punkt 2 inte går (SharePoint laddar ner filen i stället för att visa den) stannar vi och väljer reservväg med Ägaren innan funktionerna byggs.
+Ägaren har redan prövat att SharePoint kör HTML-sidor. Det som återstår att pröva är att appens innehållspolicy, inbakade skript och arbetstrådar fungerar tillsammans med SharePoints egna inställningar. Går det inte stannar vi och väljer lösning med Ägaren innan funktionerna byggs.
 
 ## 3. Epics och funktioner
 
@@ -80,7 +80,7 @@ Byggblock: Hjälp och om-sida, Skal.
 
 | Ordning | Delmål | Funktion | Varför här |
 | :-- | :-- | :-- | :-- |
-| 0 | M0 Skelett | Gångbart skelett | Prövar SharePoint, CSP, arbetstrådar och en-fil-bygget innan något annat byggs |
+| 0 | M0 Skelett | Gångbart skelett | Prövar CSP, arbetstrådar och en-fil-bygget på SharePoint innan något annat byggs |
 | 1 | M1 Ihopbakning | FEAT-001 | Kärnan i DS-01; prövar att sidor kopieras orörda (BG-009, ADR-004) |
 | 2 | M1 | FEAT-003 | Förhandsvisningen behövs för att användaren ska förstå resultatet (MF-01) och för all märkning |
 | 3 | M1 | FEAT-002 | Felbesked gör DS-04 begripligt innan fler testar |
@@ -170,7 +170,7 @@ Sätts upp i skelettet och gäller alla funktioner.
 
 | Risk eller antagande | Vad som händer om den slår in |
 | :-- | :-- |
-| SharePoint kör inte HTML-filen som sida, eller skickar en policy som stoppar arbetstrådarna. | Skelettet stannar; vi väljer reservväg (t.ex. öppna filen från en synkad mapp) innan FEAT-001. |
+| SharePoint skickar en egen innehållspolicy som stoppar appens arbetstrådar eller inbakade skript. (Att SharePoint kör HTML-sidor är prövat av Ägaren.) | Skelettet stannar; arbetstrådarna kan köras i huvudtråden till priset av sämre svarstid, eller så väljs annan lösning med Ägaren. |
 | Många verkliga filer klarar inte PDF/A-2b. | FEAT-009 kan behöva fler orsaker i förkontrollen; användarna sparar oftare som vanlig PDF. Prövas med Ägarens exempelfiler i M2. |
 | pdf-lib (Cantoo-forken) klarar inte vissa filer som pdf.js kan visa. | Felbesked vid sparande (FR-SPA-012); filerna samlas som testfall; i värsta fall ett nytt ADR om bibliotek. |
 | Tre kolumner ryms dåligt i 1 280 × 720. | Märkning kan bli utfällbar; avgörs i ui-design av FEAT-006. |

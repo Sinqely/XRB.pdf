@@ -42,11 +42,12 @@ finns)</p>
 <h2 id="1-översikt">1. Översikt</h2>
 <p>Planen bygger PDF-bagaren i tunna, genomgående funktioner, var och en
 från gränssnitt till sparad fil. Ordningen styrs först av
-<strong>risk</strong>: det mest osäkra prövas först, alltså att
-SharePoint kör HTML-filen (architecture.md avsnitt 11), att sidor kan
-kopieras orörda (ADR-004) och att arkivformatet PDF/A-2b går att
-uppfylla (ADR-005). Därefter styr beroenden och prioritet (Must före
-Should före Could).</p>
+<strong>risk</strong>: det mest osäkra prövas först, alltså att appens
+nätverksspärr och arbetstrådar fungerar när filen körs från SharePoint,
+att sidor kan kopieras orörda (ADR-004) och att arkivformatet PDF/A-2b
+går att uppfylla (ADR-005). Att SharePoint kör HTML-sidor har Ägaren
+redan prövat (2026-11-12). Därefter styr beroenden och prioritet (Must
+före Should före Could).</p>
 <p>Planen har fem delmål. Efter delmål 1 kan en kollega göra DS-01 utom
 arkivformatet, efter delmål 3 även DS-02, och efter delmål 5 är alla
 Must-krav byggda och version 1.0 kan gå till grind G6. Inga datum är
@@ -89,8 +90,10 @@ fungerar med nätverket avstängt.</li>
 <li>Starttiden från SharePoint är mätt och noterad (mål ≤ 3 s,
 NFR-PERF-004).</li>
 </ol>
-<p>Om punkt 2 inte går (SharePoint laddar ner filen i stället för att
-visa den) stannar vi och väljer reservväg med Ägaren innan funktionerna
+<p>Ägaren har redan prövat att SharePoint kör HTML-sidor. Det som
+återstår att pröva är att appens innehållspolicy, inbakade skript och
+arbetstrådar fungerar tillsammans med SharePoints egna inställningar.
+Går det inte stannar vi och väljer lösning med Ägaren innan funktionerna
 byggs.</p>
 <h2 id="3-epics-och-funktioner">3. Epics och funktioner</h2>
 <p>Funktions-ID:n (<code>FEAT-NNN</code>) är fasta och sätts i den
@@ -323,8 +326,8 @@ licenser och rapport)</td>
 <td style="text-align: left;">0</td>
 <td style="text-align: left;">M0 Skelett</td>
 <td style="text-align: left;">Gångbart skelett</td>
-<td style="text-align: left;">Prövar SharePoint, CSP, arbetstrådar och
-en-fil-bygget innan något annat byggs</td>
+<td style="text-align: left;">Prövar CSP, arbetstrådar och en-fil-bygget
+på SharePoint innan något annat byggs</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">1</td>
@@ -546,10 +549,12 @@ tillgänglighetsredogörelse.</label></li>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">SharePoint kör inte HTML-filen som sida,
-eller skickar en policy som stoppar arbetstrådarna.</td>
-<td style="text-align: left;">Skelettet stannar; vi väljer reservväg
-(t.ex. öppna filen från en synkad mapp) innan FEAT-001.</td>
+<td style="text-align: left;">SharePoint skickar en egen innehållspolicy
+som stoppar appens arbetstrådar eller inbakade skript. (Att SharePoint
+kör HTML-sidor är prövat av Ägaren.)</td>
+<td style="text-align: left;">Skelettet stannar; arbetstrådarna kan
+köras i huvudtråden till priset av sämre svarstid, eller så väljs annan
+lösning med Ägaren.</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Många verkliga filer klarar inte
