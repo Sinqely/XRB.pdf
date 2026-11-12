@@ -97,6 +97,8 @@ Det finns inget ogiltigt läge: otillåtna tecken tas bort och tomt namn ersätt
 
 ## Gemensamma beslut
 
+- **Visuell skiss:** `skiss.html` i samma mapp (statisk, med påhittade sidor) visar arbetsytan i mörkt och ljust tema. Den är vägledande för känslan; specen ovan gäller vid avvikelse. Skissen använder bara tokens och komponenter ur design.md, med dessa detaljer för ett modernare intryck: kolumnrubrikernas steg som siffror i runda märken ("1 Filer"), Lucide-ikoner i knapparna (ladda ned i "Baka ihop och spara", plus i "Lägg till alla sidor", moln-uppåt i släppytan, sol/måne för tema), en bock i märket "Vald", en bock framför statusraden och en liten logotyp (ikonen `file-plus` på `--ui-primar`) i sidhuvudet.
+
 - **Ikoner:** Lucide (`trash-2`, `chevron-left`, `chevron-right`, `x`) som inbakade SVG med `currentColor`, 20 px, `aria-hidden="true"`; namnet sitter på knappen. Lucide har ISC-licens, som finns på vitlistan. Ikonerna kopieras in som SVG-filer i `src/resurser/ikoner/` med licensfil, inget nytt npm-beroende.
 - **Meddelanden:** alla texter i `src/karna/texter.ts`. Nya texter: "Dra in fler PDF-filer här", "Släpp för att läsa in", "Lägg till alla sidor", "Ta bort ur resultatet", "Ta bort <fil>", "Välj minst en sida först.", "Alla sidor finns redan i resultatet.", "Inga sidor ur dokumentet finns i resultatet.", "Sidan kunde inte visas", "Förhandsvisningen kommer i nästa version.", dialogtexterna ovan och meddelandena i technical-design.md §3.1.
 - **Tangentbord i hela flödet:** Tab-ordning sidhuvud → släppyta → per dokument (Ta bort fil, Lägg till alla, Ta bort ur resultatet, miniatyrerna i ordning) → resultatraden (sidorna, och inom varje sida dess knappar) → statusyta.
