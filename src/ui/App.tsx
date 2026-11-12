@@ -12,7 +12,7 @@ import { Forhandsvisning } from './Forhandsvisning'
 import { SparaDialog } from './SparaDialog'
 import { Ikon } from './ikoner'
 import { Bekrafta } from './Bekrafta'
-import { sidmattFor, stada, useMiniatyrer } from './dokumentregister'
+import { sidmattFor, stada, useSidmatt } from './dokumentregister'
 import { Markning } from './Markning'
 import { StampelPanel } from './StampelPanel'
 import { Overlagg } from './Overlagg'
@@ -169,7 +169,7 @@ export function App() {
   if (aktivPlats >= 0) senasteAktivPlats.current = aktivPlats
   const aktivId = aktivPlats >= 0 ? aktivOnskad : (yta.resultat[Math.min(senasteAktivPlats.current, yta.resultat.length - 1)]?.id ?? null)
   // Sidornas mått för layoutmodellen: största storlek på aktiv sida och marginalvarning på alla sidor (FR-PLC-010).
-  useMiniatyrer()
+  useSidmatt()
   const mattFor = (r: Arbetsyta['resultat'][number]) => sidmattFor(r.dokumentId, r.sidindex, r.vridning)
   const aktivSida = yta.resultat.find((r) => r.id === aktivId)
   const aktivMatt = aktivSida ? mattFor(aktivSida) : null

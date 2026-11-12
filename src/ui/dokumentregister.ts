@@ -10,6 +10,8 @@ const pdfer = new Map<string, PDFDocumentProxy>()
 const bilder = new Map<string, (Miniatyr | null)[]>()
 const matt = new Map<string, Sidmatt | 'hamtas'>()
 const lyssnare = new Set<() => void>()
+/** Egna lyssnare för sidmått, så att hela appen inte ritas om för varje miniatyr. */
+const mattLyssnare = new Set<() => void>()
 const meddela = () => lyssnare.forEach((l) => l())
 
 export function registrera(dokId: string, pdf: PDFDocumentProxy, sidantal: number) {
@@ -63,7 +65,7 @@ export function stada(behall: Set<string>) {
 
 /**
  * Sidans mått i visad riktning, för layoutmodellen (marginalvarningar och storlek på alla sidor).
- * Ger null första gången och ritar om komponenter med useMiniatyrer när måttet är hämtat.
+ * Ger null första gången och ritar om komponenter med useSidmatt när måttet är hämtat.
  */
 export function sidmattFor(dokId: string, sidindex: number, vridning: number): Sidmatt | null {
   const k = `${dokId}:${sidindex}:${vridning}`
@@ -76,10 +78,22 @@ export function sidmattFor(dokId: string, sidindex: number, vridning: number): S
       (v) => {
         if (pdfer.get(dokId) !== pdf) return
         matt.set(k, v)
-        meddela()
+        mattLyssnare.forEach((l) => l())
       },
       () => matt.delete(k),
     )
   }
   return null
+}
+
+/** Ritar om komponenten när ett sidmått har hämtats. */
+export function useSidmatt() {
+  const [, satt] = useState(0)
+  useEffect(() => {
+    const l = () => satt((n) => n + 1)
+    mattLyssnare.add(l)
+    return () => {
+      mattLyssnare.delete(l)
+    }
+  }, [])
 }

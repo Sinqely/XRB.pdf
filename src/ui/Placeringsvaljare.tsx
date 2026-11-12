@@ -2,6 +2,7 @@
 // och fältet "Avstånd till kant" (FR-PLC-004, FR-PLC-005). Används av stämpel och etikett.
 import { useRef } from 'preact/hooks'
 import { avstand, forval, MAX_AVSTAND_MM } from '../karna/layout'
+import { SifferFalt } from './SifferFalt'
 import { texter } from '../karna/texter'
 import type { Ankare, Placering } from '../karna/typer'
 
@@ -57,19 +58,7 @@ export function Placeringsvaljare({ id, placering, satt }: Props) {
       {placering.egen && <p class="dampad liten">{texter.egenPlacering}</p>}
       <label class="falt">
         <span class="faltetikett">{texter.avstandKant}</span>
-        <input
-          class="textfalt sifferfalt"
-          type="number"
-          min={0}
-          max={MAX_AVSTAND_MM}
-          step={1}
-          value={avst}
-          aria-describedby={`${id}-avstand-hjalp`}
-          onChange={(e) => {
-            const v = Number((e.target as HTMLInputElement).value)
-            if (Number.isFinite(v)) satt(forval(placering.ankare, v))
-          }}
-        />
+        <SifferFalt min={0} max={MAX_AVSTAND_MM} varde={avst} aria-describedby={`${id}-avstand-hjalp`} satt={(v) => satt(forval(placering.ankare, v))} />
         <span id={`${id}-avstand-hjalp`} class="dampad liten">
           {texter.avstandHjalp}
         </span>

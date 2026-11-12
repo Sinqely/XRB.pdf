@@ -3,6 +3,7 @@ import { useMemo, useRef, useState } from 'preact/hooks'
 import { forvaldStampelMm, MIN_STAMPEL_MM, storstaStampelMm, type Matt } from '../karna/layout'
 import { sattAllaSidor, sattOpacitet, sattPlacering, sattStampelbild, sattStampelbredd, sidorMed, taBortStampel } from '../karna/markning'
 import type { Andring } from '../karna/arbetsyta'
+import { SifferFalt } from './SifferFalt'
 import { texter } from '../karna/texter'
 import type { Arbetsyta } from '../karna/typer'
 import { lasBild } from './bildinlasning'
@@ -124,7 +125,7 @@ export function StampelPanel({ yta, andra, aktivId, aktivMatt, naraKant, status 
             <span class="faltetikett">{texter.opacitet}</span>
             <span class="reglage">
               <input type="range" min={0} max={100} step={1} value={s.opacitet} aria-label={texter.opacitet} onChange={(e) => andra((nu) => sattOpacitet(nu, Number((e.target as HTMLInputElement).value)))} />
-              <input class="textfalt sifferfalt" type="number" min={0} max={100} step={1} value={s.opacitet} aria-label={texter.opacitet} onChange={(e) => andra((nu) => sattOpacitet(nu, Number((e.target as HTMLInputElement).value)))} />
+              <SifferFalt min={0} max={100} varde={s.opacitet} aria-label={texter.opacitet} satt={(v) => andra((nu) => sattOpacitet(nu, v))} />
             </span>
           </label>
           <div class="falt">
@@ -135,20 +136,7 @@ export function StampelPanel({ yta, andra, aktivId, aktivMatt, naraKant, status 
               <button type="button" class="ikonknapp" aria-label={texter.mindre} title={texter.mindre} onClick={() => bredd(s.breddMm - 5)}>
                 <Ikon namn="minus" />
               </button>
-              <input
-                id="stampel-bredd"
-                class="textfalt sifferfalt"
-                type="number"
-                min={MIN_STAMPEL_MM}
-                max={storsta}
-                step={1}
-                value={s.breddMm}
-                aria-describedby="stampel-bredd-hjalp"
-                onChange={(e) => {
-                  const v = Number((e.target as HTMLInputElement).value)
-                  if (Number.isFinite(v)) bredd(v)
-                }}
-              />
+              <SifferFalt id="stampel-bredd" min={MIN_STAMPEL_MM} max={storsta} varde={s.breddMm} aria-describedby="stampel-bredd-hjalp" satt={bredd} />
               <button type="button" class="ikonknapp" aria-label={texter.storre} title={texter.storre} onClick={() => bredd(s.breddMm + 5)}>
                 <Ikon namn="plus" />
               </button>

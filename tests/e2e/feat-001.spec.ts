@@ -92,6 +92,8 @@ test('DS-01 med bara tangentbord (AC-6, AC-9, AC-12, AC-15)', async ({ page }) =
   // Fokus följer den flyttade sidan
   await expect(page.locator(':focus')).toHaveAttribute('aria-label', /ur underskrift\.pdf, plats 2 av 3$/)
   await page.keyboard.press('Alt+ArrowLeft')
+  await expect(status(page)).toHaveText('Sida 1 ur underskrift.pdf flyttad till plats 1.')
+  await expect(page.locator(':focus')).toHaveAttribute('aria-label', /ur underskrift\.pdf, plats 1 av 3$/)
   await page.keyboard.press('Alt+ArrowLeft')
   await expect(status(page)).toHaveText('Sidan är redan först.')
   await page.keyboard.press('Alt+ArrowRight')

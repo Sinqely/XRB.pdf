@@ -2,6 +2,7 @@
 import type { Andring } from '../karna/arbetsyta'
 import { MAX_STORLEK_PT, MAX_TECKEN, MIN_STORLEK_PT, saknadeTecken } from '../karna/etikett'
 import { andraEtikett, nyEtikett, sattAllaSidor, sattPlacering, sidorMed, taBortEtikett } from '../karna/markning'
+import { SifferFalt } from './SifferFalt'
 import { texter } from '../karna/texter'
 import type { Arbetsyta, Typsnitt } from '../karna/typer'
 import { Fargval } from './Fargval'
@@ -76,16 +77,7 @@ export function EtikettPanel({ yta, andra, andraText, aktivId, naraKant, overlap
       )}
       <label class="falt">
         <span class="faltetikett">{texter.textstorlek}</span>
-        <input
-          class="textfalt sifferfalt"
-          type="number"
-          min={MIN_STORLEK_PT}
-          max={MAX_STORLEK_PT}
-          step={1}
-          value={e.storlekPt}
-          aria-describedby="etikett-storlek-hjalp"
-          onChange={(ev) => andra((nu) => andraEtikett(nu, { storlekPt: Number((ev.target as HTMLInputElement).value) }))}
-        />
+        <SifferFalt min={MIN_STORLEK_PT} max={MAX_STORLEK_PT} varde={e.storlekPt} aria-describedby="etikett-storlek-hjalp" satt={(v) => andra((nu) => andraEtikett(nu, { storlekPt: v }))} />
         <span id="etikett-storlek-hjalp" class="dampad liten">
           {texter.textstorlekHjalp}
         </span>

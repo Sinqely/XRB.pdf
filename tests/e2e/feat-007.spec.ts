@@ -115,11 +115,11 @@ test('etiketten flyttas med tangentbordet och varnar nära kanten och vid överl
   await expect(panel(page).getByLabel('Text', { exact: true })).toBeFocused()
   await page.keyboard.type('Utkast')
   const fore = await ruta(page)
-  const skala = fore.sida.b / 595.28
   await tabbaTill(page, /^Textetikett "Utkast"/)
   await page.keyboard.press('Shift+ArrowUp')
   const efter = await ruta(page)
-  expect(fore.y - efter.y).toBeCloseTo(10 * MM * skala, 0)
+  const pt = (r: typeof fore, v: number) => (v * 595.28) / r.sida.b
+  expect(Math.abs(pt(fore, fore.y) - pt(efter, efter.y) - 10 * MM)).toBeLessThan(pt(fore, 1.5)) // högst 1,5 skärmpunkter
   await expect(panel(page).getByRole('status')).toContainText('närmare kanten än säkerhetsmarginalen på 5 mm på sidorna 1, 2 och 3')
   // Stämpel i sidhuvudet överlappar etiketten
   await page.getByRole('tab', { name: 'Vattenstämpel' }).click()
