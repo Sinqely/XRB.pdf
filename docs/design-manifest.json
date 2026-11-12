@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "policy": {
+    "fallback": "code-native",
+    "note": "Inget designverktyg kopplat; skärmar som saknas specas för kod. Kan ändras per skärm på Ägarens begäran."
+  },
+  "screens": {
+    "SCR-APP-001": {
+      "name": "Arbetsyta",
+      "surface": "APP",
+      "feature": "FEAT-001",
+      "strategy": "code-native",
+      "source": { "tool": null, "locator": "features/FEAT-001-baka-ihop/ui-design.md#scr-app-001--arbetsyta" },
+      "states": {
+        "covered": ["default", "startläge", "läser in", "med filer utan resultat", "med resultat", "tomt resultat", "fel i område", "ritfel för en sida"],
+        "gaps": ["osparat arbete vid stängning (FEAT-005)", "förhandsvisning (FEAT-003)", "märkning (FEAT-006, FEAT-007)", "startlägets tre steg (FEAT-010)"],
+        "supplements": []
+      },
+      "contract_bindings": ["karna/arbetsyta.ts (alla operationer)", "ui/inlasning.ts", "las/miniatyrer.ts via ui/dokumentregister.ts"],
+      "conformance": { "result": "pass", "corrections": [], "escalations": ["Tillägg i design.md: släppmarkering i resultatrad (inte blockerande)"] },
+      "status": "designed",
+      "designed_at": "2026-11-12"
+    },
+    "SCR-APP-005": {
+      "name": "Spara (dialog)",
+      "surface": "APP",
+      "feature": "FEAT-001",
+      "strategy": "code-native",
+      "source": { "tool": null, "locator": "features/FEAT-001-baka-ihop/ui-design.md#scr-app-005--spara-dialog" },
+      "states": {
+        "covered": ["redo", "sparar", "sparad", "fel"],
+        "gaps": ["kontrollerar och formatval (FEAT-009)"],
+        "supplements": []
+      },
+      "contract_bindings": ["ui/spara.ts: foreslaFilnamn, stadaFilnamn, sparaResultat", "bygg/bygg-klient.ts: bygg"],
+      "conformance": { "result": "pass", "corrections": [], "escalations": [] },
+      "status": "designed",
+      "designed_at": "2026-11-12"
+    }
+  }
+}

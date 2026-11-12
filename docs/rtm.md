@@ -5,11 +5,11 @@
 
 | Req ID | Requirement (short) | Priority | Status | Source | Use case(s) | Design ref | Plan ref | Test ref |
 | :----- | :------------------ | :------- | :----- | :----- | :---------- | :--------- | :------- | :------- |
-| FR-FIL-001 | Läsa in de valda filerna till arbetsytan | Must | Active | BH-001 | UC-001 | features/FEAT-001-baka-ihop/technical-design.md | FEAT-001 | _TBD_ |
-| FR-FIL-002 | Läsa in filerna | Must | Active | BH-001, FV-001 | UC-001 | ADR-003, features/FEAT-001-baka-ihop/technical-design.md | FEAT-001 | _TBD_ |
-| FR-FIL-003 | Lägga till de nya filerna och behålla de befintliga filerna och användarens val oföränd… | Must | Active | BH-001 | UC-001 | features/FEAT-001-baka-ihop/technical-design.md | FEAT-001 | _TBD_ |
-| FR-FIL-004 | Visa filens namn och antal sidor på arbetsytan | Must | Active | BH-002 | UC-001 | features/FEAT-001-baka-ihop/technical-design.md | FEAT-001 | _TBD_ |
-| FR-FIL-005 | Ta bort filen och alla dess sidor från arbetsytan, resultatet och förhandsvisningen | Must | Active | BH-001, BH-003 | UC-001 | features/FEAT-001-baka-ihop/technical-design.md | FEAT-001 | _TBD_ |
+| FR-FIL-001 | Läsa in de valda filerna till arbetsytan | Must | Active | BH-001 | UC-001 | features/FEAT-001-baka-ihop/technical-design.md, features/FEAT-001-baka-ihop/ui-design.md | FEAT-001 | _TBD_ |
+| FR-FIL-002 | Läsa in filerna | Must | Active | BH-001, FV-001 | UC-001 | ADR-003, features/FEAT-001-baka-ihop/technical-design.md, features/FEAT-001-baka-ihop/ui-design.md | FEAT-001 | _TBD_ |
+| FR-FIL-003 | Lägga till de nya filerna och behålla de befintliga filerna och användarens val oföränd… | Must | Active | BH-001 | UC-001 | features/FEAT-001-baka-ihop/technical-design.md, features/FEAT-001-baka-ihop/ui-design.md | FEAT-001 | _TBD_ |
+| FR-FIL-004 | Visa filens namn och antal sidor på arbetsytan | Must | Active | BH-002 | UC-001 | features/FEAT-001-baka-ihop/technical-design.md, features/FEAT-001-baka-ihop/ui-design.md | FEAT-001 | _TBD_ |
+| FR-FIL-005 | Ta bort filen och alla dess sidor från arbetsytan, resultatet och förhandsvisningen | Must | Active | BH-001, BH-003 | UC-001 | features/FEAT-001-baka-ihop/technical-design.md, features/FEAT-001-baka-ihop/ui-design.md | FEAT-001 | _TBD_ |
 | FR-FIL-006 | Avvisa filen och visa ett meddelande som namnger filen och förklarar att bara PDF-filer… | Must | Active | DS-04, BH-020, FV-001 | UC-001 | _TBD_ | FEAT-002 | _TBD_ |
 | FR-FIL-007 | Avvisa filen, visa ett meddelande som namnger filen och orsaken, och behålla övriga fil… | Must | Active | DS-04, BH-020 | UC-001 | ADR-003 | FEAT-002 | _TBD_ |
 | FR-FIL-008 | Avvisa filen och visa ett meddelande som namnger filen och förklarar att lösenordsskydd… | Must | Active | DS-04, BH-020 | UC-001 | ADR-003 | FEAT-002 | _TBD_ |
@@ -19,20 +19,20 @@
 | FR-FIL-012 | Visa varje inläsning som ett separat dokument | Should | Active | BH-001 | UC-001 | _TBD_ | FEAT-002 | _TBD_ |
 | FR-FIL-013 | Meddela utfallet i ett statusmeddelande som skärmläsare läser upp | Must | Active | BG-004 | UC-001 | _TBD_ | FEAT-002 | _TBD_ |
 | FR-FIL-014 | Låta användaren skriva in lösenordet för att läsa in filen | Won't | Active | DS-04, BH-020 | UC-001 | _TBD_ | _TBD_ | _TBD_ |
-| FR-SID-001 | Visa filens sidor som miniatyrer, var och en märkt med dokumentets namn och sidnummer | Must | Active | BH-002 | UC-001 | ADR-003, features/FEAT-001-baka-ihop/technical-design.md | FEAT-001 | _TBD_ |
-| FR-SID-002 | Lägga till sidan sist i resultatet | Must | Active | BH-001 | UC-002 | features/FEAT-001-baka-ihop/technical-design.md | FEAT-001 | _TBD_ |
-| FR-SID-003 | Ta bort sidan ur resultatet | Must | Active | BH-001 | UC-002 | features/FEAT-001-baka-ihop/technical-design.md | FEAT-001 | _TBD_ |
-| FR-SID-004 | Lägga till dokumentets ännu inte valda sidor sist i resultatet i dokumentets ordning | Must | Active | BH-001, FV-001 | UC-002 | features/FEAT-001-baka-ihop/technical-design.md | FEAT-001 | _TBD_ |
-| FR-SID-005 | Ta bort dokumentets alla sidor ur resultatet | Must | Active | BH-001 | UC-002 | features/FEAT-001-baka-ihop/technical-design.md | FEAT-001 | _TBD_ |
-| FR-SID-006 | Visa resultatets sidor i en egen rad i resultatordning, där varje sida är märkt med urs… | Must | Active | BH-002, MF-01 | UC-002 | features/FEAT-001-baka-ihop/technical-design.md | FEAT-001 | _TBD_ |
-| FR-SID-007 | Flytta sidan dit | Must | Active | BH-001 | UC-002 | ADR-008, features/FEAT-001-baka-ihop/technical-design.md | FEAT-001 | _TBD_ |
-| FR-SID-008 | Flytta sidan ett steg i vald riktning | Must | Active | BG-004 | UC-002 | ADR-008, features/FEAT-001-baka-ihop/technical-design.md | FEAT-001 | _TBD_ |
-| FR-SID-009 | Ta bort sidan ur resultatet | Must | Active | BH-001 | UC-002 | features/FEAT-001-baka-ihop/technical-design.md | FEAT-001 | _TBD_ |
+| FR-SID-001 | Visa filens sidor som miniatyrer, var och en märkt med dokumentets namn och sidnummer | Must | Active | BH-002 | UC-001 | ADR-003, features/FEAT-001-baka-ihop/technical-design.md, features/FEAT-001-baka-ihop/ui-design.md | FEAT-001 | _TBD_ |
+| FR-SID-002 | Lägga till sidan sist i resultatet | Must | Active | BH-001 | UC-002 | features/FEAT-001-baka-ihop/technical-design.md, features/FEAT-001-baka-ihop/ui-design.md | FEAT-001 | _TBD_ |
+| FR-SID-003 | Ta bort sidan ur resultatet | Must | Active | BH-001 | UC-002 | features/FEAT-001-baka-ihop/technical-design.md, features/FEAT-001-baka-ihop/ui-design.md | FEAT-001 | _TBD_ |
+| FR-SID-004 | Lägga till dokumentets ännu inte valda sidor sist i resultatet i dokumentets ordning | Must | Active | BH-001, FV-001 | UC-002 | features/FEAT-001-baka-ihop/technical-design.md, features/FEAT-001-baka-ihop/ui-design.md | FEAT-001 | _TBD_ |
+| FR-SID-005 | Ta bort dokumentets alla sidor ur resultatet | Must | Active | BH-001 | UC-002 | features/FEAT-001-baka-ihop/technical-design.md, features/FEAT-001-baka-ihop/ui-design.md | FEAT-001 | _TBD_ |
+| FR-SID-006 | Visa resultatets sidor i en egen rad i resultatordning, där varje sida är märkt med urs… | Must | Active | BH-002, MF-01 | UC-002 | features/FEAT-001-baka-ihop/technical-design.md, features/FEAT-001-baka-ihop/ui-design.md | FEAT-001 | _TBD_ |
+| FR-SID-007 | Flytta sidan dit | Must | Active | BH-001 | UC-002 | ADR-008, features/FEAT-001-baka-ihop/technical-design.md, features/FEAT-001-baka-ihop/ui-design.md | FEAT-001 | _TBD_ |
+| FR-SID-008 | Flytta sidan ett steg i vald riktning | Must | Active | BG-004 | UC-002 | ADR-008, features/FEAT-001-baka-ihop/technical-design.md, features/FEAT-001-baka-ihop/ui-design.md | FEAT-001 | _TBD_ |
+| FR-SID-009 | Ta bort sidan ur resultatet | Must | Active | BH-001 | UC-002 | features/FEAT-001-baka-ihop/technical-design.md, features/FEAT-001-baka-ihop/ui-design.md | FEAT-001 | _TBD_ |
 | FR-SID-010 | Vrida sidan 90 grader i vald riktning i resultatet | Should | Active | BH-014, DS-01 | UC-002 | ADR-004 | FEAT-004 | _TBD_ |
-| FR-SID-011 | Visa antalet sidor i resultatet | Must | Active | BH-002, FV-001 | UC-002 | features/FEAT-001-baka-ihop/technical-design.md | FEAT-001 | _TBD_ |
+| FR-SID-011 | Visa antalet sidor i resultatet | Must | Active | BH-002, FV-001 | UC-002 | features/FEAT-001-baka-ihop/technical-design.md, features/FEAT-001-baka-ihop/ui-design.md | FEAT-001 | _TBD_ |
 | FR-SID-012 | Visa sidan i större format tills användaren stänger visningen | Should | Active | BH-002, DS-01 | UC-002 | _TBD_ | FEAT-004 | _TBD_ |
 | FR-SID-013 | Lägga till ytterligare en förekomst av sidan i resultatet | Could | Active | BH-001 | UC-002 | _TBD_ | FEAT-004 | _TBD_ |
-| FR-SID-014 | Meddela ändringen i ett statusmeddelande som skärmläsare läser upp | Must | Active | BG-004 | UC-002 | features/FEAT-001-baka-ihop/technical-design.md | FEAT-001 | _TBD_ |
+| FR-SID-014 | Meddela ändringen i ett statusmeddelande som skärmläsare läser upp | Must | Active | BG-004 | UC-002 | features/FEAT-001-baka-ihop/technical-design.md, features/FEAT-001-baka-ihop/ui-design.md | FEAT-001 | _TBD_ |
 | FR-FHV-001 | Visa en förhandsvisning av en resultatsida i taget bredvid sidvalet | Must | Active | BH-003 | UC-002 | ADR-003 | FEAT-003 | _TBD_ |
 | FR-FHV-002 | Visa den resultatsidan | Must | Active | BH-003 | UC-002 | _TBD_ | FEAT-003 | _TBD_ |
 | FR-FHV-003 | Visa sidans plats i resultatet i formen "Sida N av M" | Must | Active | BH-002, BH-003 | UC-002 | _TBD_ | FEAT-003 | _TBD_ |
@@ -99,8 +99,8 @@
 | FR-DOL-013 | Utelämna kommentarer, formulärfält och annan information som hör till sidor som inte in… | Must | Active | BH-018, OM-05 | UC-006 | ADR-004 | FEAT-008 | _TBD_ |
 | FR-DOL-014 | Visa "Ingen dold information hittades" i panelen | Must | Active | BH-018, FV-001 | UC-006 | _TBD_ | FEAT-008 | _TBD_ |
 | FR-DOL-015 | Behålla bokmärken som pekar på sidor i resultatet och låta dem peka på sidornas nya plats | Could | Active | BH-018 | UC-006 | _TBD_ | FEAT-008 | _TBD_ |
-| FR-SPA-001 | Skapa resultatfilen och erbjuda den för sparande på användarens dator via webbläsarens… | Must | Active | BH-001, BG-001 | UC-007 | ADR-001, ADR-004, features/FEAT-001-baka-ihop/technical-design.md | FEAT-001 | _TBD_ |
-| FR-SPA-002 | Använda det som namn på den sparade filen, med ändelsen .pdf | Must | Active | FV-001 | UC-007 | features/FEAT-001-baka-ihop/technical-design.md | FEAT-001 | _TBD_ |
+| FR-SPA-001 | Skapa resultatfilen och erbjuda den för sparande på användarens dator via webbläsarens… | Must | Active | BH-001, BG-001 | UC-007 | ADR-001, ADR-004, features/FEAT-001-baka-ihop/technical-design.md, features/FEAT-001-baka-ihop/ui-design.md | FEAT-001 | _TBD_ |
+| FR-SPA-002 | Använda det som namn på den sparade filen, med ändelsen .pdf | Must | Active | FV-001 | UC-007 | features/FEAT-001-baka-ihop/technical-design.md, features/FEAT-001-baka-ihop/ui-design.md | FEAT-001 | _TBD_ |
 | FR-SPA-003 | Föreslå filnamnet "<första dokumentets namn>-ihopbakad.pdf" | Should | Active | FV-001 | UC-007 | _TBD_ | FEAT-009 | _TBD_ |
 | FR-SPA-004 | Skapa filen som PDF/A-2b | Must | Active | BH-017 | UC-007 | ADR-005 | FEAT-009 | _TBD_ |
 | FR-SPA-005 | Om någon sida i resultatet hindrar att filen blir giltig PDF/A-2b så ska appen, innan f… | Must | Active | BH-017, BG-009 | UC-007 | ADR-005 | FEAT-009 | _TBD_ |
@@ -108,10 +108,10 @@
 | FR-SPA-007 | Kopiera varje sidas innehåll till resultatfilen utan att omvandla text till bild eller… | Must | Active | BG-009, BH-006 | UC-007 | ADR-004, features/FEAT-001-baka-ihop/technical-design.md | FEAT-001 | _TBD_ |
 | FR-SPA-008 | Lägga vattenstämpel och textetikett ovanpå sidornas innehåll i resultatfilen med samma… | Must | Active | BH-003, MF-02 | UC-007 | ADR-004, ADR-006 | FEAT-006, FEAT-007 | _TBD_ |
 | FR-SPA-009 | Skapa resultatfilen utan kryptering, lösenord eller behörighetsbegränsningar | Must | Active | BH-011 | UC-007 | ADR-004, features/FEAT-001-baka-ihop/technical-design.md | FEAT-001 | _TBD_ |
-| FR-SPA-010 | Visa "Baka ihop och spara" som inaktiv tillsammans med en förklaring av varför | Must | Active | FV-001 | UC-007 | features/FEAT-001-baka-ihop/technical-design.md | FEAT-001 | _TBD_ |
-| FR-SPA-011 | Visa en väntindikator | Must | Active | FV-001 | UC-007 | features/FEAT-001-baka-ihop/technical-design.md | FEAT-001 | _TBD_ |
-| FR-SPA-012 | Visa ett felmeddelande som förklarar vad som hände och behålla arbetsytan oförändrad | Must | Active | DS-04, BH-020 | UC-007 | features/FEAT-001-baka-ihop/technical-design.md | FEAT-001 | _TBD_ |
-| FR-SPA-013 | Behålla arbetsytan så att användaren kan ändra och spara igen | Must | Active | FV-001 | UC-007 | features/FEAT-001-baka-ihop/technical-design.md | FEAT-001 | _TBD_ |
+| FR-SPA-010 | Visa "Baka ihop och spara" som inaktiv tillsammans med en förklaring av varför | Must | Active | FV-001 | UC-007 | features/FEAT-001-baka-ihop/technical-design.md, features/FEAT-001-baka-ihop/ui-design.md | FEAT-001 | _TBD_ |
+| FR-SPA-011 | Visa en väntindikator | Must | Active | FV-001 | UC-007 | features/FEAT-001-baka-ihop/technical-design.md, features/FEAT-001-baka-ihop/ui-design.md | FEAT-001 | _TBD_ |
+| FR-SPA-012 | Visa ett felmeddelande som förklarar vad som hände och behålla arbetsytan oförändrad | Must | Active | DS-04, BH-020 | UC-007 | features/FEAT-001-baka-ihop/technical-design.md, features/FEAT-001-baka-ihop/ui-design.md | FEAT-001 | _TBD_ |
+| FR-SPA-013 | Behålla arbetsytan så att användaren kan ändra och spara igen | Must | Active | FV-001 | UC-007 | features/FEAT-001-baka-ihop/technical-design.md, features/FEAT-001-baka-ihop/ui-design.md | FEAT-001 | _TBD_ |
 | FR-ALM-001 | Återställa den senaste ändringen av sidval, sidordning, rotation, vattenstämpel, textet… | Must | Active | FV-001 | UC-008 | ADR-008 | FEAT-005 | _TBD_ |
 | FR-ALM-002 | Göra om den senast ångrade ändringen | Must | Active | FV-001 | UC-008 | ADR-008 | FEAT-005 | _TBD_ |
 | FR-ALM-003 | Be om bekräftelse och, om användaren bekräftar, tömma arbetsytan helt | Must | Active | FV-001 | UC-008 | ADR-008 | FEAT-005 | _TBD_ |
