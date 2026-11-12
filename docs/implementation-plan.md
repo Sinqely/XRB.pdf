@@ -1,6 +1,6 @@
 # Byggplan: PDF-bagaren
 
-> Status: Draft · Senast uppdaterad: 2026-11-12
+> Status: Approved (G3, 2026-11-12) · Version 1.0 · Senast uppdaterad: 2026-11-12
 > Underlag: [srs.md](srs.md) v1.0 · [use-cases.md](use-cases.md) v1.0 · [architecture.md](architecture.md) v1.0 · [ux-foundations.md](ux-foundations.md) v1.0 (alla fyra finns)
 
 ## 1. Översikt
