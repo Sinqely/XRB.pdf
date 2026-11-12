@@ -161,6 +161,23 @@ Kraven skrivs i EARS: *När* (händelse), *Medan* (tillstånd), *Där* (valbar f
 | FR-TXT-014 | Medan "alla sidor" är valt för textetiketten, när en sida läggs till i resultatet, ska appen lägga etiketten även på den nya sidan. | Must | Active | Källa: BH-005, BG-003. |
 | FR-TXT-015 | Där kontrastvarning ingår ska appen varna när textfärg och bakgrundsfärg har för låg kontrast. | Won't | Active | Källa: BH-012. Bortvald av ägaren 2026-11-12. |
 
+#### 3.1.6 PLC – Placering av vattenstämpel och textetikett
+
+| ID | Requirement | Priority | Status | Notes / rules |
+| :-- | :---------- | :------- | :----- | :------------ |
+| FR-PLC-001 | Appen ska ge vattenstämpeln och textetiketten var sin placering, som gäller på alla sidor där respektive objekt ligger. | Must | Active | Källa: BG-003. |
+| FR-PLC-002 | När användaren drar vattenstämpeln eller textetiketten i förhandsvisningen och släpper den ska appen flytta objektet dit. | Must | Active | Källa: BH-009. |
+| FR-PLC-003 | Medan vattenstämpeln eller textetiketten har fokus, när användaren trycker på en piltangent, ska appen flytta objektet 1 mm i pilens riktning, eller 10 mm om Skift hålls ned. | Must | Active | Källa: BH-009, BG-004. |
+| FR-PLC-004 | När användaren väljer en färdig placering (övre vänstra, övre högra, nedre vänstra eller nedre högra hörnet, centrerat i sidhuvudet eller centrerat i sidfoten) ska appen placera objektet där med valt avstånd till sidkanten. | Must | Active | Källa: BH-019. |
+| FR-PLC-005 | När användaren anger ett avstånd till sidkanten mellan 0 och 50 mm ska appen placera objektet med det avståndet från den kant eller det hörn som den färdiga placeringen utgår från. | Must | Active | Källa: BH-019. Förval 10 mm. |
+| FR-PLC-006 | När en textetikett läggs till ska appen placera den centrerat i sidhuvudet med 10 mm avstånd till sidkanten. | Must | Active | Källa: BH-019, FV-001 (testet använder centrerat sidhuvud). |
+| FR-PLC-007 | När en vattenstämpel läggs till ska appen placera den i nedre högra hörnet med 10 mm avstånd till sidkanterna. | Must | Active | Källa: BH-019. |
+| FR-PLC-008 | Appen ska placera vattenstämpel och textetikett på sidor med olika storlek eller riktning så att avståndet till placeringens referenskant eller referenshörn är detsamma på alla sidor. | Must | Active | Källa: BG-003, BH-009. Vridna sidor räknas i sin visade riktning. |
+| FR-PLC-009 | Medan en vattenstämpel eller textetikett finns ska appen visa en säkerhetsmarginal på 5 mm från sidkanten i förhandsvisningen. | Must | Active | Källa: BH-010. Marginalen syns bara i förhandsvisningen, inte i den sparade filen. |
+| FR-PLC-010 | Om vattenstämpeln eller textetiketten hamnar inom säkerhetsmarginalen på någon av sina sidor så ska appen visa en varning som anger vilka sidor det gäller. | Must | Active | Källa: BH-010. Varningen läses upp av skärmläsare (BG-004). |
+| FR-PLC-011 | Om en flytt, storleksändring eller ändrad text skulle göra att vattenstämpeln eller textetiketten hamnar helt eller delvis utanför någon av sina sidor så ska appen hålla objektet innanför sidkanten. | Must | Active | Källa: BH-010. |
+| FR-PLC-012 | Om vattenstämpeln och textetiketten överlappar varandra på någon sida så ska appen visa en varning som anger vilka sidor det gäller. | Could | Active | Källa: BH-009. |
+
 ### 3.2 External interface requirements
 *(fas 4)*
 
