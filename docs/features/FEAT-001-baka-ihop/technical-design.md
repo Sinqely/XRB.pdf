@@ -3,7 +3,7 @@
 > Funktion ur: docs/implementation-plan.md · Epik: E1 Arbetsyta och ihopbakning
 > Implementerar: FR-FIL-001..005, FR-SID-001..009, FR-SID-011, FR-SID-014, FR-SPA-001, FR-SPA-002, FR-SPA-007, FR-SPA-009..013 · Tvärgående: FR-ALM-006..008, FR-DOK-010
 > Realiserar: UC-001, UC-002, UC-007 (utan dold information och arkivformat) · Skärmar: SCR-APP-001, SCR-APP-005 (delvis), designas i ui-design.md
-> Status: Draft · Datum: 2026-11-12
+> Status: Verified (G4 godkänd 2026-11-12) · Datum: 2026-11-12
 
 ## 1. Syfte
 
