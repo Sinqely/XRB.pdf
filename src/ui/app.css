@@ -192,3 +192,19 @@ p, h2, h3, ul, ol { margin: 0; }
 .egenfarg { display: inline-flex; gap: var(--space-2); align-items: center; cursor: pointer; }
 .egenfarg input { width: 40px; height: var(--storlek-kontroll-min); padding: 0; border: var(--storlek-kant-bredd) solid var(--ui-kant); border-radius: var(--radie-kontroll); background: transparent; }
 .egenfarg.vald input { border-width: var(--storlek-fokus-bredd); border-color: var(--ui-text); }
+
+/* Dold information SCR-APP-004 (FEAT-008) */
+.dialog-stor { width: 880px; }
+.dold-innehall { display: grid; gap: var(--space-6); max-height: min(60vh, 640px); overflow-y: auto; padding-right: var(--space-2); }
+.dold-del { display: grid; gap: var(--space-3); padding-top: var(--space-4); border-top: var(--storlek-kant-bredd) solid var(--ui-kant); }
+.dold-del:first-child { padding-top: 0; border-top: 0; }
+.underrubrik { font: var(--text-kolumnrubrik); margin: 0; }
+.dold-uppgifter { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4); }
+.dold-info { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--space-2) var(--space-4); margin: 0; }
+.dold-info dt { font: var(--text-liten); color: var(--ui-text-dampad); }
+.dold-info dd { margin: 0; }
+.dold-lista { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-3); }
+.dold-lista li { display: grid; gap: var(--space-1); }
+.dold-lista li.borttagen .textyta { text-decoration: line-through; }
+.dold-skript { margin: var(--space-1) 0 0; padding-left: var(--space-6); }
+.textyta { height: auto; min-height: calc(var(--storlek-kontroll-hojd) * 1.5); padding: var(--space-2) var(--space-3); resize: vertical; }

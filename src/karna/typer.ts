@@ -79,12 +79,22 @@ export interface Metadata {
   readonly nyckelord: string
 }
 
-/** Användarens val i panelen Dold information (FR-DOL-*), per dokument-id. */
+/** Användarens val för ett dokument i panelen Dold information (FR-DOL-006, -007, -009, -011). Förval: allt behålls. */
+export interface Rensning {
+  /** Ny text per kommentarnyckel ("k:<sidindex>:<plats>"). */
+  readonly kommentartext?: Readonly<Record<string, string>>
+  /** Kommentarer och bilagor som tas bort, per nyckel ("k:…" eller "b:<plats>"). */
+  readonly taBort?: readonly string[]
+  /** Formulärfält som tas bort, per fullständigt namn. */
+  readonly taBortFalt?: readonly string[]
+}
+
+/** Valen i panelen Dold information (FEAT-008). */
 export interface DoldVal {
+  /** Resultatets titel, författare, ämne och nyckelord; null = förifyllt från första sidans dokument (FR-DOL-003). */
   readonly metadata: Metadata | null
-  readonly taBortKommentarer: boolean
-  readonly taBortBilagor: boolean
-  readonly plattaFormular: boolean
+  /** Per dokument-id. */
+  readonly rensning: Readonly<Record<string, Rensning>>
 }
 
 export interface Sparval {
@@ -102,7 +112,7 @@ export interface Arbetsyta {
   readonly sparval: Sparval
 }
 
-export const tomDoldVal: DoldVal = { metadata: null, taBortKommentarer: false, taBortBilagor: true, plattaFormular: false }
+export const tomDoldVal: DoldVal = { metadata: null, rensning: {} }
 
 export const tomArbetsyta: Arbetsyta = {
   dokument: [],

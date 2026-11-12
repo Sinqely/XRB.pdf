@@ -44,6 +44,7 @@ export function byggbegaran(yta: Arbetsyta, format: Format = yta.sparval.format,
     etikett: e && typsnitt ? { text: e.text, storlekPt: e.storlekPt, farg: e.farg, bakgrund: e.bakgrund, placering: e.placering, typsnitt } : null,
     format,
     uppgifter: yta.sparval.dold.metadata ?? undefined,
+    dold: Object.fromEntries(Object.entries(yta.sparval.dold.rensning).filter(([id]) => anvanda.has(id))),
     datum,
   }
 }

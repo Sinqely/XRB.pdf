@@ -4,6 +4,7 @@ import { useEffect, useState } from 'preact/hooks'
 import type { PDFDocumentProxy } from 'pdfjs-dist'
 import { sidmatt, stangPdf, type Sidmatt } from '../las/pdfjs-adapter'
 import { skapaMiniatyrko, type Miniatyr } from '../las/miniatyrer'
+import { stadaGranskningar } from './granskning'
 
 const ko = skapaMiniatyrko(88)
 const pdfer = new Map<string, PDFDocumentProxy>()
@@ -61,6 +62,7 @@ export function pdfFor(dokId: string): PDFDocumentProxy | null {
 /** Frigör pdf.js-dokument och bilder för dokument som inte längre finns i någon version (efter ångra-historik). */
 export function stada(behall: Set<string>) {
   for (const id of [...pdfer.keys()]) if (!behall.has(id)) avregistrera(id)
+  stadaGranskningar(behall)
 }
 
 /**

@@ -210,6 +210,65 @@ export const texter = {
     `Typsnittet saknar ${tecken.length === 1 ? 'tecknet' : 'tecknen'} ${tecken.map((t) => `"${t}"`).join(', ')}. ${tecken.length === 1 ? 'Det' : 'De'} kan inte visas i filen. Välj ett annat typsnitt eller ta bort ${tecken.length === 1 ? 'tecknet' : 'tecknen'}.`,
   overlaggEtikett: (text: string) => `Textetikett "${text}"`,
   overlapp: (sidor: number[]) => `Vattenstämpeln och textetiketten överlappar varandra på ${sidlista(sidor)}.`,
+  // Dold information SCR-APP-004 (FEAT-008)
+  doldVerktyg: 'Dold information',
+  doldVerktygIngaSidor: 'Välj minst en sida först.',
+  doldRubrik: 'Dold information',
+  doldIngress: 'Det här följer med i den sparade filen. Kontrollera det och ändra eller ta bort det som inte ska med.',
+  doldUppgifter: 'Uppgifter om resultatet',
+  doldUppgifterForifyllda: (namn: string) => `Förifyllt från ${namn}. Töm ett fält om uppgiften inte ska med.`,
+  doldUppgifterEgna: 'Töm ett fält om uppgiften inte ska med.',
+  uppgiftNamn: { titel: 'Titel', forfattare: 'Författare', amne: 'Ämne', nyckelord: 'Nyckelord' },
+  uppgiftAndrad: (namn: string) => `${namn} ändrad.`,
+  doldLaser: 'Läser dokumenten …',
+  doldLasfel: (namn: string) => `Det gick inte att läsa den dolda informationen i ${namn}. Filen går kanske inte att spara; prova att spara den på nytt från programmet där den skapades.`,
+  doldIngen: 'Ingen dold information hittades.',
+  doldFortsatt: 'Fortsätt till sparandet',
+  klar: 'Klar',
+  doldProgram: 'Skapad med',
+  doldSkapad: 'Skapad',
+  doldAndrad: 'Ändrad',
+  doldSaknas: 'Saknas',
+  datum: (iso: string) => (iso ? new Date(iso).toLocaleString('sv-SE', { dateStyle: 'long', timeStyle: 'short' }) : ''),
+  doldKommentarer: (n: number) => (n === 1 ? '1 kommentar' : `${n} kommentarer`),
+  doldKommentarRubrik: (platser: readonly number[], forfattare: string) => `På ${sidlista(platser)} i resultatet${forfattare ? `, av ${forfattare}` : ''}`,
+  doldTaBortKommentar: 'Ta bort kommentaren',
+  kommentarAndrad: 'Kommentaren ändrad.',
+  doldBilagor: (n: number) => (n === 1 ? '1 bifogad fil' : `${n} bifogade filer`),
+  doldBilagorPdfa: 'Bifogade filer tas alltid bort när du sparar i arkivformat PDF/A, eftersom PDF/A-2 bara tillåter bifogade filer som själva är arkivfiler och det inte går att kontrollera.',
+  doldTaBortBilaga: (namn: string) => `Ta bort ${namn}`,
+  doldBilagaDetalj: (storlek: number | null, platser: readonly number[]) =>
+    [storlek === null ? 'Okänd storlek' : storlek < 1000 ? `${storlek} byte` : storlek < 1_000_000 ? `${Math.round(storlek / 1000)} kB` : `${(storlek / 1_000_000).toFixed(1).replace('.', ',')} MB`, platser.length ? `bifogad på ${sidlista(platser)} i resultatet` : 'bifogad i dokumentet'].join(', ') + '.',
+  doldFalt: (n: number) => (n === 1 ? '1 formulärfält' : `${n} formulärfält`),
+  doldFaltHjalp: 'Tar du bort ett fält försvinner också det som står i det.',
+  doldTaBortFalt: (namn: string) => `Ta bort fältet ${namn}`,
+  doldFaltDetalj: (varde: string, platser: readonly number[]) => `${varde ? `Innehåll: "${varde}"` : 'Tomt'}, på ${sidlista(platser)} i resultatet.`,
+  doldVal: (vad: 'kommentar' | 'bilaga' | 'falt', bort: boolean) =>
+    `${vad === 'kommentar' ? 'Kommentaren' : vad === 'bilaga' ? 'Den bifogade filen' : 'Formulärfältet'} ${bort ? 'tas bort' : 'behålls'} när filen sparas.`,
+  doldAlltidBort: 'Det här tas alltid bort, eftersom det kan köra kod eller skicka uppgifter när filen öppnas:',
+  doldSkript: (kod: 'oppna' | 'dokumentskript' | 'dokumenthandelse' | 'sida' | 'kommentar' | 'falt' | 'starta' | 'skicka' | 'programdata', platser: readonly number[]) => {
+    const var_ = platser.length ? ` på ${sidlista(platser)} i resultatet` : ''
+    switch (kod) {
+      case 'oppna':
+        return 'Ett skript som körs när dokumentet öppnas.'
+      case 'dokumentskript':
+        return 'Skript i dokumentet.'
+      case 'dokumenthandelse':
+        return 'Åtgärder när dokumentet stängs, skrivs ut eller sparas.'
+      case 'sida':
+        return `Åtgärder när sidan öppnas eller stängs${var_}.`
+      case 'kommentar':
+        return `Skript i en länk eller kommentar${var_}.`
+      case 'falt':
+        return `Skript i formulärfält${var_}.`
+      case 'starta':
+        return `En åtgärd som startar ett annat program${var_}.`
+      case 'skicka':
+        return `En åtgärd som skickar eller hämtar formulärdata${var_}.`
+      case 'programdata':
+        return `Privata uppgifter från programmet som skapade sidan${var_}.`
+    }
+  },
 } as const
 
 /** "sida 2", "sidorna 2 och 5", "sidorna 1, 3 och 4". */

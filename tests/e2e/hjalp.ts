@@ -10,15 +10,24 @@ export async function laggTillAlla(page: Page) {
   for (let i = 0; i < n; i++) await knappar.nth(i).click()
 }
 
+/** "Baka ihop och spara": går förbi panelen Dold information (FR-DOL-001) och ger spara-dialogen. */
+export async function oppnaSpara(page: Page) {
+  await page.getByRole('button', { name: 'Baka ihop och spara' }).click()
+  const dold = page.getByRole('dialog', { name: 'Dold information' })
+  await expect(dold).toBeVisible()
+  await dold.getByRole('button', { name: 'Fortsätt till sparandet' }).click()
+  const dialog = page.getByRole('dialog', { name: 'Baka ihop och spara' })
+  await expect(dialog).toBeVisible()
+  return dialog
+}
+
 /**
  * Öppnar spara-dialogen, behåller eller anger filnamn, väljer format och väntar på nedladdningen.
  * Standard är vanlig PDF, eftersom flera testfiler medvetet har ej inbäddade typsnitt; arkivformatet
  * prövas i feat-009.spec.ts.
  */
 export async function spara(page: Page, filnamn?: string, format: 'pdf' | 'pdfa' = 'pdf') {
-  await page.getByRole('button', { name: 'Baka ihop och spara' }).click()
-  const dialog = page.getByRole('dialog', { name: 'Baka ihop och spara' })
-  await expect(dialog).toBeVisible()
+  const dialog = await oppnaSpara(page)
   if (filnamn !== undefined) await dialog.getByLabel('Filnamn').fill(filnamn)
   await dialog.getByRole('radio', { name: format === 'pdf' ? /^Vanlig PDF/ : /^Arkivformat PDF\/A/ }).check()
   const nedladdning = page.waitForEvent('download')

@@ -5,7 +5,7 @@ import AxeBuilder from '@axe-core/playwright'
 import { execFileSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
 import { PDFName } from '@cantoo/pdf-lib'
-import { fil, innehall, lasPdf, laggTillAlla, spara } from './hjalp'
+import { fil, innehall, lasPdf, laggTillAlla, oppnaSpara, spara } from './hjalp'
 
 const tagg = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']
 const status = (page: Page) => page.getByRole('status')
@@ -29,8 +29,7 @@ test.beforeEach(async ({ page }) => {
 test('arkivformat är förvalt och ger en fil som veraPDF godkänner (FR-SPA-004, NFR-COMP-004)', async ({ page }) => {
   await lasIn(page, 'arkivbar.pdf')
   await laggTillAlla(page)
-  await page.getByRole('button', { name: 'Baka ihop och spara' }).click()
-  const dialog = page.getByRole('dialog', { name: 'Baka ihop och spara' })
+  const dialog = await oppnaSpara(page)
   await expect(dialog.getByRole('radio', { name: /^Arkivformat PDF\/A/ })).toBeChecked()
   const nedladdning = page.waitForEvent('download')
   await dialog.getByRole('button', { name: 'Spara' }).click()
@@ -47,8 +46,7 @@ test('sidor som hindrar arkivformatet listas med orsak; avbryta, vanlig PDF och 
   await lasIn(page, 'arkivbar.pdf', 'beslut.pdf', 'cmyk.pdf')
   await laggTillAlla(page)
   // arkivbar 2 sidor, beslut 3 sidor (Helvetica ej inbäddad), cmyk 1 sida
-  await page.getByRole('button', { name: 'Baka ihop och spara' }).click()
-  const dialog = page.getByRole('dialog', { name: 'Baka ihop och spara' })
+  const dialog = await oppnaSpara(page)
   await dialog.getByRole('button', { name: 'Spara' }).click()
 
   const varning = page.getByRole('dialog', { name: 'Filen kan inte sparas i arkivformat' })
@@ -80,7 +78,7 @@ test('sidor som hindrar arkivformatet listas med orsak; avbryta, vanlig PDF och 
   expect(arPdfa(sokvag)).toBe(false)
 
   // Ta bort sidorna: resten sparas som PDF/A, och borttagningen kan ångras
-  await page.getByRole('button', { name: 'Baka ihop och spara' }).click()
+  await oppnaSpara(page)
   await expect(dialog.getByRole('radio', { name: /^Arkivformat PDF\/A/ })).toBeChecked()
   await dialog.getByRole('button', { name: 'Spara' }).click()
   nedladdning = page.waitForEvent('download')
@@ -98,8 +96,7 @@ test('sidor som hindrar arkivformatet listas med orsak; avbryta, vanlig PDF och 
 test('när alla sidor har hinder erbjuds bara vanlig PDF eller avbryt (FR-SPA-005)', async ({ page }) => {
   await lasIn(page, 'cmyk.pdf')
   await laggTillAlla(page)
-  await page.getByRole('button', { name: 'Baka ihop och spara' }).click()
-  await page.getByRole('dialog', { name: 'Baka ihop och spara' }).getByRole('button', { name: 'Spara' }).click()
+  await (await oppnaSpara(page)).getByRole('button', { name: 'Spara' }).click()
   const varning = page.getByRole('dialog', { name: 'Filen kan inte sparas i arkivformat' })
   await expect(varning).toContainText('det finns inget kvar att spara i arkivformat')
   await expect(varning.getByRole('button', { name: /^Ta bort/ })).toHaveCount(0)
@@ -112,6 +109,5 @@ test('vanlig PDF kan väljas direkt och valet behålls till nästa sparande (FR-
   await laggTillAlla(page)
   const d = await spara(page, undefined, 'pdf')
   expect(arPdfa((await d.path())!)).toBe(false)
-  await page.getByRole('button', { name: 'Baka ihop och spara' }).click()
-  await expect(page.getByRole('dialog', { name: 'Baka ihop och spara' }).getByRole('radio', { name: /^Vanlig PDF/ })).toBeChecked()
+  await expect((await oppnaSpara(page)).getByRole('radio', { name: /^Vanlig PDF/ })).toBeChecked()
 })

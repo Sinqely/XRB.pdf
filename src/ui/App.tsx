@@ -21,6 +21,7 @@ import { etikettMatt } from '../karna/etikett'
 import { etikettSyns } from '../karna/markning'
 import { EtikettPanel } from './EtikettPanel'
 import { useSnitt } from './typsnitt'
+import { DoldDialog } from './DoldDialog'
 
 const tillstand = skapaTillstand()
 
@@ -30,7 +31,8 @@ export function App() {
   const [fel, sattFel] = useState<string[]>([])
   const [lasesIn, sattLasesIn] = useState<string | null>(null)
   const [dragOver, sattDragOver] = useState(false)
-  const [dialog, sattDialog] = useState(false)
+  /** Dold information före sparandet (FR-DOL-001), därefter spara-dialogen; eller bara Dold information från sidhuvudet. */
+  const [dialog, sattDialog] = useState<null | 'dold-spara' | 'dold' | 'spara'>(null)
   const [sparad, sattSparad] = useState<Arbetsyta>(tillstand.hamta())
   const [borjaOmFraga, sattBorjaOmFraga] = useState(false)
   const [aktivOnskad, sattAktiv] = useState<string | null>(null)
@@ -38,6 +40,7 @@ export function App() {
   const [tema, sattTemaVal] = useState<Tema>(lasTema())
   const filval = useRef<HTMLInputElement>(null)
   const bakaKnapp = useRef<HTMLButtonElement>(null)
+  const doldKnapp = useRef<HTMLButtonElement>(null)
 
   useEffect(
     () =>
@@ -214,6 +217,17 @@ export function App() {
               {texter.borjaOm}
             </button>
           </span>
+          <button
+            ref={doldKnapp}
+            type="button"
+            class="knapp-text"
+            aria-disabled={tomt}
+            aria-describedby={tomt ? 'baka-forklaring' : undefined}
+            onClick={() => !tomt && sattDialog('dold')}
+          >
+            <Ikon namn="skold" />
+            {texter.doldVerktyg}
+          </button>
           <button type="button" class="knapp-text" onClick={() => sattTemaVal(tema === 'mork' ? 'ljus' : 'mork')}>
             <Ikon namn={tema === 'mork' ? 'sol' : 'mane'} />
             {tema === 'mork' ? texter.temaLjust : texter.temaMorkt}
@@ -229,7 +243,7 @@ export function App() {
             class="knapp-primar"
             aria-disabled={tomt}
             aria-describedby={tomt ? 'baka-forklaring' : undefined}
-            onClick={() => !tomt && sattDialog(true)}
+            onClick={() => !tomt && sattDialog('dold-spara')}
           >
             <Ikon namn="ladda" />
             {texter.bakaIhop}
@@ -301,7 +315,24 @@ export function App() {
         />
       )}
 
-      {dialog && (
+      {(dialog === 'dold' || dialog === 'dold-spara') && (
+        <DoldDialog
+          yta={yta}
+          andra={andra}
+          andraText={andraText}
+          lage={dialog === 'dold-spara' ? 'spara' : 'granska'}
+          stang={(fortsatt) => {
+            if (dialog === 'dold-spara' && fortsatt) {
+              sattDialog('spara')
+              return
+            }
+            sattDialog(null)
+            ;(dialog === 'dold' ? doldKnapp : bakaKnapp).current?.focus()
+          }}
+        />
+      )}
+
+      {dialog === 'spara' && (
         <SparaDialog
           yta={yta}
           status={sattStatus}
@@ -313,7 +344,7 @@ export function App() {
             return tillstand.hamta()
           }}
           stang={(sparat) => {
-            sattDialog(false)
+            sattDialog(null)
             if (sparat) {
               tillstand.ersatt((nu) => ({ ...nu, sparval: { ...nu.sparval, filnamn: sparat.filnamn, format: sparat.format } }))
               sattSparad(tillstand.hamta())

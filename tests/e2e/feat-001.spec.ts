@@ -3,7 +3,7 @@
 import { expect, test, type Page } from '@playwright/test'
 import AxeBuilder from '@axe-core/playwright'
 import { readFileSync } from 'node:fs'
-import { fil, innehall, lasPdf, laggTillAlla, spara, tabbaTill } from './hjalp'
+import { fil, innehall, lasPdf, laggTillAlla, oppnaSpara, spara, tabbaTill } from './hjalp'
 
 const tagg = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']
 const etiketter = (page: Page) => page.locator('.resultatetikett').allTextContents()
@@ -69,7 +69,7 @@ test('DS-01 med mus: läsa in, välja, ta bort, dra och spara (AC-1, AC-5..AC-10
 
   // AC-14: arbetsytan finns kvar och nästa sparande föreslår samma namn
   expect(await etiketter(page)).toHaveLength(3)
-  await page.getByRole('button', { name: 'Baka ihop och spara' }).click()
+  await oppnaSpara(page)
   await expect(page.getByLabel('Filnamn')).toHaveValue('Beslutslutligt.pdf')
   await page.getByRole('button', { name: 'Avbryt' }).click()
 
@@ -99,6 +99,10 @@ test('DS-01 med bara tangentbord (AC-6, AC-9, AC-12, AC-15)', async ({ page }) =
   await page.keyboard.press('Alt+ArrowRight')
 
   await tabbaTill(page, 'Baka ihop och spara')
+  await page.keyboard.press('Enter')
+  // Panelen Dold information först (FR-DOL-001)
+  await expect(page.getByRole('heading', { name: 'Dold information' })).toBeFocused()
+  await tabbaTill(page, 'Fortsätt till sparandet')
   await page.keyboard.press('Enter')
   await expect(page.getByLabel('Filnamn')).toBeFocused()
   // Formatet väljs med tangentbord; beslut.pdf har ej inbäddat typsnitt, så vanlig PDF (FEAT-009)
@@ -166,8 +170,7 @@ test('inga WCAG 2.1 AA-fel med resultat och i spara-dialogen (AC-15)', async ({ 
   await laggTillAlla(page)
   await expect(page.locator('.resultatsida img')).toHaveCount(4)
   expect((await new AxeBuilder({ page }).withTags(tagg).analyze()).violations).toEqual([])
-  await page.getByRole('button', { name: 'Baka ihop och spara' }).click()
-  await expect(page.getByRole('dialog')).toBeVisible()
+  await oppnaSpara(page)
   expect((await new AxeBuilder({ page }).withTags(tagg).analyze()).violations).toEqual([])
   await page.evaluate(() => document.documentElement.setAttribute('data-theme', 'ljus'))
   expect((await new AxeBuilder({ page }).withTags(tagg).analyze()).violations).toEqual([])
