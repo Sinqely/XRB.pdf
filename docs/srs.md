@@ -216,6 +216,21 @@ Kraven skrivs i EARS: *När* (händelse), *Medan* (tillstånd), *Där* (valbar f
 | FR-SPA-012 | Om skapandet av resultatfilen misslyckas så ska appen visa ett felmeddelande som förklarar vad som hände och behålla arbetsytan oförändrad. | Must | Active | Källa: DS-04. |
 | FR-SPA-013 | När resultatfilen har sparats ska appen behålla arbetsytan så att användaren kan ändra och spara igen. | Must | Active | Källa: FV-001. |
 
+#### 3.1.9 ALM – Allmänt: tillstånd, ångra och meddelanden
+
+| ID | Requirement | Priority | Status | Notes / rules |
+| :-- | :---------- | :------- | :----- | :------------ |
+| FR-ALM-001 | När användaren väljer "Ångra" eller trycker Ctrl+Z (Cmd+Z på Mac) ska appen återställa den senaste ändringen av sidval, sidordning, rotation, vattenstämpel, textetikett, placering eller dold information. | Must | Active | Källa: FV-001. |
+| FR-ALM-002 | När användaren väljer "Gör om" eller trycker Ctrl+Y (Cmd+Skift+Z på Mac) ska appen göra om den senast ångrade ändringen. | Must | Active | Källa: FV-001. |
+| FR-ALM-003 | När användaren väljer "Börja om" ska appen be om bekräftelse och, om användaren bekräftar, tömma arbetsytan helt. | Must | Active | Källa: FV-001. |
+| FR-ALM-004 | Om användaren stänger eller laddar om fliken medan arbetsytan innehåller arbete som inte har sparats så ska appen låta webbläsaren fråga om användaren vill lämna sidan. | Must | Active | Källa: FV-001. |
+| FR-ALM-005 | Medan arbetsytan saknar inlästa filer ska appen visa en kort förklaring av hur appen används och en yta med texten "Dra in PDF-filer här eller välj filer". | Must | Active | Källa: FV-001, MF-01. |
+| FR-ALM-006 | Appen ska formulera alla meddelanden på svenska i klartext så att de anger vad som hände och hur användaren kan gå vidare. | Must | Active | Källa: FV-001, BG-004. |
+| FR-ALM-007 | Appen ska visa hela gränssnittet på svenska. | Must | Active | Källa: IN-02. |
+| FR-ALM-008 | Appen ska inte spara dokument, sidor, bilder eller metadata i webbläsarens beständiga lagring. | Must | Active | Källa: BG-001, OM-09, IN-06. Inget finns kvar när fliken stängs. |
+| FR-ALM-009 | När användaren väljer ljust tema ska appen visa gränssnittet i GP MS ljusa tema tills användaren väljer mörkt tema igen. | Must | Active | Källa: FV-002. Mörkt tema är standard. Ägaren 2026-11-12: Must. Valet av tema får sparas i webbläsaren (inte dokumentdata). |
+| FR-ALM-010 | När användaren väljer att visa kortkommandon ska appen visa en lista med alla kortkommandon. | Should | Active | Källa: BG-004. |
+
 ### 3.2 External interface requirements
 *(fas 4)*
 
