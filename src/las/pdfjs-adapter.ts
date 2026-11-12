@@ -54,3 +54,58 @@ export async function ritaMiniatyr(pdf: PDFDocumentProxy, sidindex: number, bred
 export async function stangPdf(pdf: PDFDocumentProxy): Promise<void> {
   await pdf.loadingTask.destroy()
 }
+
+export interface Sidmatt {
+  /** Sidans bredd och höjd i punkter efter sidans egen rotation (/Rotate) och extra vridning. */
+  readonly bredd: number
+  readonly hojd: number
+}
+
+/** Sidans storlek i punkter, med extra vridning i grader (0, 90, 180, 270). */
+export async function sidmatt(pdf: PDFDocumentProxy, sidindex: number, vridning = 0): Promise<Sidmatt> {
+  const sida = await pdf.getPage(sidindex + 1)
+  const vy = sida.getViewport({ scale: 1, rotation: (sida.rotate + vridning) % 360 })
+  return { bredd: vy.width, hojd: vy.height }
+}
+
+export interface Ritning {
+  readonly klar: Promise<Sidmatt>
+  avbryt(): void
+}
+
+/**
+ * Ritar en sida på en canvas i given skala (pixlar per punkt, före devicePixelRatio).
+ * Används av förhandsvisningen (FEAT-003). Tidigare ritning på samma canvas ska avbrytas av anroparen.
+ */
+export function ritaSida(pdf: PDFDocumentProxy, sidindex: number, canvas: HTMLCanvasElement, skala: number, vridning = 0): Ritning {
+  let uppgift: { cancel(): void; promise: Promise<void> } | null = null
+  let avbruten = false
+  const klar = (async () => {
+    const sida = await pdf.getPage(sidindex + 1)
+    const rot = (sida.rotate + vridning) % 360
+    const pr = window.devicePixelRatio || 1
+    const vy = sida.getViewport({ scale: skala * pr, rotation: rot })
+    const mal = sida.getViewport({ scale: 1, rotation: rot })
+    if (avbruten) throw new Error('avbruten')
+    // Rita på en egen canvas och kopiera, så att den synliga inte blinkar tom.
+    const tmp = document.createElement('canvas')
+    tmp.width = Math.ceil(vy.width)
+    tmp.height = Math.ceil(vy.height)
+    uppgift = sida.render({ canvas: tmp, viewport: vy })
+    await uppgift.promise
+    if (avbruten) throw new Error('avbruten')
+    canvas.width = tmp.width
+    canvas.height = tmp.height
+    canvas.style.width = `${vy.width / pr}px`
+    canvas.style.height = `${vy.height / pr}px`
+    canvas.getContext('2d')!.drawImage(tmp, 0, 0)
+    return { bredd: mal.width, hojd: mal.height }
+  })()
+  return {
+    klar,
+    avbryt() {
+      avbruten = true
+      uppgift?.cancel()
+    },
+  }
+}

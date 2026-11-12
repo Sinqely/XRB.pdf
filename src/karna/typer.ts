@@ -1,4 +1,4 @@
-// Domänmodellen i minnet (docs/architecture.md 8.2; FEAT-001 technical-design.md §4).
+// Domänmodellen i minnet (docs/architecture.md 8.2; per funktion i docs/features/*/technical-design.md).
 
 export interface Dokument {
   readonly id: string
@@ -9,23 +9,104 @@ export interface Dokument {
   readonly storlekByte: number
 }
 
+export type Vridning = 0 | 90 | 180 | 270
+
 export interface Resultatsida {
   /** Förekomstens id, unikt i fliken (t.ex. "rs-3"). */
   readonly id: string
   readonly dokumentId: string
   /** Sidans index i dokumentet, från 0. */
   readonly sidindex: number
+  /** Extra vridning medurs utöver sidans egen (FR-SID-010). */
+  readonly vridning: Vridning
+  /** Vattenstämpeln ligger på sidan (FR-STA-008). */
+  readonly stampel: boolean
+  /** Textetiketten ligger på sidan (FR-TXT-010). */
+  readonly etikett: boolean
+}
+
+/** De sex färdiga placeringarna (FR-PLC-004). */
+export type Ankare = 'ovre-vanster' | 'sidhuvud' | 'ovre-hoger' | 'nedre-vanster' | 'sidfot' | 'nedre-hoger'
+
+/**
+ * Placering som avstånd från ett ankare (hörn eller kantmitt), så att avståndet till
+ * referenskanten blir detsamma på sidor med olika storlek (FR-PLC-008). För sidhuvud och sidfot
+ * är dx förskjutningen från sidans mitt. Egen placering = dra eller piltangenter (FR-PLC-002, FR-PLC-003).
+ */
+export interface Placering {
+  readonly ankare: Ankare
+  readonly dxMm: number
+  readonly dyMm: number
+  readonly egen: boolean
+}
+
+export interface Vattenstampel {
+  readonly namn: string
+  readonly bild: Uint8Array
+  readonly typ: 'png' | 'jpeg'
+  readonly pxBredd: number
+  readonly pxHojd: number
+  /** Stämpelns bredd på sidan; höjden följer bildens proportioner. */
+  readonly breddMm: number
+  /** 0–100 (FR-STA-004). */
+  readonly opacitet: number
+  readonly placering: Placering
+  readonly allaSidor: boolean
+}
+
+export type Typsnitt = 'carlito' | 'liberation-serif' | 'liberation-mono'
+
+export interface Textetikett {
+  readonly text: string
+  readonly storlekPt: number
+  /** "#rrggbb" */
+  readonly farg: string
+  readonly bakgrund: string | null
+  readonly typsnitt: Typsnitt
+  readonly fet: boolean
+  readonly kursiv: boolean
+  readonly placering: Placering
+  readonly allaSidor: boolean
+}
+
+export type Format = 'pdfa' | 'pdf'
+
+export interface Metadata {
+  readonly titel: string
+  readonly forfattare: string
+  readonly amne: string
+  readonly nyckelord: string
+}
+
+/** Användarens val i panelen Dold information (FR-DOL-*), per dokument-id. */
+export interface DoldVal {
+  readonly metadata: Metadata | null
+  readonly taBortKommentarer: boolean
+  readonly taBortBilagor: boolean
+  readonly plattaFormular: boolean
 }
 
 export interface Sparval {
   /** Det namn användaren senast sparade med, eller null. */
   readonly filnamn: string | null
+  readonly format: Format
+  readonly dold: DoldVal
 }
 
 export interface Arbetsyta {
   readonly dokument: readonly Dokument[]
   readonly resultat: readonly Resultatsida[]
+  readonly vattenstampel: Vattenstampel | null
+  readonly textetikett: Textetikett | null
   readonly sparval: Sparval
 }
 
-export const tomArbetsyta: Arbetsyta = { dokument: [], resultat: [], sparval: { filnamn: null } }
+export const tomDoldVal: DoldVal = { metadata: null, taBortKommentarer: false, taBortBilagor: true, plattaFormular: false }
+
+export const tomArbetsyta: Arbetsyta = {
+  dokument: [],
+  resultat: [],
+  vattenstampel: null,
+  textetikett: null,
+  sparval: { filnamn: null, format: 'pdfa', dold: tomDoldVal },
+}

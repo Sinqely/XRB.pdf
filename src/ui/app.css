@@ -108,3 +108,18 @@ p, h2, h3, ul, ol { margin: 0; }
 .dialogknappar { display: flex; justify-content: flex-end; gap: var(--space-2); }
 
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+/* Förhandsvisning (FEAT-003) */
+.forhandsvisning { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: var(--space-2); }
+.forhandsvisning-yta { flex: 1; min-height: 0; overflow: auto; display: grid; place-items: center; padding: var(--space-6); border-radius: var(--radie-panel); background: var(--ui-sidyta); }
+.sidram { position: relative; box-shadow: 0 2px 12px rgba(0, 0, 0, .35); }
+.sidram canvas { display: block; }
+.forhandsvisning-fot { display: flex; align-items: center; gap: var(--space-2); font: var(--text-liten); }
+.sidinfo { flex: 1; text-align: center; }
+.skalval { display: flex; align-items: center; gap: var(--space-2); }
+.forhandsvisning-tom { justify-content: center; padding: var(--space-6); border-radius: var(--radie-panel); background: var(--ui-bakgrund); }
+.tre-steg { display: grid; gap: var(--space-4); max-width: 520px; margin: 0 auto; padding-left: 0; list-style: none; font: var(--text-ingress-latt); }
+.tre-steg strong { font-style: normal; display: block; }
+.resultatsida { cursor: pointer; }
+.resultatsida.aktiv { outline: var(--storlek-fokus-bredd) solid var(--ui-text); outline-offset: 0; }
+.resultatsida.aktiv:focus-visible { outline-color: var(--ui-fokus); }

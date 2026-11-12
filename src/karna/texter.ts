@@ -16,7 +16,6 @@ export const texter = {
   slappNu: 'Släpp för att läsa in',
   ingress: 'Allt sker i din webbläsare. Inga filer skickas någonstans.',
   markningSenare: 'Vattenstämpel och textetikett kommer i en senare version.',
-  forhandsvisningSenare: 'Här visas resultatet stort, en sida i taget. Förhandsvisningen kommer i nästa version.',
   resultatTomt: 'Inga sidor ännu. Klicka på en miniatyr för att lägga till den.',
   resultatEtikett: 'Resultatets sidor',
   temaLjust: 'Ljust tema',
@@ -67,4 +66,19 @@ export const texter = {
   miniatyrVald: (sida: number, av: number, dok: string) => `Vald, sida ${sida} av ${av} ur ${dok}`,
   resultatsida: (sida: number, av: number, dok: string, plats: number, totalt: number) =>
     `Sida ${sida} av ${av} ur ${dok}, plats ${plats} av ${totalt}`,
+  // Förhandsvisning (FEAT-003)
+  forhandsvisning: 'Förhandsvisning',
+  sidaNavM: (n: number, m: number) => `Sida ${n} av ${m}`,
+  urDokument: (namn: string, sida: number) => `ur ${namn}, sida ${sida}`,
+  foregaendeSida: 'Föregående sida',
+  nastaSida: 'Nästa sida',
+  zoomaIn: 'Zooma in',
+  zoomaUt: 'Zooma ut',
+  anpassa: 'Anpassa',
+  steg1Rubrik: '1 Läs in filer.',
+  steg1Text: 'Dra in PDF-filer till kolumnen Filer, eller välj dem med knappen.',
+  steg2Rubrik: '2 Välj och ordna sidor.',
+  steg2Text: 'Klicka på de sidor du vill ha. De hamnar i resultatraden, där du kan flytta dem.',
+  steg3Rubrik: '3 Märk och spara.',
+  steg3Text: 'Lägg till vattenstämpel eller textetikett om du vill, och välj "Baka ihop och spara".',
 } as const

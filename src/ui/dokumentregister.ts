@@ -49,3 +49,7 @@ export function useMiniatyrer() {
     }
   }, [])
 }
+
+export function pdfFor(dokId: string): PDFDocumentProxy | null {
+  return pdfer.get(dokId) ?? null
+}

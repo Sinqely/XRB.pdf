@@ -11,9 +11,11 @@ import { Sidbild } from './Filkolumn'
 interface Props {
   yta: Arbetsyta
   andra: (fn: (y: Arbetsyta) => Andring) => void
+  aktivId: string | null
+  sattAktiv: (id: string) => void
 }
 
-export function Resultatrad({ yta, andra }: Props) {
+export function Resultatrad({ yta, andra, aktivId, sattAktiv }: Props) {
   useMiniatyrer()
   const [dras, sattDras] = useState<string | null>(null)
   const [markor, sattMarkor] = useState<number | null>(null)
@@ -80,7 +82,10 @@ export function Resultatrad({ yta, andra }: Props) {
                     if (el) element.current.set(r.id, el)
                     else element.current.delete(r.id)
                   }}
-                  class={`resultatsida${dras === r.id ? ' dras' : ''}`}
+                  class={`resultatsida${dras === r.id ? ' dras' : ''}${aktivId === r.id ? ' aktiv' : ''}`}
+                  aria-current={aktivId === r.id ? 'true' : undefined}
+                  onClick={() => sattAktiv(r.id)}
+                  onFocus={(e) => e.target === e.currentTarget && sattAktiv(r.id)}
                   tabIndex={0}
                   aria-label={texter.resultatsida(n, d?.sidantal ?? 0, dn, plats + 1, total)}
                   draggable

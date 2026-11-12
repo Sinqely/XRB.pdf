@@ -11,7 +11,15 @@ export interface Andring {
 
 const ingen = (yta: Arbetsyta): Andring => ({ yta, meddelande: '' })
 const dok = (yta: Arbetsyta, id: string) => yta.dokument.find((d) => d.id === id)
-const ny = (dokumentId: string, sidindex: number): Resultatsida => ({ id: nyttId('rs'), dokumentId, sidindex })
+/** Ny förekomst; stämpel och etikett följer med när "alla sidor" är valt (FR-STA-012, FR-TXT-014). */
+const ny = (yta: Arbetsyta, dokumentId: string, sidindex: number): Resultatsida => ({
+  id: nyttId('rs'),
+  dokumentId,
+  sidindex,
+  vridning: 0,
+  stampel: yta.vattenstampel?.allaSidor ?? false,
+  etikett: yta.textetikett?.allaSidor ?? false,
+})
 
 export function laggTillDokument(yta: Arbetsyta, d: Dokument): Andring {
   return { yta: { ...yta, dokument: [...yta.dokument, d] }, meddelande: texter.inlast(d.namn, d.sidantal) }
@@ -30,7 +38,7 @@ export function taBortDokument(yta: Arbetsyta, dokId: string): Andring {
 export function laggTillSida(yta: Arbetsyta, dokId: string, sidindex: number): Andring {
   const d = dok(yta, dokId)
   if (!d || sidindex < 0 || sidindex >= d.sidantal) return ingen(yta)
-  const resultat = [...yta.resultat, ny(dokId, sidindex)]
+  const resultat = [...yta.resultat, ny(yta, dokId, sidindex)]
   return { yta: { ...yta, resultat }, meddelande: texter.sidaTillagd(sidindex + 1, d.namn, resultat.length) }
 }
 
@@ -54,7 +62,7 @@ export function laggTillAlla(yta: Arbetsyta, dokId: string): Andring {
   if (!d) return ingen(yta)
   const nya = Array.from({ length: d.sidantal }, (_, i) => i)
     .filter((i) => !arVald(yta, dokId, i))
-    .map((i) => ny(dokId, i))
+    .map((i) => ny(yta, dokId, i))
   if (nya.length === 0) return { yta, meddelande: texter.allaRedanValda }
   const resultat = [...yta.resultat, ...nya]
   return { yta: { ...yta, resultat }, meddelande: texter.allaTillagda(nya.length, d.namn, resultat.length) }

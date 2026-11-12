@@ -8,6 +8,7 @@ import type { Arbetsyta } from '../karna/typer'
 import { filerUrSlapp, lasInFiler } from './inlasning'
 import { Filkolumn } from './Filkolumn'
 import { Resultatrad } from './Resultatrad'
+import { Forhandsvisning } from './Forhandsvisning'
 import { SparaDialog } from './SparaDialog'
 import { Ikon } from './ikoner'
 
@@ -20,6 +21,8 @@ export function App() {
   const [lasesIn, sattLasesIn] = useState<string | null>(null)
   const [dragOver, sattDragOver] = useState(false)
   const [dialog, sattDialog] = useState(false)
+  const [aktivOnskad, sattAktiv] = useState<string | null>(null)
+  const senasteAktivPlats = useRef(0)
   const [tema, sattTemaVal] = useState<Tema>(lasTema())
   const filval = useRef<HTMLInputElement>(null)
   const bakaKnapp = useRef<HTMLButtonElement>(null)
@@ -89,6 +92,10 @@ export function App() {
   }, [])
 
   const tomt = yta.resultat.length === 0
+  // Aktiv sida i förhandsvisningen: den valda om den finns kvar, annars sidan på samma plats (FR-FHV-004, FR-FHV-005).
+  const aktivPlats = yta.resultat.findIndex((r) => r.id === aktivOnskad)
+  if (aktivPlats >= 0) senasteAktivPlats.current = aktivPlats
+  const aktivId = aktivPlats >= 0 ? aktivOnskad : (yta.resultat[Math.min(senasteAktivPlats.current, yta.resultat.length - 1)]?.id ?? null)
   const forklaring = yta.dokument.length === 0 ? texter.bakaIhopIngaFiler : texter.bakaIhopIngaSidor
   return (
     <div class="app">
@@ -148,10 +155,8 @@ export function App() {
         />
 
         <section class="kolumn kolumn-mitt" aria-labelledby="rubrik-resultat">
-          <Resultatrad yta={yta} andra={andra} />
-          <div class="forhandsvisning-plats">
-            <p>{texter.forhandsvisningSenare}</p>
-          </div>
+          <Resultatrad yta={yta} andra={andra} aktivId={aktivId} sattAktiv={sattAktiv} />
+          <Forhandsvisning yta={yta} aktivId={aktivId} sattAktiv={sattAktiv} />
         </section>
 
         <section class="kolumn" aria-labelledby="rubrik-markning">
@@ -174,7 +179,7 @@ export function App() {
           status={sattStatus}
           stang={(sparatSom) => {
             sattDialog(false)
-            if (sparatSom) tillstand.andra((nu) => ({ ...nu, sparval: { filnamn: sparatSom } }))
+            if (sparatSom) tillstand.andra((nu) => ({ ...nu, sparval: { ...nu.sparval, filnamn: sparatSom } }))
             bakaKnapp.current?.focus()
           }}
         />
