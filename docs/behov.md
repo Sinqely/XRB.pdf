@@ -110,16 +110,65 @@ En kollega lägger in en fil som inte går att läsa, till exempel en lösenords
 | BH-017 / BG-009 / OM-01 | Appen kan inte garantera att godtyckliga inlästa PDF:er uppfyller PDF/A-2, till exempel om de saknar inbäddade typsnitt. Att rätta det skulle kräva att sidan ändras, vilket BG-009 inte tillåter. | `[TO VERIFY]` hanteras i arkitekturen. Förslag: BG-009 går före; appen varnar när en sida hindrar PDF/A-2, i stället för att göra om sidan. |
 
 ## 5. Spårbarhet: behov → krav → validering
+Kraven är hämtade ur kolumnen Source i docs/rtm.md (SRS-utkast 2026-11-12). Krav med prioritet Won't räknas inte som täckning. Valideringstest skrivs inför samlad acceptans.
+
 | Behov | Prio | Krav (SRS) | Valideringstest | Resultat |
 | :-- | :-- | :-- | :-- | :-- |
+| BG-001 | Måste | FR-SPA-001, FR-ALM-008, FR-DOK-005, FR-DOK-007, NFR-SEC-001..002, NFR-PRIV-001..002 | Ej utförd | Ej utförd |
+| BG-002 | Måste | Avgränsningen i SRS 1.2 och Won't-kraven; prövas med ägarens helhetsbedömning | Ej utförd | Ej utförd |
+| BG-003 | Måste | FR-STA-009, FR-STA-012, FR-TXT-014, FR-PLC-001, FR-PLC-008 | Ej utförd | Ej utförd |
+| BG-005 | Måste | NFR-COMP-001 | Ej utförd | Ej utförd |
+| BG-006 | Bör | NFR-COMP-002 | Ej utförd | Ej utförd |
+| BG-007 | Måste | FR-TXT-007, NFR-SEC-002, NFR-SEC-004, NFR-MAINT-001 | Ej utförd | Ej utförd |
+| BG-008 | Måste | FR-TXT-007, FR-DOK-006, NFR-LEG-001 | Ej utförd | Ej utförd |
+| BG-009 | Måste | FR-SPA-005, FR-SPA-007 | Ej utförd | Ej utförd |
+| BH-001 | Måste | FR-FIL-001..003, FR-FIL-005, FR-FIL-012, FR-SID-002..005, FR-SID-007, FR-SID-009, FR-SID-013, FR-SPA-001, NFR-PERF-002..003 | Ej utförd | Ej utförd |
+| BH-002 | Måste | FR-FIL-004, FR-SID-001, FR-SID-006, FR-SID-011..012, FR-FHV-003, FR-FHV-007 | Ej utförd | Ej utförd |
+| BH-003 | Måste | FR-FIL-005, FR-FHV-001..006, FR-FHV-008, FR-TXT-013, FR-SPA-008, NFR-PERF-001 | Ej utförd | Ej utförd |
+| BH-004 | Måste | FR-STA-001, FR-STA-007..010, FR-STA-012 | Ej utförd | Ej utförd |
+| BH-007 | Måste | FR-STA-002 | Ej utförd | Ej utförd |
+| BH-008 | Måste | FR-STA-003..004 | Ej utförd | Ej utförd |
+| BH-005 | Måste | FR-TXT-001..002, FR-TXT-009..014 | Ej utförd | Ej utförd |
+| BH-006 | Måste | FR-SPA-007 | Ej utförd | Ej utförd |
+| BH-009 | Måste | FR-PLC-002..003, FR-PLC-008, FR-PLC-012 | Ej utförd | Ej utförd |
+| BH-010 | Måste | FR-PLC-009..011 | Ej utförd | Ej utförd |
+| BH-019 | Måste | FR-PLC-004..007 | Ej utförd | Ej utförd |
+| BH-011 | Måste | FR-SPA-006, FR-SPA-009, NFR-COMP-005 | Ej utförd | Ej utförd |
+| BH-012 | Måste | FR-TXT-003..006, FR-TXT-008 | Ej utförd | Ej utförd |
+| BH-013 | Bör | FR-TXT-003, FR-TXT-007 | Ej utförd | Ej utförd |
+| BH-014 | Bör | FR-SID-010 | Ej utförd | Ej utförd |
+| BH-015 | Måste | FR-STA-005..006 | Ej utförd | Ej utförd |
+| BH-017 | Måste | FR-DOL-010, FR-DOL-012, FR-SPA-004..006, NFR-COMP-004 | Ej utförd | Ej utförd |
+| BH-018 | Måste | FR-DOL-001..015, NFR-SEC-003 | Ej utförd | Ej utförd |
+| FV-001 | Måste | FR-FIL-002, FR-FIL-006, FR-FIL-011, FR-SID-004, FR-SID-011, FR-FHV-010, FR-PLC-006, FR-DOL-014, FR-SPA-002..003, FR-SPA-010..011, FR-SPA-013, FR-ALM-001..006, FR-DOK-001..003, NFR-PERF-002, NFR-PERF-004, NFR-USE-001 | Ej utförd | Ej utförd |
+| BH-016 | Måste | NFR-PERF-004, NFR-MAINT-001..002 | Ej utförd | Ej utförd |
+| FV-002 | Bör | FR-ALM-009, NFR-USE-002 | Ej utförd | Ej utförd |
+| BG-004 | Måste | FR-FIL-013, FR-SID-008, FR-SID-014, FR-FHV-008..009, FR-STA-006, FR-TXT-010, FR-PLC-003, FR-ALM-006, FR-ALM-010, FR-DOK-008..010, NFR-ACC-001..002 | Ej utförd | Ej utförd |
 
 ### Krav som hanterar omgivningen
 | Krav | Omgivning |
 | :-- | :-- |
+
 
 ### Krav som ska tas bort
 | Krav | Vad det gör | Varför (beslut, datum) |
 | :-- | :-- | :-- |
 
 ### Behov utan krav
+Inga. BG-002 täcks av avgränsningen och ägarens helhetsbedömning.
+
 ### Krav utan behov
+- FR-FIL-007 (källa: DS-04)
+- FR-FIL-008 (källa: DS-04)
+- FR-FIL-009 (källa: DS-04)
+- FR-FIL-010 (källa: DS-04)
+- FR-FIL-014 (källa: DS-04)
+- FR-STA-011 (källa: DS-04)
+- FR-SPA-012 (källa: DS-04)
+- FR-ALM-007 (källa: IN-02)
+- FR-DOK-004 (källa: UB-01)
+- FR-DOK-011 (källa: UB-01)
+- NFR-SEC-005 (källa: UB-02)
+- NFR-COMP-003 (källa: IN-02)
+- NFR-MAINT-003 (källa: UB-01)
+- NFR-MAINT-004 (källa: UB-01)
