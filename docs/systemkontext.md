@@ -10,6 +10,7 @@
 | 0.3 | 2026-11-12 | Förvaltare och publicering (SharePoint) bekräftade, mottagare och digitalt arkiv tillagda, signaturfrågan avgjord. | Intervju 3 |
 | 0.4 | 2026-11-12 | SharePoint kör HTML bekräftat. Arkivregler (Arkivlagen, RA-FS 2009:2) tillagda i omgivningen. | Intervju 4 |
 | 0.5 | 2026-11-12 | La till IN-07 Organisationen (grafisk profil) och OM-08 tillgänglighetskrav. | Ägarens tillägg |
+| 0.7 | 2026-11-12 | Omgivningstabellen återställd (OM-01–OM-08 hade fallit bort vid en tidigare redigering); status för RA-FS 2009:2 kontrollerad. | Förberedelse G0 |
 | 0.6 | 2026-11-12 | Ägaren benämns neutralt "Ägaren". | Ägarens önskemål |
 
 > `[TO VERIFY]` = härlett, inte bekräftat.
@@ -28,8 +29,8 @@ Systemet ska inte vara: "Det får aldrig bli så mycket funktioner som gör att 
 | MF-02 | "Användarens förväntningar på slutresultatet (genom förhandsvisning) ska sedan mötas av den sammanslagna filen." | Den nedladdade filen öppnad i vanlig PDF-läsare har samma sidor, ordning, vattenstämplar och texter som förhandsvisningen visade. |
 
 ## 3. Systemet i fokus (SoI)
-Ingår `[TO VERIFY]`: en webbapplikation som körs helt i användarens webbläsare. Den läser in flera PDF-filer från användarens dator, visar sidorna, låter användaren välja (och ev. ordna) sidor, lägger vattenstämpel (bild) och/eller text på alla eller valda sidor, förhandsvisar resultatet och sparar det som en ny PDF på användarens dator.
-Ligger utanför (fast) `[TO VERIFY]`: webbläsaren och arbetsdatorn, källfilerna och hur de skapats (t.ex. skanner), PDF-formatet, SharePoint-sidan där appen publiceras, och vart den färdiga filen tar vägen efteråt (e-post, diarium, arkiv). Ingen server tar emot eller behandlar dokument.
+Ingår: en webbapplikation som körs helt i användarens webbläsare. Den läser in flera PDF-filer från användarens dator, visar sidorna, låter användaren välja (och ev. ordna) sidor, lägger vattenstämpel (bild) och/eller text på alla eller valda sidor, förhandsvisar resultatet och sparar det som en ny PDF på användarens dator.
+Ligger utanför (fast): webbläsaren och arbetsdatorn, källfilerna och hur de skapats (t.ex. skanner), PDF-formatet, SharePoint-sidan där appen publiceras, och vart den färdiga filen tar vägen efteråt (e-post, diarium, arkiv). Ingen server tar emot eller behandlar dokument.
 
 ## 4. Intressentregister
 | ID | Intressent | Kategori | Roll gentemot systemet | Intresse | Inflytande (och hur) | Påverkas av systemet | Talesperson / källa | Status |
@@ -44,6 +45,16 @@ Ligger utanför (fast) `[TO VERIFY]`: webbläsaren och arbetsdatorn, källfilern
 
 ## 5. Omgivning att föra vidare till arkitekturen
 | ID | Omgivning | Typ | Vad den påverkar | Vad som ligger fast | Stabilitet | Upplevs av | Källa (datum) |
-x Prövade men bortvalda
+| :-- | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
+| OM-01 | PDF-filer som indata: textbaserade original och inskannade sidor (bild) | Externt system / format | Inläsning, visning, att text förblir sökbar | Hur filerna skapats; ev. lösenordsskydd, saknade inbäddade typsnitt och digitala signaturer | Stabilt format, varierande innehåll | IN-02 (BH-006) | Intervju 2026-11-12 |
+| OM-02 | Webbläsare på kollegornas arbetsdatorer | Driftmiljö | Vad appen kan göra lokalt, filhantering | `[TO VERIFY]` vilka webbläsare och om de styrs av IT | Uppdateras löpande | | `[TO VERIFY]` |
+| OM-03 | Gemensam SharePoint-sida där appen "helt enkelt läggs upp" | Möjliggörande system / driftmiljö | Hur kollegorna når appen och hur nya versioner publiceras | Organisationens SharePoint och dess inställningar. Bekräftat 2026-11-12: HTML-filer körs på organisationens SharePoint. | Styrs av IT | IN-01, IN-03 (BH-016) | Intervju 2026-11-12 |
+| OM-04 | PDF-bibliotek för webbläsaren (läsa, visa och skriva PDF) | Möjliggörande system | Hur sammanslagning, stämplar, förhandsvisning och PDF/A-2 byggs | Väljs i arkitekturen; måste kunna följa med appen utan extern hämtning | | | – |
+| OM-05 | Dataskydd och sekretess för handlingar (t.ex. GDPR, ev. offentlighets- och sekretesslagen) | Regler och domänkunskap | Att inga dokument lämnar datorn | Lagkraven | Stabilt | IN-01 (BG-001), IN-06 | `[TO VERIFY]` |
+| OM-06 | Digitalt arkiv och verktyg för digital signering som tar emot den färdiga filen | Externt system | Vilket PDF-format resultatet behöver ha | Arkivets och signeringsverktygets krav. Att arkivet tar emot PDF/A-2 `[TO VERIFY]` | | IN-04 (BH-011, BH-017) | Intervju 2026-11-12 |
+| OM-07 | Arkivlagen (1990:782) och Riksarkivets föreskrifter om tekniska krav för elektroniska handlingar, RA-FS 2009:2 | Regler och domänkunskap | Vilket filformat den färdiga filen bör ha när den ska bevaras | RA-FS 2009:2 anger PDF/A-1 (ISO 19005-1) för kontorsdokument och skannade handlingar (4 och 7 §§). PDF/A-1 tillåter inte genomskinlighet. Riksarkivet remitterade i mars 2026 ett förslag att upphäva RA-FS 2009:2 och i stället styra med funktionskrav, vägledning och en lista med format som tas emot. Riksarkivets webbplats (läst 2026-11-12) säger att beslut planeras "efter sommaren 2026"; något beslut har inte gått att hitta, så tills vidare gäller RA-FS 2009:2. Ägaren har valt PDF/A-2 (2026-11-12). Föreskrifterna gäller statliga myndigheter; kommuner och regioner följer sina egna arkivregler. | Under förändring | IN-01, IN-04 (BH-017) | lagen.nu/ra-fs/2009:2; Riksarkivet PM till RA-FS 2009:2, mars 2026; riksarkivet.se/inlagg/riksarkivet-avser-att-upphava-ra-fs-20092 (lästa 2026-11-12) |
+| OM-08 | Lagen (2018:1937) om tillgänglighet till digital offentlig service (EN 301 549, WCAG 2.1 AA) | Regler och domänkunskap | Att appen går att använda för alla kollegor, t.ex. med tangentbord, skärmläsare och tillräckliga färgkontraster | Lagens krav. Ägaren har bestämt att organisationen omfattas (2026-11-12). | Stabilt | IN-02, IN-07 (BG-004) | Ägaren 2026-11-12 |
+
+## 6. Prövade men bortvalda
 | Kandidat | Varför bortvald |
 | :-- | :-- |
