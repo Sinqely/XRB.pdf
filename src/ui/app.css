@@ -1,0 +1,47 @@
+/* Gränssnittet för PDF-bagaren. Alla värden via tokens (docs/design.md §2), genererade i tokens.css. */
+@font-face { font-family: Carlito; font-weight: 400; font-style: normal; src: url('../resurser/typsnitt/Carlito-400-normal.woff2') format('woff2'); }
+@font-face { font-family: Carlito; font-weight: 400; font-style: italic; src: url('../resurser/typsnitt/Carlito-400-italic.woff2') format('woff2'); }
+@font-face { font-family: Carlito; font-weight: 700; font-style: normal; src: url('../resurser/typsnitt/Carlito-700-normal.woff2') format('woff2'); }
+@font-face { font-family: Carlito; font-weight: 700; font-style: italic; src: url('../resurser/typsnitt/Carlito-700-italic.woff2') format('woff2'); }
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body { background: var(--ui-bakgrund); color: var(--ui-text); font: var(--text-brodtext); }
+#app { height: 100%; }
+.app { display: grid; grid-template-rows: var(--storlek-sidhuvud-hojd) 1fr 32px; height: 100%; min-width: 1280px; }
+
+.sidhuvud { display: flex; align-items: center; justify-content: space-between; padding: 0 var(--space-4); border-bottom: 1px solid var(--ui-avdelare); }
+.appnamn { font: var(--text-kolumnrubrik); }
+.verktyg { display: flex; align-items: center; gap: var(--space-4); }
+
+.kolumner { display: grid; grid-template-columns: var(--storlek-kolumn-filer) 1fr var(--storlek-kolumn-markning); gap: var(--space-4); padding: var(--space-4); min-height: 0; }
+.kolumn { background: var(--ui-yta); border-radius: var(--radie-panel); padding: var(--space-4); overflow-y: auto; display: flex; flex-direction: column; gap: var(--space-4); }
+.kolumnrubrik { font: var(--text-kolumnrubrik); margin: 0; }
+.ingress { font: var(--text-ingress); margin: 0; }
+.ingress-latt { font: var(--text-ingress-latt); margin: 0; }
+.metadata { font: var(--text-liten); color: var(--ui-text-dampad); margin: 0; }
+
+.knapp-primar, .knapp-sekundar, .knapp-text { font: var(--text-brodtext); min-height: var(--storlek-kontroll-hojd); padding: 0 var(--space-4); border-radius: var(--radie-kontroll); cursor: pointer; transition: box-shadow var(--tid-snabb), background var(--tid-snabb); }
+.knapp-primar { background: var(--ui-primar); color: var(--ui-primar-text); border: 0; font-weight: 700; }
+.knapp-primar:hover { box-shadow: inset 0 0 0 2px var(--ui-primar-text); }
+.knapp-primar[aria-disabled="true"] { opacity: .5; cursor: not-allowed; box-shadow: none; }
+.knapp-sekundar { background: transparent; color: var(--ui-text); border: var(--storlek-kant-bredd) solid var(--ui-kant); }
+.knapp-sekundar:hover { background: var(--ui-bakgrund); }
+.knapp-text { background: transparent; color: var(--ui-text); border: 0; }
+.knapp-text:hover { text-decoration: underline; }
+:focus-visible { outline: var(--storlek-fokus-bredd) solid var(--ui-fokus); outline-offset: var(--storlek-fokus-avstand); }
+
+.slappyta { border: var(--storlek-kant-bredd) dashed var(--ui-kant); border-radius: var(--radie-panel); padding: var(--space-6) var(--space-4); display: flex; flex-direction: column; gap: var(--space-3); align-items: flex-start; }
+.dokumentlista { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--space-4); }
+.dokumentkort { display: grid; gap: var(--space-1); }
+.dokumentnamn { font-weight: 700; overflow-wrap: anywhere; }
+.miniatyr { width: var(--storlek-miniatyr-bredd); border: var(--storlek-kant-bredd) solid var(--ui-kant); border-radius: var(--radie-liten); background: #fff; }
+.miniatyr-ritas { height: 120px; background: var(--ui-avdelare); display: grid; place-items: center; font: var(--text-liten); }
+
+.meddelande { border-radius: var(--radie-panel); padding: var(--space-3); border: var(--storlek-kant-bredd) solid var(--ui-markering); }
+.meddelande-fel { background: var(--ui-fel-yta); border-color: var(--ui-fel); }
+
+.statusyta { font: var(--text-liten); padding: var(--space-1) var(--space-4); border-top: 1px solid var(--ui-avdelare); }
+.dold-for-oga { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
