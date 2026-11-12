@@ -40,7 +40,16 @@ Se bilaga A.
 En enda webbapplikation som läggs upp på organisationens SharePoint och körs helt i användarens webbläsare. Externa parter: användarens dator (källfiler och sparad fil), webbläsaren (Edge, Safari), SharePoint (publicering), mottagare av filen (digitalt arkiv, e-post, signeringsverktyg). Ingen server tar emot dokument (BG-001, OM-03, OM-06).
 
 ### 2.2 Product functions (summary)
-*(fylls i när funktionsområdena är fastställda)*
+- **FIL** – läsa in PDF-filer från datorn.
+- **SID** – välja, ordna, ta bort och vrida sidor.
+- **FHV** – ständig förhandsvisning av resultatet, en sida i taget.
+- **STA** – en vattenstämpel (bild) med genomskinlighet, opacitet och storlek.
+- **TXT** – en textetikett med storlek, färg, bakgrund, typsnitt och stil.
+- **PLC** – fri och färdig placering, säkerhetsmarginal och kantskydd.
+- **DOL** – visa och redigera dold information.
+- **SPA** – skapa och spara resultatet som PDF/A-2b eller vanlig PDF.
+- **ALM** – ångra, börja om, startläge, meddelanden, språk, tema.
+- **DOK** – hjälp, om-sida, licenser, verifieringsrapport, tillgänglighetsredogörelse.
 
 ### 2.3 User classes & characteristics
 - **Kollegor (användare, IN-02):** utan särskild datorvana, använder appen sporadiskt, ska klara uppgiften första gången utan instruktioner. Kan använda tangentbord eller skärmläsare (BG-004).
@@ -230,6 +239,22 @@ Kraven skrivs i EARS: *När* (händelse), *Medan* (tillstånd), *Där* (valbar f
 | FR-ALM-008 | Appen ska inte spara dokument, sidor, bilder eller metadata i webbläsarens beständiga lagring. | Must | Active | Källa: BG-001, OM-09, IN-06. Inget finns kvar när fliken stängs. |
 | FR-ALM-009 | När användaren väljer ljust tema ska appen visa gränssnittet i GP MS ljusa tema tills användaren väljer mörkt tema igen. | Must | Active | Källa: FV-002. Mörkt tema är standard. Ägaren 2026-11-12: Must. Valet av tema får sparas i webbläsaren (inte dokumentdata). |
 | FR-ALM-010 | När användaren väljer att visa kortkommandon ska appen visa en lista med alla kortkommandon. | Should | Active | Källa: BG-004. |
+
+#### 3.1.10 DOK – Dokumentation och beskrivningar i appen
+
+| ID | Requirement | Priority | Status | Notes / rules |
+| :-- | :---------- | :------- | :----- | :------------ |
+| FR-DOK-001 | Appen ska vid varje steg (läsa in, välja sidor, vattenstämpel, textetikett, spara) visa en kort hjälptext eller göra den nåbar via en hjälpknapp vid steget. | Must | Active | Källa: FV-001. |
+| FR-DOK-002 | Medan arbetsytan saknar inlästa filer ska appen visa de tre huvudstegen (läs in filer, välj och ordna sidor, baka ihop och spara) i korthet. | Must | Active | Källa: FV-001, MF-01. Kompletterar FR-ALM-005. |
+| FR-DOK-003 | När användaren öppnar hjälpen ska appen visa steg-för-steg-beskrivningar av de två vardagsfallen: beslut med inskannad namnteckning (DS-01) och märkning av en PDF (DS-02). | Must | Active | Källa: FV-001. |
+| FR-DOK-004 | När användaren öppnar om-sidan ska appen visa appens namn, versionsnummer och versionsdatum. | Must | Active | Källa: UB-01. |
+| FR-DOK-005 | När användaren öppnar om-sidan ska appen visa en tydlig mening om att inga filer eller uppgifter lämnar användarens dator. | Must | Active | Källa: BG-001. |
+| FR-DOK-006 | När användaren öppnar om-sidan ska appen visa licensförteckningen med varje inbakat bibliotek och typsnitt, dess version och licens. | Must | Active | Källa: BG-008. |
+| FR-DOK-007 | När användaren väljer att visa verifieringsrapporten på om-sidan ska appen visa verifieringsrapporten för informationssäkerhet för den aktuella versionen, inklusive verifieringen av att ingen information skickas externt. | Must | Active | Källa: UB-02, BG-001. Ägaren 2026-11-12. Rapporten följer med appen och tas fram inför varje release (se NFR-SEC). |
+| FR-DOK-008 | När användaren väljer tillgänglighetsredogörelsen ska appen visa redogörelsen för appens tillgänglighet. | Must | Active | Källa: BG-004, OM-08. |
+| FR-DOK-009 | När användaren öppnar hjälpen ska appen visa listan med kortkommandon. | Must | Active | Källa: BG-004. |
+| FR-DOK-010 | Appen ska ge varje knapp, fält, miniatyr och förhandsvisad sida ett beskrivande namn som skärmläsare läser upp, för sidor i formen "Sida N av M ur <dokumentnamn>". | Must | Active | Källa: BG-004. |
+| FR-DOK-011 | Där kontaktuppgift till förvaltaren ingår ska appen visa den på om-sidan. | Won't | Active | Källa: UB-01. Bortvald av ägaren 2026-11-12. |
 
 ### 3.2 External interface requirements
 *(fas 4)*
