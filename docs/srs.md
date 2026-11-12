@@ -1,13 +1,13 @@
 # Software Requirements Specification: PDF-bagaren (XRB.pdf)
 
-> Version: 1.0 · Status: Reviewed · Last updated: 2026-11-12
+> Version: 1.0 · Status: Approved · Last updated: 2026-11-12
 > Requirement syntax: EARS
 > Underlag: docs/systemkontext.md v1.0 och docs/behov.md v1.1 (baslinje G0, 2026-11-12). Varje krav anger sin källa (BH/FV/BG/UB/OM) i kolumnen Notes.
 
 ## Revision History
 | Version | Date | Author | Changes |
 | :------ | :--- | :----- | :------ |
-| 1.0 | 2026-11-12 | Ägaren, Claude | Första fullständiga specifikationen: 128 funktionella krav i 10 områden, 25 icke-funktionella krav, 6 gränssnitt. Väntar på grind G1. |
+| 1.0 | 2026-11-12 | Ägaren, Claude | Första fullständiga specifikationen: 128 funktionella krav i 10 områden, 25 icke-funktionella krav, 6 gränssnitt. Godkänd vid G1 med anmärkning. |
 
 ## 1. Introduction
 ### 1.1 Purpose

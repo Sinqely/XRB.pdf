@@ -1,6 +1,6 @@
 # Användningsfall: PDF-bagaren (XRB.pdf)
 
-> Version: 1.0 · Status: Reviewed · Last updated: 2026-11-12
+> Version: 1.0 · Status: Approved · Last updated: 2026-11-12
 > Underlag: docs/srs.md, driftscenarier DS-01–DS-04 i docs/behov.md.
 
 ## Aktörer
