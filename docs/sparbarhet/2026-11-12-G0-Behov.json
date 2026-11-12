@@ -5,22 +5,22 @@
  "baslinje": "baseline/G0-v1.0",
  "summa": {
   "alla": {
-   "totalt": 23,
-   "bekraftade": 17,
+   "totalt": 30,
+   "bekraftade": 30,
    "tackta": 0,
    "verifierade": 0,
    "validerade": 0
   },
   "Måste": {
-   "totalt": 20,
-   "bekraftade": 14,
+   "totalt": 26,
+   "bekraftade": 26,
    "tackta": 0,
    "verifierade": 0,
    "validerade": 0
   },
   "Bör": {
-   "totalt": 3,
-   "bekraftade": 3,
+   "totalt": 4,
+   "bekraftade": 4,
    "tackta": 0,
    "verifierade": 0,
    "validerade": 0
