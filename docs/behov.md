@@ -8,6 +8,7 @@
 | :-- | :-- | :-- | :-- |
 | 0.1 | 2026-11-12 | Första utkast ur intervju 1. | Behovsfångst steg 4 påbörjat |
 | 0.2 | 2026-11-12 | La till BH-007 (genomskinliga områden) och BH-008 (opacitet) för vattenstämpel. | Ägarens tillägg |
+| 1.0-utkast | 2026-11-12 | BG-004 tillgänglighet bekräftad som Måste. | Ägarens svar |
 | 0.9 | 2026-11-12 | FV-002 uppdaterad efter ny version av GP MS (mörkt tema, Calibri/Carlito). | GP MS uppdaterad |
 | 0.8 | 2026-11-12 | FV-002 bekräftad (Bör, GP MS, bara appen). BG-004 tillgänglighet föreslagen. | Ägarens svar |
 | 0.7 | 2026-11-12 | La till IN-07 Organisationen och FV-002 (grafisk profil). | Ägarens tillägg |
@@ -58,7 +59,7 @@ Rangordning av de viktigaste behoven (ägaren 2026-11-12: "Användbarhet, ingen 
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
 | FV-002 | Förväntning | "Det kan handla om att användargränssnittet har vissa färger och typsnitt."; "Du kan använda det som finns i GP-MS så länge."; "det är bara appen"; prio "Bör"; "Jag vill dessutom att GP-MS ska förorda att mörka bakgrunder används." (2026-11-12) | Organisationen förväntar sig att appens gränssnitt (inte de sidor användaren skapar) följer den grafiska profilen GP MS (Grafisk profil materielsystem, version 2026-11-12): mörkt tema som standard, profilens färger och kontrastregler, och typsnittet Calibri med Carlito som inbäddad reserv. | Bör | Ägaren jämför appen med GP MS: mörk grund (ui-bakgrund skiffer, ui-yta petrol, ui-text sten-ljus, ui-primar gron, ui-fokus gul), typsnittsstacken Calibri, Carlito, "Segoe UI", Arial, och att inga typsnitt hämtas från en extern tjänst (BG-001, BH-016). | MF-01 | Carlito (SIL OFL 1.1) bäddas in; Calibri används om den är installerad | Bekräftad |
 
-| BG-004 | Begränsning | Lagen (2018:1937) om tillgänglighet till digital offentlig service, via EN 301 549 och WCAG 2.1 nivå AA (OM-08) | Organisationen kan behöva att appen uppfyller tillgänglighetskraven, bland annat att allt går att göra med tangentbord, att dra och släpp har ett alternativ, att information inte bara visas med färg och att appen fungerar med skärmläsare. | `[TO VERIFY]` | Kontroll mot WCAG 2.1 AA, t.ex. att hela DS-01 och DS-02 går att genomföra med bara tangentbord. | MF-01 | | Förslag [TO VERIFY] |
+| BG-004 | Begränsning | Lagen (2018:1937) om tillgänglighet till digital offentlig service, via EN 301 549 och WCAG 2.1 nivå AA (OM-08). Ägaren: "Ja utgå från det." (2026-11-12) | Organisationen behöver att appen uppfyller tillgänglighetskraven: allt går att göra med tangentbord, dra och släpp har ett alternativ, information visas inte bara med färg, och appen fungerar med operativsystemets skärmläsare genom beskrivande namn, roller och statusmeddelanden. | Måste | Kontroll mot WCAG 2.1 AA. Hela DS-01 och DS-02 går att genomföra med bara tangentbord och med en skärmläsare (t.ex. NVDA eller Windows Skärmläsaren). | MF-01 | | Bekräftad |
 
 ## 2. Behov på utvecklingen (inte systemkrav)
 | ID | Egna ord | Vad det betyder för metoden |
