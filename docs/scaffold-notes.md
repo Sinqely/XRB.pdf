@@ -56,7 +56,7 @@ Borttaget ur mallen: exempelbilder, `public/`, mallens CSS och demokomponent, fa
 
 | Villkor (plan avsnitt 2) | Status |
 | :-- | :-- |
-| CI grön | Lokalt grönt (lint, enhet, bygge, licenser, sårbarheter, e2e i Chromium). Första körningen i GitHub Actions sker vid push. |
+| CI grön | Grönt lokalt och i GitHub Actions (körning 1 och 2, 2026-11-12), inklusive e2e i WebKit. |
 | Fungerar från test-SharePoint i Edge (och Safari) | **Väntar på Ägaren** (docs/forvaltning.md avsnitt 2) |
 | Inga nätverksanrop efter laddning, fungerar offline | Visat i e2e-test lokalt; **väntar på prov på SharePoint** |
 | Starttid från SharePoint mätt | **Väntar på Ägaren** |
