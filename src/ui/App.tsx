@@ -16,7 +16,11 @@ import { sidmattFor, stada, useMiniatyrer } from './dokumentregister'
 import { Markning } from './Markning'
 import { StampelPanel } from './StampelPanel'
 import { Overlagg } from './Overlagg'
-import { inomMarginal, ruta, stampelMatt } from '../karna/layout'
+import { inomMarginal, overlappar, ruta, stampelMatt } from '../karna/layout'
+import { etikettMatt } from '../karna/etikett'
+import { etikettSyns } from '../karna/markning'
+import { EtikettPanel } from './EtikettPanel'
+import { useSnitt } from './typsnitt'
 
 const tillstand = skapaTillstand()
 
@@ -87,6 +91,18 @@ export function App() {
   useEffect(() => sattTema(tema), [tema])
 
   // Samma meddelande två gånger i rad ska också läsas upp: töm först (design §5).
+  // Text som skrivs i följd blir ett enda ångra-steg (FR-ALM-001), så att Ångra inte tar bort ett tecken i taget.
+  const textsteg = useRef<Arbetsyta | null>(null)
+  function andraText(fn: (y: Arbetsyta) => Andring) {
+    const nu = tillstand.hamta()
+    if (textsteg.current === nu) {
+      const a = fn(nu)
+      if (a.yta === nu) return
+      tillstand.ersatt(() => a.yta)
+    } else andra(fn)
+    textsteg.current = tillstand.hamta()
+  }
+
   function sattStatus(text: string) {
     if (!text) return
     sattStatusText('')
@@ -158,12 +174,21 @@ export function App() {
   const aktivSida = yta.resultat.find((r) => r.id === aktivId)
   const aktivMatt = aktivSida ? mattFor(aktivSida) : null
   const st = yta.vattenstampel
-  const stampelNaraKant = st
-    ? yta.resultat.flatMap((r, i) => {
-        const m = r.stampel ? mattFor(r) : null
-        return m && inomMarginal(m, ruta(m, stampelMatt(st), st.placering)) ? [i + 1] : []
-      })
-    : []
+  const et = yta.textetikett
+  const snitt = useSnitt(et?.typsnitt, et?.fet, et?.kursiv)
+  const etMatt = et && snitt ? etikettMatt(snitt.font, et) : null
+  const stampelNaraKant: number[] = []
+  const etikettNaraKant: number[] = []
+  const overlapp: number[] = []
+  yta.resultat.forEach((r, i) => {
+    const m = (r.stampel && st) || (etMatt && etikettSyns(yta, r.id)) ? mattFor(r) : null
+    if (!m) return
+    const rs = r.stampel && st ? ruta(m, stampelMatt(st), st.placering) : null
+    const re = etMatt && et && etikettSyns(yta, r.id) ? ruta(m, etMatt, et.placering) : null
+    if (rs && inomMarginal(m, rs)) stampelNaraKant.push(i + 1)
+    if (re && inomMarginal(m, re)) etikettNaraKant.push(i + 1)
+    if (rs && re && overlappar(rs, re)) overlapp.push(i + 1)
+  })
   const forklaring = yta.dokument.length === 0 ? texter.bakaIhopIngaFiler : texter.bakaIhopIngaSidor
   return (
     <div class="app">
@@ -249,7 +274,7 @@ export function App() {
         <Markning
           inaktiv={tomt}
           stampel={<StampelPanel yta={yta} andra={andra} aktivId={aktivId} aktivMatt={aktivMatt} naraKant={stampelNaraKant} status={sattStatus} />}
-          etikett={<p class="ingress-latt dampad">{texter.markningSenare}</p>}
+          etikett={<EtikettPanel yta={yta} andra={andra} andraText={andraText} aktivId={aktivId} naraKant={etikettNaraKant} overlapp={overlapp} />}
         />
       </main>
 

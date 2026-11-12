@@ -3,7 +3,9 @@
 // (BG-009, FR-SPA-007, regel R8). Ren funktion utan DOM: körs i bygg-arbetstråden och i enhetstester.
 import { degrees, PDFDocument } from '@cantoo/pdf-lib'
 import { forkontroll, komplettera, sattDokumentinfo, sattFilId, type Hinder } from './pdfa'
-import { ritaStampel, type Stampelbygge } from './overlagg'
+import fontkit from '@pdf-lib/fontkit'
+import { ritaEtikett, ritaStampel, type Etikettbygge, type Stampelbygge } from './overlagg'
+import { TEXTFUNKTIONER, type Glyfkalla } from '../karna/etikett'
 
 export interface Byggsida {
   readonly dokumentId: string
@@ -12,6 +14,13 @@ export interface Byggsida {
   readonly vridning?: number
   /** Vattenstämpeln ligger på sidan (FR-STA-008). */
   readonly stampel?: boolean
+  /** Textetiketten ligger på sidan (FR-TXT-010). */
+  readonly etikett?: boolean
+}
+
+export interface Etikettbegaran extends Etikettbygge {
+  /** Typsnittsfilen (TTF) för valt typsnitt och snitt; huvudtråden skickar samma fil som förhandsvisningen använder. */
+  readonly typsnitt: Uint8Array
 }
 
 export interface Stampelbegaran extends Stampelbygge {
@@ -28,6 +37,8 @@ export interface Byggbegaran {
   readonly format?: 'pdfa' | 'pdf'
   /** Vattenstämpeln, om den finns (FEAT-006). */
   readonly stampel?: Stampelbegaran | null
+  /** Textetiketten, om den finns och har text (FEAT-007). */
+  readonly etikett?: Etikettbegaran | null
   readonly uppgifter?: { readonly titel: string; readonly forfattare: string; readonly amne: string; readonly nyckelord: string }
   /** Tidpunkt för filen (ms sedan 1970); anges av huvudtråden så att testerna blir förutsägbara. */
   readonly datum?: number
@@ -67,6 +78,16 @@ export async function sammanstall(begaran: Byggbegaran): Promise<PDFDocument> {
     const bild = st.typ === 'png' ? await ut.embedPng(st.bild) : await ut.embedJpg(st.bild)
     begaran.sidor.forEach((s, i) => {
       if (s.stampel) ritaStampel(ut.getPage(i), bild, st)
+    })
+  }
+  const et = begaran.etikett
+  if (et && et.text.trim() && begaran.sidor.some((s) => s.etikett)) {
+    ut.registerFontkit(fontkit)
+    // Hela typsnittet bäddas in (fontkit kan inte göra delmängder av de här filerna); kerning och ligaturer av som i förhandsvisningen.
+    const font = await ut.embedFont(et.typsnitt, { subset: false, features: TEXTFUNKTIONER })
+    const glyfer = fontkit.create(et.typsnitt) as unknown as Glyfkalla
+    begaran.sidor.forEach((s, i) => {
+      if (s.etikett) ritaEtikett(ut.getPage(i), font, glyfer, et)
     })
   }
   return ut

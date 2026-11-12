@@ -4,6 +4,7 @@ import { foreslaFilnamn, hinderPerSida, sparaResultat, stadaFilnamn, byggbegaran
 import { laggTillAlla, laggTillDokument, laggTillSida } from '../../src/karna/arbetsyta'
 import { tomArbetsyta, type Arbetsyta, type Dokument } from '../../src/karna/typer'
 
+const typsnitt = async () => new Uint8Array([9])
 const dok = (id: string, namn: string, sidantal = 2): Dokument => ({ id, namn, bytes: new Uint8Array([id.charCodeAt(0)]), sidantal, storlekByte: 1 })
 const yta = (): Arbetsyta => {
   let y = laggTillDokument(tomArbetsyta, dok('a', 'Beslut.pdf (2)')).yta
@@ -37,9 +38,9 @@ describe('sparande', () => {
     const b = byggbegaran(yta(), 'pdfa', 5)
     expect(Object.keys(b.dokument).sort()).toEqual(['a', 'b'])
     expect(b.sidor).toEqual([
-      { dokumentId: 'b', sidindex: 0, vridning: 0, stampel: false },
-      { dokumentId: 'a', sidindex: 0, vridning: 0, stampel: false },
-      { dokumentId: 'a', sidindex: 1, vridning: 0, stampel: false },
+      { dokumentId: 'b', sidindex: 0, vridning: 0, stampel: false, etikett: false },
+      { dokumentId: 'a', sidindex: 0, vridning: 0, stampel: false, etikett: false },
+      { dokumentId: 'a', sidindex: 1, vridning: 0, stampel: false, etikett: false },
     ])
     expect(b.format).toBe('pdfa')
     expect(b.datum).toBe(5)
@@ -52,7 +53,7 @@ describe('sparande', () => {
 
   it('bygger och laddar ned med valt namn (FR-SPA-001)', async () => {
     const ladda = vi.fn()
-    const ut = await sparaResultat(yta(), 'X.pdf', 'pdfa', { bygg: async () => ({ bytes: new Uint8Array([1]) }), ladda })
+    const ut = await sparaResultat(yta(), 'X.pdf', 'pdfa', { bygg: async () => ({ bytes: new Uint8Array([1]) }), ladda, typsnitt })
     expect(ut).toEqual({ ok: true, filnamn: 'X.pdf' })
     expect(ladda).toHaveBeenCalledWith(new Uint8Array([1]), 'X.pdf')
   })
@@ -61,7 +62,7 @@ describe('sparande', () => {
     const y = Object.freeze(yta())
     const kopia = JSON.stringify(y, (_, v) => (v instanceof Uint8Array ? [...v] : v))
     const ladda = vi.fn()
-    const ut = await sparaResultat(y, 'X.pdf', 'pdf', { bygg: async () => { throw new Error('trasig') }, ladda })
+    const ut = await sparaResultat(y, 'X.pdf', 'pdf', { bygg: async () => { throw new Error('trasig') }, ladda, typsnitt })
     expect(ut.ok).toBe(false)
     expect(ut.ok ? '' : ut.meddelande).toContain('Arbetsytan är oförändrad')
     expect(ladda).not.toHaveBeenCalled()
@@ -77,7 +78,7 @@ describe('sparande', () => {
       { sida: 1, kod: 'lzw' as const, detalj: '' },
     ]
     const y = yta()
-    const ut = await sparaResultat(y, 'X.pdf', 'pdfa', { bygg: async () => ({ hinder }), ladda })
+    const ut = await sparaResultat(y, 'X.pdf', 'pdfa', { bygg: async () => ({ hinder }), ladda, typsnitt })
     expect(ut).toEqual({ ok: false, hinder })
     expect(ladda).not.toHaveBeenCalled()
     const lista = hinderPerSida(y, hinder)

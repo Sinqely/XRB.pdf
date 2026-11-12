@@ -177,3 +177,18 @@ p, h2, h3, ul, ol { margin: 0; }
 .handtag-se { right: -6px; bottom: -6px; cursor: nwse-resize; }
 .handtag-ne { right: -6px; top: -6px; cursor: nesw-resize; }
 .handtag-sw { left: -6px; bottom: -6px; cursor: nesw-resize; }
+
+/* FEAT-007 Textetikett */
+.etikett-objekt svg { display: block; overflow: visible; pointer-events: none; }
+.etikett-text { white-space: pre; font-kerning: none; font-variant-ligatures: none; font-feature-settings: 'kern' 0, 'liga' 0, 'clig' 0, 'calt' 0; text-rendering: geometricPrecision; }
+.faltrad { display: flex; justify-content: space-between; gap: var(--space-2); }
+.valgrupp-rad { grid-auto-flow: column; justify-content: start; gap: var(--space-4); }
+.fargval { display: grid; gap: var(--space-2); }
+.fargrutor { display: flex; flex-wrap: wrap; gap: var(--space-1); }
+.fargruta { width: var(--storlek-kontroll-min); height: var(--storlek-kontroll-min); display: grid; place-items: center; padding: 0; border: var(--storlek-kant-bredd) solid var(--ui-kant); border-radius: var(--radie-kontroll); cursor: pointer; color: var(--ui-primar-text); }
+.fargruta .ikon { filter: drop-shadow(0 0 1px #000) drop-shadow(0 0 1px #000); }
+.fargruta[aria-checked='true'] { border-width: var(--storlek-fokus-bredd); border-color: var(--ui-text); }
+.fargruta-ingen { background: linear-gradient(to top right, transparent calc(50% - 1px), var(--ui-fel) calc(50% - 1px), var(--ui-fel) calc(50% + 1px), transparent calc(50% + 1px)), var(--ui-bakgrund); }
+.egenfarg { display: inline-flex; gap: var(--space-2); align-items: center; cursor: pointer; }
+.egenfarg input { width: 40px; height: var(--storlek-kontroll-min); padding: 0; border: var(--storlek-kant-bredd) solid var(--ui-kant); border-radius: var(--radie-kontroll); background: transparent; }
+.egenfarg.vald input { border-width: var(--storlek-fokus-bredd); border-color: var(--ui-text); }

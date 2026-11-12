@@ -7,6 +7,7 @@ import { bygg } from '../bygg/bygg-klient'
 import type { Hinder } from '../bygg/pdfa'
 import { foreslaFilnamn, hinderPerSida, laddaNed, sparaResultat, stadaFilnamn } from './spara'
 import { Ikon } from './ikoner'
+import { laddaSnitt } from './typsnitt'
 
 interface Props {
   yta: Arbetsyta
@@ -46,7 +47,7 @@ export function SparaDialog({ yta: startyta, stang, status, taBortSidor }: Props
     sattFel(null)
     sattHinder(null)
     status(nuFormat === 'pdfa' ? texter.kontrollerar : texter.sparar)
-    const ut = await sparaResultat(nuYta, filnamn, nuFormat, { bygg, ladda: laddaNed })
+    const ut = await sparaResultat(nuYta, filnamn, nuFormat, { bygg, ladda: laddaNed, typsnitt: async (t, f, k) => (await laddaSnitt(t, f, k)).bytes })
     sattSparar(null)
     if (ut.ok) {
       status(texter.sparad(ut.filnamn))

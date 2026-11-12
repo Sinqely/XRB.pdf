@@ -25,6 +25,7 @@ dist-ssr
 
 # Genereras ur docs/tokens.json
 src/ui/tokens.css
+src/karna/etikett-tokens.ts
 # Testresultat
 test-results
 playwright-report

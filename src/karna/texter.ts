@@ -183,6 +183,33 @@ export const texter = {
   marginalForklaring: 'Den streckade linjen är säkerhetsmarginalen. Den syns bara här, inte i filen.',
   overlaggStampel: (namn: string) => `Vattenstämpel ${namn}`,
   storleksHandtag: 'Ändra storlek',
+
+  // FEAT-007 Textetikett (SCR-APP-003)
+  etikettText: 'Text',
+  etikettTextHjalp: 'En rad, högst 200 tecken.',
+  teckenRaknare: (n: number) => `${n} av 200`,
+  teckenGrans: 'Gränsen på 200 tecken är nådd.',
+  etikettTillagd: 'Textetikett tillagd på alla sidor.',
+  etikettAndrad: 'Textetiketten ändrad.',
+  etikettBorttagen: 'Textetiketten borttagen från alla sidor.',
+  etikettTom: 'Fältet är tomt, så ingen etikett läggs på sidorna.',
+  taBortEtikett: 'Ta bort etiketten',
+  textstorlek: 'Textstorlek (pt)',
+  textstorlekHjalp: '6–72 pt.',
+  textfarg: 'Textfärg',
+  bakgrundsfarg: 'Bakgrund',
+  ingenBakgrund: 'Ingen',
+  egenFarg: 'Egen färg',
+  fargnamn: { svart: 'Svart', vit: 'Vit', gra: 'Grå', rod: 'Röd', bla: 'Blå', gron: 'Grön', gul: 'Gul', orange: 'Orange' },
+  typsnitt: 'Typsnitt',
+  typsnittNamn: { sans: 'Carlito (utan seriffer)', serif: 'Tinos (med seriffer)', mono: 'Cousine (fast teckenbredd)' },
+  stil: 'Stil',
+  fet: 'Fet',
+  kursiv: 'Kursiv',
+  saknadeTecken: (tecken: string[]) =>
+    `Typsnittet saknar ${tecken.length === 1 ? 'tecknet' : 'tecknen'} ${tecken.map((t) => `"${t}"`).join(', ')}. ${tecken.length === 1 ? 'Det' : 'De'} kan inte visas i filen. Välj ett annat typsnitt eller ta bort ${tecken.length === 1 ? 'tecknet' : 'tecknen'}.`,
+  overlaggEtikett: (text: string) => `Textetikett "${text}"`,
+  overlapp: (sidor: number[]) => `Vattenstämpeln och textetiketten överlappar varandra på ${sidlista(sidor)}.`,
 } as const
 
 /** "sida 2", "sidorna 2 och 5", "sidorna 1, 3 och 4". */

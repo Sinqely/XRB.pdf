@@ -1,6 +1,7 @@
 // Överlägg i resultatfilen (FR-SPA-008): stämpel och etikett läggs i ett eget innehållsflöde ovanpå sidan.
 // Sidans egna flöden rörs inte (R8). Placeringen kommer bara från layoutmodellen (R4, ADR-006).
-import { concatTransformationMatrix, popGraphicsState, pushGraphicsState, type PDFImage, type PDFPage } from '@cantoo/pdf-lib'
+import { concatTransformationMatrix, popGraphicsState, pushGraphicsState, rgb, type PDFFont, type PDFImage, type PDFPage } from '@cantoo/pdf-lib'
+import { etikettMatt, type Glyfkalla } from '../karna/etikett'
 import { ruta, stampelMatt, type Matt } from '../karna/layout'
 import type { Placering } from '../karna/typer'
 
@@ -51,5 +52,28 @@ export function ritaStampel(sida: PDFPage, bild: PDFImage, s: Stampelbygge): voi
   iVisadRiktning(sida, (matt) => {
     const r = ruta(matt, stampelMatt(s), s.placering)
     sida.drawImage(bild, { x: r.x, y: matt.hojd - r.y - r.h, width: r.b, height: r.h, opacity: s.opacitet / 100 })
+  })
+}
+
+export interface Etikettbygge {
+  readonly text: string
+  readonly storlekPt: number
+  readonly farg: string
+  readonly bakgrund: string | null
+  readonly placering: Placering
+}
+
+const farg = (hex: string) => rgb(parseInt(hex.slice(1, 3), 16) / 255, parseInt(hex.slice(3, 5), 16) / 255, parseInt(hex.slice(5, 7), 16) / 255)
+
+/** Etiketten på en rad med valt typsnitt, färg och bakgrund (FR-TXT-001..008). */
+export function ritaEtikett(sida: PDFPage, font: PDFFont, glyfer: Glyfkalla, e: Etikettbygge): void {
+  const m = etikettMatt(glyfer, e)
+  iVisadRiktning(sida, (matt) => {
+    const r = ruta(matt, m, e.placering)
+    // Krymps etiketten för att rymmas på sidan krymps texten lika mycket.
+    const f = r.b / m.bredd
+    const botten = matt.hojd - r.y - r.h
+    if (e.bakgrund) sida.drawRectangle({ x: r.x, y: botten, width: r.b, height: r.h, color: farg(e.bakgrund) })
+    sida.drawText(e.text, { x: r.x + m.marginal * f, y: botten + r.h - m.baslinje * f, size: e.storlekPt * f, font, color: farg(e.farg) })
   })
 }

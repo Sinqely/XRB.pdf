@@ -54,7 +54,8 @@ export interface Vattenstampel {
   readonly allaSidor: boolean
 }
 
-export type Typsnitt = 'carlito' | 'liberation-serif' | 'liberation-mono'
+/** Etikettens typsnitt (ADR-007): Carlito, Tinos (seriffer) och Cousine (fast teckenbredd). */
+export type Typsnitt = 'sans' | 'serif' | 'mono'
 
 export interface Textetikett {
   readonly text: string

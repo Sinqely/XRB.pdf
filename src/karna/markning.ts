@@ -3,7 +3,9 @@
 import type { Andring } from './arbetsyta'
 import { forval } from './layout'
 import { texter } from './texter'
-import type { Arbetsyta, Placering, Vattenstampel } from './typer'
+import type { Arbetsyta, Placering, Textetikett, Vattenstampel } from './typer'
+import { MAX_STORLEK_PT, MIN_STORLEK_PT, stadaEtikettText } from './etikett'
+import { etikettfarger } from './etikett-tokens'
 
 export type Objekt = 'stampel' | 'etikett'
 
@@ -108,4 +110,53 @@ export function vaxlaPaSida(yta: Arbetsyta, o: Objekt, resultatId: string): Andr
 /** Platserna (från 1) där objektet ligger. */
 export function sidorMed(yta: Arbetsyta, o: Objekt): number[] {
   return yta.resultat.flatMap((r, i) => (r[o] ? [i + 1] : []))
+}
+
+/** Förval för en ny etikett (FR-TXT-003, FR-PLC-006): 12 pt, svart, ingen bakgrund, Carlito, sidhuvudet 10 mm, alla sidor. */
+export const nyEtikett: Textetikett = {
+  text: '',
+  storlekPt: 12,
+  farg: etikettfarger.svart,
+  bakgrund: null,
+  typsnitt: 'sans',
+  fet: false,
+  kursiv: false,
+  placering: forval('sidhuvud'),
+  allaSidor: true,
+}
+
+export type Etikettandring = Partial<Pick<Textetikett, 'text' | 'storlekPt' | 'farg' | 'bakgrund' | 'typsnitt' | 'fet' | 'kursiv'>>
+
+/**
+ * Ändrar etiketten. Den första ändringen skapar etiketten med förvalen och lägger den på alla sidor.
+ * Texten hålls på en rad och högst 200 tecken; storleken 6–72 pt (FR-TXT-001..008).
+ */
+export function andraEtikett(yta: Arbetsyta, a: Etikettandring, meddelande = texter.etikettAndrad): Andring {
+  const fore = yta.textetikett
+  const bas = fore ?? nyEtikett
+  const ny: Textetikett = {
+    ...bas,
+    ...a,
+    text: a.text === undefined ? bas.text : stadaEtikettText(a.text),
+    storlekPt: a.storlekPt === undefined || !Number.isFinite(a.storlekPt) ? bas.storlekPt : Math.round(Math.max(MIN_STORLEK_PT, Math.min(MAX_STORLEK_PT, a.storlekPt)) * 10) / 10,
+  }
+  if (fore && (Object.keys(ny) as (keyof Textetikett)[]).every((k) => ny[k] === fore[k])) return ingen(yta)
+  // Ett tomt textfält skapar ingen etikett; andra val (färg, storlek …) sparas så att de gäller när texten skrivs.
+  if (!fore && a.text !== undefined && ny.text === '') return ingen(yta)
+  return {
+    yta: { ...yta, textetikett: ny, resultat: fore ? yta.resultat : yta.resultat.map((r) => ({ ...r, etikett: true })) },
+    meddelande: fore || ny.text === '' ? meddelande : texter.etikettTillagd,
+  }
+}
+
+/** Tar bort etiketten från alla sidor och glömmer inställningarna (FR-TXT-011). */
+export function taBortEtikett(yta: Arbetsyta): Andring {
+  if (!yta.textetikett) return ingen(yta)
+  return { yta: { ...yta, textetikett: null, resultat: yta.resultat.map((r) => ({ ...r, etikett: false })) }, meddelande: texter.etikettBorttagen }
+}
+
+/** Ligger en synlig etikett på sidan? En tom text ger ingen etikett (FR-TXT-012). */
+export function etikettSyns(yta: Arbetsyta, resultatId: string): boolean {
+  const e = yta.textetikett
+  return !!e && e.text.trim() !== '' && !!yta.resultat.find((r) => r.id === resultatId)?.etikett
 }

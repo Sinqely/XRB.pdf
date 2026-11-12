@@ -47,4 +47,18 @@ ${ljus.join('\n')}
 }
 `
 writeFileSync(new URL('../src/ui/tokens.css', import.meta.url), css)
+
+// Etikettens färger och typsnitt gäller resultatfilen, inte gränssnittet, och behövs därför i TypeScript.
+const farger = Object.entries(tokens.color.etikett).filter(([n]) => !n.startsWith('$')).map(([n, t]) => `  ${n}: '${t.$value}',`)
+const ts = `// Genererad av scripts/tokens-till-css.mjs ur docs/tokens.json. Redigera inte för hand.
+export const etikettfarger = {
+${farger.join('\n')}
+} as const
+export const etikettTypsnitt = {
+  sans: '${tokens.font.family['etikett-sans'].$value[0]}',
+  serif: '${tokens.font.family['etikett-serif'].$value[0]}',
+  mono: '${tokens.font.family['etikett-mono'].$value[0]}',
+} as const
+`
+writeFileSync(new URL('../src/karna/etikett-tokens.ts', import.meta.url), ts)
 console.log(`tokens.css: ${mörk.length} färgroller, ${ljus.length} ljusa värden, ${övrigt.length} övriga`)
