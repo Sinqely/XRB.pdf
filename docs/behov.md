@@ -8,7 +8,8 @@
 | :-- | :-- | :-- | :-- |
 | 0.1 | 2026-11-12 | Första utkast ur intervju 1. | Behovsfångst steg 4 påbörjat |
 | 0.2 | 2026-11-12 | La till BH-007 (genomskinliga områden) och BH-008 (opacitet) för vattenstämpel. | Ägarens tillägg |
-| 1.0-utkast | 2026-11-12 | BG-004 tillgänglighet bekräftad som Måste. | Ägarens svar |
+| 0.11 | 2026-11-12 | Driftbild bekräftad. Ägaren benämns neutralt "Ägaren". | Ägarens svar |
+| 0.10 | 2026-11-12 | BG-004 tillgänglighet bekräftad som Måste. | Ägarens svar |
 | 0.9 | 2026-11-12 | FV-002 uppdaterad efter ny version av GP MS (mörkt tema, Calibri/Carlito). | GP MS uppdaterad |
 | 0.8 | 2026-11-12 | FV-002 bekräftad (Bör, GP MS, bara appen). BG-004 tillgänglighet föreslagen. | Ägarens svar |
 | 0.7 | 2026-11-12 | La till IN-07 Organisationen och FV-002 (grafisk profil). | Ägarens tillägg |
@@ -21,7 +22,7 @@ Rangordning av de viktigaste behoven (ägaren 2026-11-12: "Användbarhet, ingen 
 
 ## 1. Behov, förväntningar och begränsningar per intressent
 
-### IN-01 GenesisAI (ägare)
+### IN-01 Ägaren
 | ID | Slag | Egna ord / källa | Tolkning ("… behöver att systemet …") | Prio | Valideringskriterium | MF | Lösningsidé | Status |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
 | BG-001 | Begränsning | "Det är viktigt att data (pdf-filerna) aldrig skickas till externa källor." | Ägaren vill att inga PDF-filer eller delar av dem lämnar användarens dator. | Måste | Ägaren kan konstatera att appen fungerar med nätverket avstängt efter att den laddats, och att inget filinnehåll skickas iväg (granskas t.ex. i webbläsarens nätverkslogg). | MF-01 | Allt körs i webbläsaren | Bekräftad |
@@ -49,7 +50,7 @@ Rangordning av de viktigaste behoven (ägaren 2026-11-12: "Användbarhet, ingen 
 | BH-017 | Behov | "Utgå från de krav som härstammar från Arkivlagen (1990:782) samt Riksarkivets föreskrifter … (RA-FS 2009:2)" (2026-11-12) | Användaren behöver att den färdiga filen kan bevaras i det digitala arkivet enligt arkivreglerna. | Måste | Den färdiga filen godkänns vid en kontroll mot PDF/A-2 (t.ex. med en PDF/A-validerare) och tas emot av organisationens digitala arkiv. | MF-02 | Spara som PDF/A-2 | Bekräftad (PDF/A-2 beslutad 2026-11-12; arkivets mottagande `[TO VERIFY]`) |
 | FV-001 | Förväntning | "kollegor utan särskild datorvana"; "första gången lyckas" | Användaren förväntar sig att förstå appen direkt, utan instruktioner eller utbildning. | Måste | Ägarens helhetsbedömning efter test med en kollega (MF-01). | MF-01 | | Förslag [TO VERIFY] |
 
-### IN-03 GenesisAI (förvaltare)
+### IN-03 Ägaren (förvaltare)
 | ID | Slag | Egna ord / källa | Tolkning ("… behöver att systemet …") | Prio | Valideringskriterium | MF | Lösningsidé | Status |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
 | BH-016 | Behov | "Appen ska kunna nås på en gemensam sharepoint-sida där den helt enkelt läggs upp."; rangordning: "enkel deployering" (2026-11-12) | Förvaltaren behöver kunna publicera och byta version av appen genom att bara lägga upp den på SharePoint, utan server, installation eller byggsteg. | Måste | Ägaren lägger själv upp en ny version på SharePoint, och en kollega kan använda den direkt utan att installera något. | MF-01 | En enda HTML-fil | Bekräftad |
@@ -67,7 +68,7 @@ Rangordning av de viktigaste behoven (ägaren 2026-11-12: "Användbarhet, ingen 
 | UB-01 | "Det är jag, som tillsammans med dig, håller den uppdaterad och utvecklar den om nya behov kommer fram under användning." | Ägaren styr via behov och krav. Nya behov läggs först till här, med valideringskriterium, och tas sedan vidare med ändringsförslag. Appen måste kunna byggas om och publiceras på SharePoint av ägaren utan särskild teknisk kunskap. |
 
 ## 3. Driftbild
-Utkast `[TO VERIFY]`, skrivet ur intervjuerna.
+Bekräftade av ägaren 2026-11-12.
 
 ### DS-01 Beslut med inskannad namnteckning
 En handläggare har ett beslut som originalfil. Beslutet skrivs ut, skrivs under och skannas in. Handläggaren öppnar appen från SharePoint och lägger in originalfilen och den inskannade filen. Hen drar in alla originalsidor utom beslutssidan, lägger den inskannade sidan på dess plats och ser i förhandsvisningen vilken sida som kommer varifrån. Den inskannade sidan ligger ner, så hen vrider den. Filen sparas på datorn och läggs i det digitala arkivet. Visar: BH-001, BH-002, BH-003, BH-006, BH-014, BH-011, OM-01, OM-06.
