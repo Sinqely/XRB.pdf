@@ -257,13 +257,64 @@ Kraven skrivs i EARS: *När* (händelse), *Medan* (tillstånd), *Där* (valbar f
 | FR-DOK-011 | Där kontaktuppgift till förvaltaren ingår ska appen visa den på om-sidan. | Won't | Active | Källa: UB-01. Bortvald av ägaren 2026-11-12. |
 
 ### 3.2 External interface requirements
-*(fas 4)*
+
+#### 3.2.1 Användargränssnitt
+- Ett enda fönster (arbetsyta) med inlästa dokument och miniatyrer, resultatrad, förhandsvisning och paneler för vattenstämpel, textetikett, placering och dold information. Detaljerad utformning tas fram i UX-arbetet.
+- Gränssnittet följer GP MS: mörkt tema som standard, ljust tema som val (FR-ALM-009), typsnittsstacken Calibri, Carlito, "Segoe UI", Arial (NFR-USE-002).
+- Allt går att göra med tangentbord och skärmläsare (NFR-ACC-001, NFR-ACC-002).
+- Avsett för datorskärm från 1 280 pixlars fönsterbredd (NFR-COMP-003).
+
+#### 3.2.2 Hårdvarugränssnitt
+Inga. Appen använder bara webbläsarens tillgång till datorns filsystem när användaren själv väljer eller drar in filer, och webbläsarens vanliga sparfunktion.
+
+#### 3.2.3 Programvarugränssnitt
+| ID | Gränssnitt | Riktning | Innehåll | Krav |
+| :-- | :-- | :-- | :-- | :-- |
+| IF-01 | PDF-filer från användarens dator | In | PDF (alla versioner som webbläsarbiblioteket kan läsa), även inskannade sidor | FR-FIL-001..010 |
+| IF-02 | Bildfiler för vattenstämpel | In | PNG (med alfakanal) och JPEG, högst 20 MB | FR-STA-001, FR-STA-011 |
+| IF-03 | Resultatfil till användarens dator | Ut | PDF/A-2b (ISO 19005-2), eller vanlig PDF efter användarens val; okrypterad | FR-SPA-001..009 |
+| IF-04 | Webbläsaren | – | Microsoft Edge och Safari på Mac, de två senaste huvudversionerna | NFR-COMP-001, NFR-COMP-002 |
+| IF-05 | SharePoint | – | Appen läggs upp som en fil och öppnas från organisationens SharePoint | NFR-MAINT-001, NFR-MAINT-002 |
+| IF-06 | Mottagande system | – | Digitalt arkiv (PDF/A-2), PDF-läsare, verktyg för digital signering | NFR-COMP-004, NFR-COMP-005, FR-SPA-009 |
+
+#### 3.2.4 Kommunikationsgränssnitt
+Inga. Efter att appen har öppnats kommunicerar den inte över nätverket (NFR-SEC-002).
 
 ### 3.3 Non-functional requirements
-*(fas 3)*
+Mätvillkor där inget annat anges: en vanlig arbetsdator i organisationen med aktuell Edge.
+
+| ID | Category | Requirement (metric, target, condition) | Priority | Notes |
+| :-- | :------- | :-------------------------------------- | :------- | :---- |
+| NFR-PERF-001 | Prestanda | Förhandsvisningen visar en ändring inom 1 sekund efter att användaren gjort den, för resultat med upp till 50 sidor. | Must | Källa: BH-003. |
+| NFR-PERF-002 | Prestanda | En PDF-fil på 20 MB eller 100 sidor är inläst och alla miniatyrer visas inom 5 sekunder. | Must | Källa: BH-001, FV-001. |
+| NFR-PERF-003 | Prestanda | Ett resultat på 100 sidor med vattenstämpel och textetikett har skapats och erbjuds för sparande inom 15 sekunder. | Must | Källa: BH-001. |
+| NFR-PERF-004 | Prestanda | Appen är klar att använda inom 3 sekunder efter att den öppnats från SharePoint. | Must | Källa: FV-001, BH-016. |
+| NFR-SEC-001 | Informationssäkerhet | Inget filinnehåll, ingen bild och ingen metadata från användarens filer skickas över nätverket; verifieras med webbläsarens nätverkslogg under DS-01 och DS-02 (noll överförda byte med dokumentinnehåll). | Must | Källa: BG-001, UB-02. |
+| NFR-SEC-002 | Informationssäkerhet | Efter att appen laddats gör den inga nätverksanrop; en teknisk spärr i appen hindrar webbläsaren från att ansluta till andra adresser. Verifieras med nätverkslogg och med nätverket avstängt. | Must | Källa: BG-001, BG-007, UB-02. |
+| NFR-SEC-003 | Informationssäkerhet | Skript och andra aktiva element i inlästa PDF-filer körs aldrig; verifieras med en testfil som innehåller skript. | Must | Källa: BH-018, UB-02. |
+| NFR-SEC-004 | Informationssäkerhet | Vid release har inget inbakat bibliotek någon känd sårbarhet med allvarlighetsgrad hög eller kritisk enligt en aktuell sårbarhetsdatabas. | Must | Källa: BG-007, UB-02. |
+| NFR-SEC-005 | Informationssäkerhet | Inför varje release tas en verifieringsrapport fram som för varje informationssäkerhetskrav (NFR-SEC-001..004, NFR-PRIV-001..002, FR-ALM-008) anger hur det verifierats och resultatet; rapporten följer med appen (FR-DOK-007). | Must | Källa: UB-02. |
+| NFR-USE-001 | Användbarhet | Minst 4 av 5 kollegor som inte sett appen förut sätter, utan hjälp eller instruktioner, på högst 5 minuter samman tre sidor ur en PDF med två sidor ur en annan och lägger en textetikett centrerat i sidhuvudet, med korrekt resultat. | Must | Källa: FV-001, MF-01. |
+| NFR-USE-002 | Användbarhet | Gränssnittets färger, kontraster och typsnitt följer GP MS (version 2026-11-12); granskas av ägaren mot profilen. | Should | Källa: FV-002. |
+| NFR-ACC-001 | Tillgänglighet | Appen uppfyller WCAG 2.1 nivå AA (EN 301 549); verifieras med automatisk kontroll och manuell granskning. | Must | Källa: BG-004, OM-08. |
+| NFR-ACC-002 | Tillgänglighet | DS-01 och DS-02 kan genomföras helt med tangentbord samt med skärmläsaren NVDA i Edge och VoiceOver i Safari. | Must | Källa: BG-004. |
+| NFR-COMP-001 | Kompatibilitet | Alla Must-krav uppfylls i de två senaste huvudversionerna av Microsoft Edge på Windows. | Must | Källa: BG-005. |
+| NFR-COMP-002 | Kompatibilitet | Alla Must-krav uppfylls i de två senaste huvudversionerna av Safari på macOS. | Should | Källa: BG-006. |
+| NFR-COMP-003 | Kompatibilitet | Appen är fullt användbar i webbläsarfönster från 1 280 × 720 pixlar; mobil och surfplatta ingår inte. | Must | Källa: IN-02. |
+| NFR-COMP-004 | Kompatibilitet | En fil sparad som PDF/A-2b godkänns som PDF/A-2b av valideringsverktyget veraPDF. | Must | Källa: BH-017. |
+| NFR-COMP-005 | Kompatibilitet | Den sparade filen visas med samma sidor, ordning, stämpel och etikett i Adobe Acrobat Reader, Edges PDF-visare och Förhandsvisning på macOS. | Must | Källa: BH-011, MF-02. |
+| NFR-MAINT-001 | Förvaltningsbarhet | Appen levereras som en enda HTML-fil som innehåller all kod, alla bibliotek och alla typsnitt. | Must | Källa: BH-016, BG-007. |
+| NFR-MAINT-002 | Förvaltningsbarhet | En förvaltningsinstruktion i repot beskriver steg för steg hur ägaren lägger upp en ny version på SharePoint; ägaren kan följa den utan hjälp. | Must | Källa: BH-016, UB-01. |
+| NFR-MAINT-003 | Förvaltningsbarhet | Varje version har ett versionsnummer och en post i en versionshistorik i repot. | Must | Källa: UB-01. |
+| NFR-MAINT-004 | Förvaltningsbarhet | Varje Must-krav har minst ett automatiskt test, och testfilerna (PDF:er, bilder) finns i repot. | Must | Källa: UB-01. |
+| NFR-LEG-001 | Licenser | Varje inbakat bibliotek och typsnitt har en tillåtande licens (t.ex. MIT, BSD, Apache 2.0, SIL OFL 1.1); inget har GPL eller AGPL. Verifieras mot licensförteckningen. | Must | Källa: BG-008. |
+| NFR-PRIV-001 | Integritet | Appen samlar inte in statistik, användningsdata eller felrapporter. | Must | Källa: BG-001. |
+| NFR-PRIV-002 | Integritet | Ingen behandling av personuppgifter i användarens filer sker utanför användarens dator. | Must | Källa: BG-001, OM-05, IN-06. |
 
 ### 3.4 Other requirements
-*(fas 3)*
+- **Språk:** svenska i hela gränssnittet och i all dokumentation i appen (FR-ALM-007).
+- **Tillgänglighetsredogörelse:** ska finnas och hållas aktuell (FR-DOK-008, OM-08).
+- **Arkiv:** resultatet ska kunna bevaras enligt arkivreglerna; PDF/A-2b är valt format (FR-SPA-004, OM-07).
 
 ## Appendix A — Glossary
 | Term | Betydelse |
@@ -278,4 +329,6 @@ Kraven skrivs i EARS: *När* (händelse), *Medan* (tillstånd), *Där* (valbar f
 ## Appendix B — Open questions / TBD
 | ID | Fråga | Status |
 | :-- | :-- | :-- |
+| TBD-02 | Vilket verktyg för digital signering används, så att NFR-COMP-005 och FR-SPA-009 kan verifieras mot det? | Öppen |
+| TBD-03 | Tar det digitala arkivet emot PDF/A-2b? (G0-anmärkning 1) | Antaget |
 | TBD-01 | Ska lösenordsskyddade filer kunna låsas upp i en senare version (FR-FIL-014)? | Öppen, inte version 1 |
