@@ -11,5 +11,6 @@ export default defineConfig({
     modulePreload: false,
     target: 'es2022',
   },
-  worker: { format: 'es' },
+  // Klassiska arbetstrådar: Chromium startar inte modul-arbetstrådar från blob när filen öppnas direkt från disken (file://).
+  worker: { format: 'iife' },
 })

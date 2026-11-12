@@ -82,3 +82,18 @@ test('CSP står först i head och spärrar anslutningar (R2)', async ({ page }) 
   })
   expect(blockerat).toBe(true)
 })
+
+test('fungerar när filen öppnas direkt från disken (file://), som Ägaren provat', async ({ page }) => {
+  const anrop: string[] = []
+  page.on('request', (r) => {
+    if (!/^(blob|data|file):/.test(r.url())) anrop.push(r.url())
+  })
+  await page.goto(new URL('../../dist/index.html', import.meta.url).href)
+  await page.locator('#filval').setInputFiles([fil('beslut.pdf'), fil('underskrift.pdf')])
+  await expect(page.getByRole('status')).toContainText('underskrift.pdf inläst, 1 sida')
+  const nedladdning = page.waitForEvent('download')
+  await page.getByRole('button', { name: 'Baka ihop och spara' }).click()
+  const d = await nedladdning
+  expect((await PDFDocument.load(readFileSync((await d.path())!))).getPageCount()).toBe(4)
+  expect(anrop).toEqual([])
+})
