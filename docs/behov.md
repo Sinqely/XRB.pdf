@@ -8,6 +8,7 @@
 | :-- | :-- | :-- | :-- |
 | 0.1 | 2026-11-12 | Första utkast ur intervju 1. | Behovsfångst steg 4 påbörjat |
 | 0.2 | 2026-11-12 | La till BH-007 (genomskinliga områden) och BH-008 (opacitet) för vattenstämpel. | Ägarens tillägg |
+| 0.7 | 2026-11-12 | La till IN-07 Organisationen och FV-002 (grafisk profil). | Ägarens tillägg |
 | 0.6 | 2026-11-12 | Konflikten om arkivformat avgjord: PDF/A-2. BH-017 bekräftad. | Ägarens beslut |
 | 0.5 | 2026-11-12 | Rangordning. La till BH-015 (stämpelstorlek), BH-016 (enkel publicering), BH-017 (arkivbeständighet) och konflikten om PDF/A och genomskinlighet. | Intervju 4 |
 | 0.4 | 2026-11-12 | BH-001 utökad (fler än två filer, valfri ordning). La till BH-011–BH-014, BG-003, UB-01, utkast till driftbild, signaturkonflikten avgjord. | Intervju 3 |
@@ -49,6 +50,11 @@ Rangordning av de viktigaste behoven (ägaren 2026-11-12: "Användbarhet, ingen 
 | ID | Slag | Egna ord / källa | Tolkning ("… behöver att systemet …") | Prio | Valideringskriterium | MF | Lösningsidé | Status |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
 | BH-016 | Behov | "Appen ska kunna nås på en gemensam sharepoint-sida där den helt enkelt läggs upp."; rangordning: "enkel deployering" (2026-11-12) | Förvaltaren behöver kunna publicera och byta version av appen genom att bara lägga upp den på SharePoint, utan server, installation eller byggsteg. | Måste | Ägaren lägger själv upp en ny version på SharePoint, och en kollega kan använda den direkt utan att installera något. | MF-01 | En enda HTML-fil | Bekräftad |
+
+### IN-07 Organisationen
+| ID | Slag | Egna ord / källa | Tolkning ("… behöver att systemet …") | Prio | Valideringskriterium | MF | Lösningsidé | Status |
+| :-- | :-- | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
+| FV-002 | Förväntning | "Det kan handla om att användargränssnittet har vissa färger och typsnitt." (2026-11-12) | Organisationen förväntar sig att appens gränssnitt följer den grafiska profilen, med dess färger och typsnitt. | Bör `[TO VERIFY]` | Ägaren jämför appen med den grafiska manualen: färger och typsnitt stämmer. Typsnitten följer med appen och hämtas inte från en extern server (BG-001, BH-016). | MF-01 | Profilens färger och typsnitt inbyggda i appen | Förslag [TO VERIFY] |
 
 ## 2. Behov på utvecklingen (inte systemkrav)
 | ID | Egna ord | Vad det betyder för metoden |
