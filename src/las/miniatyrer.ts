@@ -1,4 +1,5 @@
-// Miniatyrkö (FEAT-001 technical-design.md §3.2): ritar sidor en i taget så att gränssnittet svarar,
+// Miniatyrkö (FEAT-001 technical-design.md §3.2): ritar några sidor åt gången så att gränssnittet svarar
+// och 100 sidor hinner visas inom 5 sekunder (NFR-PERF-002),
 // och frigör bilderna när dokumentet tas bort.
 import type { PDFDocumentProxy } from 'pdfjs-dist'
 import { ritaMiniatyr } from './pdfjs-adapter'
@@ -14,11 +15,11 @@ export interface Miniatyrko {
 export function skapaMiniatyrko(bredd: number): Miniatyrko {
   const kö: { dokId: string; pdf: PDFDocumentProxy; sidindex: number; klar: (i: number, m: Miniatyr) => void }[] = []
   const adresser = new Map<string, string[]>()
-  let ritar = false
+  /** pdf.js tolkar sidan i sin arbetstråd medan huvudtråden ritar och kodar en annan. */
+  const SAMTIDIGA = 3
+  let ritar = 0
 
-  async function nasta() {
-    if (ritar) return
-    ritar = true
+  async function arbetare() {
     while (kö.length) {
       const u = kö.shift()!
       if (!adresser.has(u.dokId)) continue
@@ -33,14 +34,19 @@ export function skapaMiniatyrko(bredd: number): Miniatyrko {
         if (adresser.has(u.dokId)) u.klar(u.sidindex, 'fel')
       }
     }
-    ritar = false
+  }
+  function nasta() {
+    while (ritar < SAMTIDIGA && kö.length) {
+      ritar++
+      void arbetare().finally(() => ritar--)
+    }
   }
 
   return {
     ritaAlla(dokId, pdf, sidantal, klar) {
       adresser.set(dokId, [])
       for (let i = 0; i < sidantal; i++) kö.push({ dokId, pdf, sidindex: i, klar })
-      void nasta()
+      nasta()
     },
     slapp(dokId) {
       for (let i = kö.length - 1; i >= 0; i--) if (kö[i].dokId === dokId) kö.splice(i, 1)

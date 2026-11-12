@@ -36,7 +36,7 @@ export async function oppnaPdf(bytes: Uint8Array): Promise<OppnatDokument> {
   }
 }
 
-/** Ritar en sida som miniatyr och ger en blob-adress till en PNG-bild. */
+/** Ritar en sida som miniatyr och ger en blob-adress till en JPEG-bild (snabbare att koda än PNG, särskilt i Safari). */
 export async function ritaMiniatyr(pdf: PDFDocumentProxy, sidindex: number, bredd: number): Promise<string> {
   const sida = await pdf.getPage(sidindex + 1)
   const grund = sida.getViewport({ scale: 1 })
@@ -45,7 +45,8 @@ export async function ritaMiniatyr(pdf: PDFDocumentProxy, sidindex: number, bred
   canvas.width = Math.ceil(vy.width)
   canvas.height = Math.ceil(vy.height)
   await sida.render({ canvas, viewport: vy }).promise
-  const blob = await new Promise<Blob | null>((ok) => canvas.toBlob(ok, 'image/png'))
+  const blob = await new Promise<Blob | null>((ok) => canvas.toBlob(ok, 'image/jpeg', 0.9))
+  sida.cleanup()
   if (!blob) throw new Error('miniatyr')
   return URL.createObjectURL(blob)
 }
