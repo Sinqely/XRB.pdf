@@ -32,3 +32,43 @@ export function felmeddelande(fel: Filfel, namn: string, redanInlasta = 0): stri
       return texter.felForMangaSidor(namn, redanInlasta)
   }
 }
+
+// Bilder för vattenstämpel (FR-STA-001, FR-STA-011, IF-02).
+export const MAX_BILDSTORLEK = 20 * 1024 * 1024
+export type Bildtyp = 'png' | 'jpeg'
+export type Bildfel = 'fel-typ' | 'for-stor' | 'skadad'
+
+/** Bildens typ ur filens första byte; filnamnets ändelse räknas inte. */
+export function bildtyp(borjan: Uint8Array): Bildtyp | null {
+  const b = borjan
+  if (b.length >= 8 && b[0] === 0x89 && b[1] === 0x50 && b[2] === 0x4e && b[3] === 0x47 && b[4] === 0x0d && b[5] === 0x0a && b[6] === 0x1a && b[7] === 0x0a) return 'png'
+  if (b.length >= 3 && b[0] === 0xff && b[1] === 0xd8 && b[2] === 0xff) return 'jpeg'
+  return null
+}
+
+export function bildkontroll(storlekByte: number, borjan: Uint8Array): Bildfel | null {
+  if (!bildtyp(borjan)) return 'fel-typ'
+  if (storlekByte > MAX_BILDSTORLEK) return 'for-stor'
+  return null
+}
+
+/**
+ * Antal färgkomponenter i en JPEG (1 grå, 3 RGB, 4 CMYK), eller null om ramhuvudet saknas.
+ * CMYK-bilder ritas om till RGB i webbläsaren, eftersom PDF/A-2b inte tillåter CMYK utan profil.
+ */
+export function jpegKomponenter(b: Uint8Array): number | null {
+  let i = 2
+  while (i + 9 < b.length) {
+    if (b[i] !== 0xff) return null
+    const m = b[i + 1]!
+    if (m === 0xd8 || (m >= 0xd0 && m <= 0xd7) || m === 0x01) {
+      i += 2
+      continue
+    }
+    const langd = (b[i + 2]! << 8) | b[i + 3]!
+    // SOF0..SOF15 utom DHT (C4), JPG (C8) och DAC (CC)
+    if (m >= 0xc0 && m <= 0xcf && m !== 0xc4 && m !== 0xc8 && m !== 0xcc) return b[i + 9]!
+    i += 2 + langd
+  }
+  return null
+}

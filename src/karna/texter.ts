@@ -124,4 +124,69 @@ export const texter = {
   borjaOmText: 'Alla inlästa filer, valda sidor och inställningar tas bort från arbetsytan. Filerna på din dator påverkas inte.',
   borjaOmJa: 'Töm arbetsytan',
   borjadeOm: 'Arbetsytan är tömd.',
+
+  // FEAT-006 Vattenstämpel och gemensamt för märkningen (SCR-APP-002, SCR-APP-003)
+  markningInaktiv: 'Lägg först till sidor i resultatet. Sedan kan du märka dem med vattenstämpel eller textetikett.',
+  flikStampel: 'Vattenstämpel',
+  flikEtikett: 'Textetikett',
+  objektNamn: { stampel: 'Vattenstämpeln', etikett: 'Textetiketten' },
+  valjBild: 'Välj bild',
+  bytBild: 'Byt bild',
+  bildHjalp: 'PNG eller JPEG, högst 20 MB. Genomskinliga delar i PNG förblir genomskinliga. Du kan också dra in bilden hit.',
+  slappBild: 'Släpp bilden här',
+  taBortStampel: 'Ta bort stämpeln',
+  stampelTillagd: (namn: string) => `${namn} tillagd som vattenstämpel på alla sidor.`,
+  stampelBytt: (namn: string) => `Stämpelns bild bytt till ${namn}.`,
+  stampelBorttagen: 'Vattenstämpeln borttagen från alla sidor.',
+  bildFelTyp: (namn: string) => `${namn} kan inte användas som vattenstämpel. Bara bilder i formaten PNG och JPEG går att använda.`,
+  bildForStor: (namn: string) => `${namn} är större än 20 MB och kan inte användas som vattenstämpel. Välj en mindre bild.`,
+  bildSkadad: (namn: string) => `${namn} är skadad eller går inte att läsa och kan inte användas som vattenstämpel.`,
+  bildEnAtGangen: 'Släpp en bild i taget. Bara den första används.',
+  opacitet: 'Opacitet (%)',
+  opacitetSatt: (v: number) => `Opacitet ${v} %.`,
+  stampelBredd: 'Bredd (mm)',
+  storlekHjalp: 'Höjden följer bildens proportioner. Du kan också dra i ett hörn i förhandsvisningen.',
+  mindre: 'Mindre',
+  storre: 'Större',
+  storlekSatt: (mm: number) => `Bredd ${String(mm).replace('.', ',')} mm.`,
+  placering: 'Placering',
+  ankare: {
+    'ovre-vanster': 'Övre vänstra hörnet',
+    sidhuvud: 'Centrerat i sidhuvudet',
+    'ovre-hoger': 'Övre högra hörnet',
+    'nedre-vanster': 'Nedre vänstra hörnet',
+    sidfot: 'Centrerat i sidfoten',
+    'nedre-hoger': 'Nedre högra hörnet',
+  },
+  egenPlacering: 'Egen placering. Välj en färdig placering för att börja om från den.',
+  avstandKant: 'Avstånd till kant (mm)',
+  avstandHjalp: '0–50 mm från kanten eller hörnet som placeringen utgår från.',
+  placeringForval: (o: 'stampel' | 'etikett', var_: string) => `${o === 'stampel' ? 'Vattenstämpeln' : 'Textetiketten'} placerad: ${var_.toLowerCase()}.`,
+  placeringEgen: (o: 'stampel' | 'etikett') => `${o === 'stampel' ? 'Vattenstämpeln' : 'Textetiketten'} flyttad.`,
+  flyttaHjalp: 'Flytta med piltangenterna, 1 mm per tryck eller 10 mm med Skift.',
+  sidorRubrik: 'Sidor',
+  allaSidor: 'Alla sidor i resultatet',
+  allaSidorHjalp: 'Annars väljer du sidor med kryssrutorna i resultatraden.',
+  allaSidorPa: (o: 'stampel' | 'etikett') => `${o === 'stampel' ? 'Vattenstämpeln' : 'Textetiketten'} ligger på alla sidor.`,
+  allaSidorAv: (o: 'stampel' | 'etikett', plats: number) =>
+    plats > 0
+      ? `${o === 'stampel' ? 'Vattenstämpeln' : 'Textetiketten'} ligger nu bara på sida ${plats}. Välj fler sidor i resultatraden.`
+      : `${o === 'stampel' ? 'Vattenstämpeln' : 'Textetiketten'} ligger inte på någon sida. Välj sidor i resultatraden.`,
+  paSida: (o: 'stampel' | 'etikett', plats: number) => `${o === 'stampel' ? 'Vattenstämpel' : 'Textetikett'} på sida ${plats}.`,
+  avSida: (o: 'stampel' | 'etikett', plats: number) => `${o === 'stampel' ? 'Vattenstämpeln' : 'Textetiketten'} borttagen från sida ${plats}.`,
+  sidorMed: (sidor: number[]) => (sidor.length === 0 ? 'Ligger inte på någon sida.' : `Ligger på ${sidlista(sidor)}.`),
+  kryssStampel: 'Stämpel',
+  kryssEtikett: 'Etikett',
+  kryssNamn: (o: 'stampel' | 'etikett', plats: number) => `${o === 'stampel' ? 'Vattenstämpel' : 'Textetikett'} på sida ${plats}`,
+  naraKant: (o: 'stampel' | 'etikett', sidor: number[]) =>
+    `${o === 'stampel' ? 'Vattenstämpeln' : 'Textetiketten'} ligger närmare kanten än säkerhetsmarginalen på 5 mm på ${sidlista(sidor)}. Den kan skäras bort vid utskrift.`,
+  marginalForklaring: 'Den streckade linjen är säkerhetsmarginalen. Den syns bara här, inte i filen.',
+  overlaggStampel: (namn: string) => `Vattenstämpel ${namn}`,
+  storleksHandtag: 'Ändra storlek',
 } as const
+
+/** "sida 2", "sidorna 2 och 5", "sidorna 1, 3 och 4". */
+export function sidlista(sidor: readonly number[]): string {
+  if (sidor.length === 1) return `sida ${sidor[0]}`
+  return `sidorna ${sidor.slice(0, -1).join(', ')} och ${sidor[sidor.length - 1]}`
+}

@@ -2,12 +2,13 @@
 // Bara i minnet (FR-ALM-008).
 import { useEffect, useState } from 'preact/hooks'
 import type { PDFDocumentProxy } from 'pdfjs-dist'
-import { stangPdf } from '../las/pdfjs-adapter'
+import { sidmatt, stangPdf, type Sidmatt } from '../las/pdfjs-adapter'
 import { skapaMiniatyrko, type Miniatyr } from '../las/miniatyrer'
 
 const ko = skapaMiniatyrko(88)
 const pdfer = new Map<string, PDFDocumentProxy>()
 const bilder = new Map<string, (Miniatyr | null)[]>()
+const matt = new Map<string, Sidmatt | 'hamtas'>()
 const lyssnare = new Set<() => void>()
 const meddela = () => lyssnare.forEach((l) => l())
 
@@ -31,6 +32,7 @@ export function avregistrera(dokId: string) {
   if (pdf) void stangPdf(pdf)
   pdfer.delete(dokId)
   bilder.delete(dokId)
+  for (const k of [...matt.keys()]) if (k.startsWith(`${dokId}:`)) matt.delete(k)
   meddela()
 }
 
@@ -57,4 +59,27 @@ export function pdfFor(dokId: string): PDFDocumentProxy | null {
 /** Frigör pdf.js-dokument och bilder för dokument som inte längre finns i någon version (efter ångra-historik). */
 export function stada(behall: Set<string>) {
   for (const id of [...pdfer.keys()]) if (!behall.has(id)) avregistrera(id)
+}
+
+/**
+ * Sidans mått i visad riktning, för layoutmodellen (marginalvarningar och storlek på alla sidor).
+ * Ger null första gången och ritar om komponenter med useMiniatyrer när måttet är hämtat.
+ */
+export function sidmattFor(dokId: string, sidindex: number, vridning: number): Sidmatt | null {
+  const k = `${dokId}:${sidindex}:${vridning}`
+  const m = matt.get(k)
+  if (m && m !== 'hamtas') return m
+  const pdf = pdfer.get(dokId)
+  if (!m && pdf) {
+    matt.set(k, 'hamtas')
+    sidmatt(pdf, sidindex, vridning).then(
+      (v) => {
+        if (pdfer.get(dokId) !== pdf) return
+        matt.set(k, v)
+        meddela()
+      },
+      () => matt.delete(k),
+    )
+  }
+  return null
 }

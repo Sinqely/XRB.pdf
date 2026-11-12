@@ -3,12 +3,20 @@
 // (BG-009, FR-SPA-007, regel R8). Ren funktion utan DOM: körs i bygg-arbetstråden och i enhetstester.
 import { degrees, PDFDocument } from '@cantoo/pdf-lib'
 import { forkontroll, komplettera, sattDokumentinfo, sattFilId, type Hinder } from './pdfa'
+import { ritaStampel, type Stampelbygge } from './overlagg'
 
 export interface Byggsida {
   readonly dokumentId: string
   readonly sidindex: number
   /** Extra vridning medurs (FR-SID-010). */
   readonly vridning?: number
+  /** Vattenstämpeln ligger på sidan (FR-STA-008). */
+  readonly stampel?: boolean
+}
+
+export interface Stampelbegaran extends Stampelbygge {
+  readonly bild: Uint8Array
+  readonly typ: 'png' | 'jpeg'
 }
 
 export interface Byggbegaran {
@@ -18,6 +26,8 @@ export interface Byggbegaran {
   readonly sidor: readonly Byggsida[]
   /** Standard 'pdf'. Appen skickar 'pdfa' när användaren inte valt vanlig PDF (FR-SPA-004). */
   readonly format?: 'pdfa' | 'pdf'
+  /** Vattenstämpeln, om den finns (FEAT-006). */
+  readonly stampel?: Stampelbegaran | null
   readonly uppgifter?: { readonly titel: string; readonly forfattare: string; readonly amne: string; readonly nyckelord: string }
   /** Tidpunkt för filen (ms sedan 1970); anges av huvudtråden så att testerna blir förutsägbara. */
   readonly datum?: number
@@ -49,13 +59,26 @@ export async function kopiera(begaran: Byggbegaran): Promise<PDFDocument> {
   return ut
 }
 
+/** Kopierar sidorna och lägger på stämpel och etikett ovanpå (FR-SPA-008). */
+export async function sammanstall(begaran: Byggbegaran): Promise<PDFDocument> {
+  const ut = await kopiera(begaran)
+  const st = begaran.stampel
+  if (st && begaran.sidor.some((s) => s.stampel)) {
+    const bild = st.typ === 'png' ? await ut.embedPng(st.bild) : await ut.embedJpg(st.bild)
+    begaran.sidor.forEach((s, i) => {
+      if (s.stampel) ritaStampel(ut.getPage(i), bild, st)
+    })
+  }
+  return ut
+}
+
 /** Förkontroll för PDF/A-2b (FR-SPA-005): listar sidor som hindrar arkivformatet. */
 export async function kontrollera(begaran: Byggbegaran): Promise<Hinder[]> {
-  return forkontroll(await kopiera(begaran))
+  return forkontroll(await sammanstall(begaran))
 }
 
 export async function bakaIhop(begaran: Byggbegaran): Promise<Uint8Array> {
-  const ut = await kopiera(begaran)
+  const ut = await sammanstall(begaran)
   const datum = new Date(begaran.datum ?? Date.now())
   datum.setMilliseconds(0)
   const u = { titel: '', forfattare: '', amne: '', nyckelord: '', ...begaran.uppgifter, datum, program: PROGRAM }

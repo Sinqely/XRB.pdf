@@ -33,9 +33,11 @@ export interface Sparberoenden {
 
 export function byggbegaran(yta: Arbetsyta, format: Format = yta.sparval.format, datum = Date.now()): Byggbegaran {
   const anvanda = new Set(yta.resultat.map((r) => r.dokumentId))
+  const st = yta.vattenstampel
   return {
     dokument: Object.fromEntries(yta.dokument.filter((d) => anvanda.has(d.id)).map((d) => [d.id, d.bytes])),
-    sidor: yta.resultat.map(({ dokumentId, sidindex, vridning }) => ({ dokumentId, sidindex, vridning })),
+    sidor: yta.resultat.map(({ dokumentId, sidindex, vridning, stampel }) => ({ dokumentId, sidindex, vridning, stampel: !!st && stampel })),
+    stampel: st && { bild: st.bild, typ: st.typ, breddMm: st.breddMm, pxBredd: st.pxBredd, pxHojd: st.pxHojd, opacitet: st.opacitet, placering: st.placering },
     format,
     uppgifter: yta.sparval.dold.metadata ?? undefined,
     datum,

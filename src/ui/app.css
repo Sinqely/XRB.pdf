@@ -133,3 +133,47 @@ p, h2, h3, ul, ol { margin: 0; }
 .resultatsida.aktiv:focus-visible { outline-color: var(--ui-fokus); }
 .verktygsgrupp { display: flex; gap: var(--space-1); margin-right: var(--space-4); }
 .dialoginnehall { display: grid; gap: var(--space-4); }
+
+/* FEAT-006 Märkning: flikar, paneler, placeringsväljare och överlägg (docs/design.md §4) */
+.flikar { display: flex; }
+.flik { flex: 1; height: var(--storlek-kontroll-hojd); font: var(--text-brodtext); color: var(--ui-text); background: transparent; border: 0; border-bottom: var(--storlek-kant-bredd) solid var(--ui-avdelare); cursor: pointer; }
+.flik[aria-selected='true'] { background: var(--ui-valt); color: var(--ui-primar-text); font-weight: 700; border-radius: var(--radie-kontroll) var(--radie-kontroll) 0 0; }
+.flikpanel { display: grid; gap: var(--space-4); }
+.markningspanel { display: grid; gap: var(--space-4); border-radius: var(--radie-panel); }
+.markningspanel.drag-over { outline: var(--storlek-fokus-bredd) solid var(--ui-fokus); outline-offset: var(--storlek-fokus-avstand); }
+.bildval { display: grid; gap: var(--space-2); justify-items: start; padding: var(--space-4); border: var(--storlek-kant-bredd) dashed var(--ui-kant); border-radius: var(--radie-panel); }
+.stampelbild { display: flex; gap: var(--space-3); align-items: center; }
+.stampelbild img { width: 64px; height: 64px; object-fit: contain; flex: none; border: var(--storlek-kant-bredd) solid var(--ui-avdelare); border-radius: var(--radie-liten); background: repeating-conic-gradient(var(--ui-avdelare) 0 25%, transparent 0 50%) 0 0 / 12px 12px; }
+.brytbar { overflow-wrap: anywhere; }
+.reglage { display: flex; gap: var(--space-2); align-items: center; }
+.reglage input[type='range'] { flex: 1; accent-color: var(--ui-text); min-width: 0; }
+.sifferfalt { width: 88px; }
+.placering { display: grid; gap: var(--space-2); }
+.placeringsvaljare { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-1); width: 150px; padding: var(--space-1); border: var(--storlek-kant-bredd) solid var(--ui-kant); border-radius: var(--radie-liten); background: var(--ui-bakgrund); }
+.placeringsknapp { height: var(--storlek-kontroll-min); display: grid; padding: var(--space-1); background: transparent; border: var(--storlek-kant-bredd) solid var(--ui-avdelare); border-radius: var(--radie-liten); cursor: pointer; }
+.placeringsknapp span { width: 12px; height: 8px; background: var(--ui-text); border-radius: 1px; }
+.placering-ovre-vanster span, .placering-nedre-vanster span { justify-self: start; }
+.placering-sidhuvud span, .placering-sidfot span { justify-self: center; }
+.placering-ovre-hoger span, .placering-nedre-hoger span { justify-self: end; }
+.placering-ovre-vanster span, .placering-sidhuvud span, .placering-ovre-hoger span { align-self: start; }
+.placering-nedre-vanster span, .placering-sidfot span, .placering-nedre-hoger span { align-self: end; }
+.placeringsknapp[aria-checked='true'] { background: var(--ui-valt); border-color: var(--ui-text); }
+.placeringsknapp[aria-checked='true'] span { background: var(--ui-primar-text); }
+.kryssrad { display: flex; gap: var(--space-2); }
+.kryss { display: inline-flex; gap: 2px; align-items: center; cursor: pointer; }
+.kryss input { margin: 0; accent-color: var(--ui-valt); }
+.overlagg { position: absolute; inset: 0; }
+.marginal { position: absolute; inset: 0; pointer-events: none; }
+.marginal rect { fill: none; stroke-width: 1; }
+.marginal-b { stroke: var(--ui-marginal-b); }
+.marginal-a { stroke: var(--ui-marginal-a); stroke-dasharray: 4 4; }
+.overlaggsobjekt { position: absolute; cursor: move; touch-action: none; user-select: none; }
+.overlaggsobjekt img { display: block; width: 100%; height: 100%; pointer-events: none; }
+.overlaggsobjekt:hover { outline: var(--storlek-kant-bredd) solid var(--ui-marginal-b); }
+.overlaggsobjekt:focus-visible, .overlaggsobjekt:focus { outline: var(--storlek-kant-bredd) solid var(--ui-marginal-b); box-shadow: 0 0 0 4px var(--ui-marginal-a); }
+.handtag { position: absolute; width: 12px; height: 12px; background: var(--ui-marginal-b); border: var(--storlek-kant-bredd) solid var(--ui-marginal-a); display: none; }
+.overlaggsobjekt:hover .handtag, .overlaggsobjekt:focus .handtag { display: block; }
+.handtag-nw { left: -6px; top: -6px; cursor: nwse-resize; }
+.handtag-se { right: -6px; bottom: -6px; cursor: nwse-resize; }
+.handtag-ne { right: -6px; top: -6px; cursor: nesw-resize; }
+.handtag-sw { left: -6px; bottom: -6px; cursor: nesw-resize; }

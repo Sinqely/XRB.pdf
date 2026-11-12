@@ -12,7 +12,11 @@ import { Forhandsvisning } from './Forhandsvisning'
 import { SparaDialog } from './SparaDialog'
 import { Ikon } from './ikoner'
 import { Bekrafta } from './Bekrafta'
-import { stada } from './dokumentregister'
+import { sidmattFor, stada, useMiniatyrer } from './dokumentregister'
+import { Markning } from './Markning'
+import { StampelPanel } from './StampelPanel'
+import { Overlagg } from './Overlagg'
+import { inomMarginal, ruta, stampelMatt } from '../karna/layout'
 
 const tillstand = skapaTillstand()
 
@@ -148,6 +152,18 @@ export function App() {
   const aktivPlats = yta.resultat.findIndex((r) => r.id === aktivOnskad)
   if (aktivPlats >= 0) senasteAktivPlats.current = aktivPlats
   const aktivId = aktivPlats >= 0 ? aktivOnskad : (yta.resultat[Math.min(senasteAktivPlats.current, yta.resultat.length - 1)]?.id ?? null)
+  // Sidornas mått för layoutmodellen: största storlek på aktiv sida och marginalvarning på alla sidor (FR-PLC-010).
+  useMiniatyrer()
+  const mattFor = (r: Arbetsyta['resultat'][number]) => sidmattFor(r.dokumentId, r.sidindex, r.vridning)
+  const aktivSida = yta.resultat.find((r) => r.id === aktivId)
+  const aktivMatt = aktivSida ? mattFor(aktivSida) : null
+  const st = yta.vattenstampel
+  const stampelNaraKant = st
+    ? yta.resultat.flatMap((r, i) => {
+        const m = r.stampel ? mattFor(r) : null
+        return m && inomMarginal(m, ruta(m, stampelMatt(st), st.placering)) ? [i + 1] : []
+      })
+    : []
   const forklaring = yta.dokument.length === 0 ? texter.bakaIhopIngaFiler : texter.bakaIhopIngaSidor
   return (
     <div class="app">
@@ -222,16 +238,19 @@ export function App() {
 
         <section class="kolumn kolumn-mitt" aria-labelledby="rubrik-resultat">
           <Resultatrad yta={yta} andra={andra} aktivId={aktivId} sattAktiv={sattAktiv} />
-          <Forhandsvisning yta={yta} aktivId={aktivId} sattAktiv={sattAktiv} />
+          <Forhandsvisning
+            yta={yta}
+            aktivId={aktivId}
+            sattAktiv={sattAktiv}
+            overlagg={(matt, skala, resultatId) => <Overlagg yta={yta} matt={matt} skala={skala} resultatId={resultatId} andra={andra} />}
+          />
         </section>
 
-        <section class="kolumn" aria-labelledby="rubrik-markning">
-          <h2 id="rubrik-markning" class="kolumnrubrik">
-            <span class="steg" aria-hidden="true">3</span>
-            {texter.kolumnMarkning}
-          </h2>
-          <p class="ingress-latt dampad">{texter.markningSenare}</p>
-        </section>
+        <Markning
+          inaktiv={tomt}
+          stampel={<StampelPanel yta={yta} andra={andra} aktivId={aktivId} aktivMatt={aktivMatt} naraKant={stampelNaraKant} status={sattStatus} />}
+          etikett={<p class="ingress-latt dampad">{texter.markningSenare}</p>}
+        />
       </main>
 
       <div class="statusyta" role="status" aria-live="polite">

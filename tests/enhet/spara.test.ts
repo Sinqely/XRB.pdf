@@ -37,9 +37,9 @@ describe('sparande', () => {
     const b = byggbegaran(yta(), 'pdfa', 5)
     expect(Object.keys(b.dokument).sort()).toEqual(['a', 'b'])
     expect(b.sidor).toEqual([
-      { dokumentId: 'b', sidindex: 0, vridning: 0 },
-      { dokumentId: 'a', sidindex: 0, vridning: 0 },
-      { dokumentId: 'a', sidindex: 1, vridning: 0 },
+      { dokumentId: 'b', sidindex: 0, vridning: 0, stampel: false },
+      { dokumentId: 'a', sidindex: 0, vridning: 0, stampel: false },
+      { dokumentId: 'a', sidindex: 1, vridning: 0, stampel: false },
     ])
     expect(b.format).toBe('pdfa')
     expect(b.datum).toBe(5)

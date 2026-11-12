@@ -1,6 +1,7 @@
 // Resultatraden i SCR-APP-001 (FEAT-001 ui-design.md): ordning, dra och släpp, knappar och kortkommandon.
 import { Fragment } from 'preact'
 import { useEffect, useRef, useState } from 'preact/hooks'
+import { vaxlaPaSida } from '../karna/markning'
 import { texter } from '../karna/texter'
 import { flyttaSida, flyttaSteg, taBortResultatsida, type Andring } from '../karna/arbetsyta'
 import type { Arbetsyta } from '../karna/typer'
@@ -118,6 +119,23 @@ export function Resultatrad({ yta, andra, aktivId, sattAktiv }: Props) {
                     <Knapp ikon="kryss" etikett={texter.taBortSida(n, dn)}
                       klick={() => { fokusEfter.current = { id: null, plats }; andra((y) => taBortResultatsida(y, r.id)) }} />
                   </span>
+                  {(yta.vattenstampel || yta.textetikett) && (
+                    <span class="kryssrad">
+                      {(
+                        [
+                          ['stampel', !!yta.vattenstampel, texter.kryssStampel],
+                          ['etikett', !!yta.textetikett, texter.kryssEtikett],
+                        ] as const
+                      ).map(([o, finns, text]) =>
+                        finns ? (
+                          <label key={o} class="kryss" title={texter.kryssNamn(o, plats + 1)}>
+                            <input type="checkbox" checked={r[o]} aria-label={texter.kryssNamn(o, plats + 1)} onChange={() => andra((y) => vaxlaPaSida(y, o, r.id))} />
+                            <span aria-hidden="true">{text}</span>
+                          </label>
+                        ) : null,
+                      )}
+                    </span>
+                  )}
                 </li>
               </Fragment>
             )
