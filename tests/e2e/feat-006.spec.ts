@@ -173,11 +173,18 @@ test('DS-01 med bara tangentbord: välja bild, flytta med pilar och välja sidor
   await tabbaTill(page, /^Vattenstämpel stampel\.png/)
   await page.keyboard.press('ArrowLeft')
   await page.keyboard.press('Shift+ArrowUp')
-  const efter = await ruta(page)
-  // Jämför i punkter med skalan vid varje mätning, ifall förhandsvisningens skala hinner ändras
+  // Jämför i punkter med skalan vid varje mätning, ifall förhandsvisningens skala hinner ändras.
+  // Mätningen görs om tills båda tangenttrycken är ritade (Safari-motorn ritar ibland ett ögonblick senare).
   const pt = (r: typeof fore, v: number) => (v * 595.28) / r.sida.b
-  expect(Math.abs(pt(fore, fore.x) - pt(efter, efter.x) - 1 * MM)).toBeLessThan(pt(fore, 1.5)) // högst 1,5 skärmpunkter
-  expect(Math.abs(pt(fore, fore.y) - pt(efter, efter.y) - 10 * MM)).toBeLessThan(pt(fore, 1.5)) // högst 1,5 skärmpunkter
+  await expect
+    .poll(async () => {
+      const efter = await ruta(page)
+      return [
+        Math.abs(pt(fore, fore.x) - pt(efter, efter.x) - 1 * MM) < pt(fore, 1.5), // högst 1,5 skärmpunkter
+        Math.abs(pt(fore, fore.y) - pt(efter, efter.y) - 10 * MM) < pt(fore, 1.5),
+      ]
+    })
+    .toEqual([true, true])
   await expect(page.locator('.statusyta')).toHaveText('Vattenstämpeln flyttad.')
   // Placeringsväljaren med piltangenter
   await tabbaTill(page, 'Nedre högra hörnet')
