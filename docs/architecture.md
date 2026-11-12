@@ -1,6 +1,6 @@
 # Arkitektur: PDF-bagaren
 
-> Status: Draft · Senast uppdaterad: 2026-11-12 · Författare: Claude tillsammans med Ägaren
+> Status: Approved (G2, 2026-11-12) · Version 1.0 · Senast uppdaterad: 2026-11-12 · Författare: Claude tillsammans med Ägaren
 > Underlag: [docs/srs.md](srs.md) v1.0 (G1 godkänd), [docs/use-cases.md](use-cases.md) v1.0, [docs/systemkontext.md](systemkontext.md) v1.0
 
 ## 1. Inledning och mål
@@ -368,7 +368,7 @@ Följande regler kontrolleras automatiskt i bygget:
 
 ### ADR-001: Fristående klientapp i en enda HTML-fil
 
-**Status:** Proposed
+**Status:** Accepted
 **Datum:** 2026-11-12
 **Requirements addressed:** NFR-MAINT-001, NFR-MAINT-002, NFR-PERF-004, NFR-SEC-001, NFR-PRIV-002, NFR-COMP-001, NFR-COMP-002, FR-SPA-001, FR-ALM-008
 
@@ -389,7 +389,7 @@ Publicering är en filuppladdning. Datamängden begränsas av webbläsarens minn
 
 ### ADR-002: Nätverksspärr med innehållspolicy och kodregler
 
-**Status:** Proposed
+**Status:** Accepted
 **Datum:** 2026-11-12
 **Requirements addressed:** NFR-SEC-001, NFR-SEC-002, NFR-PRIV-001, NFR-PRIV-002, NFR-SEC-005, FR-DOK-005, FR-DOK-007
 
@@ -409,7 +409,7 @@ Inga externa resurser kan användas, inte ens typsnitt eller kartor; allt bakas 
 
 ### ADR-003: pdf.js för inläsning och förhandsvisning
 
-**Status:** Proposed
+**Status:** Accepted
 **Datum:** 2026-11-12
 **Requirements addressed:** FR-FIL-002, FR-FIL-007, FR-FIL-008, FR-SID-001, FR-FHV-001, FR-FHV-006, NFR-SEC-003, NFR-PERF-001, NFR-PERF-002, NFR-COMP-001, NFR-COMP-002, NFR-LEG-001
 
@@ -429,7 +429,7 @@ Förhandsvisningen ritas av pdf.js, medan mottagarna ser filen i Acrobat eller E
 
 ### ADR-004: pdf-lib för att bygga resultatet utan att röra sidinnehållet
 
-**Status:** Proposed
+**Status:** Accepted
 **Datum:** 2026-11-12
 **Requirements addressed:** FR-SPA-001, FR-SPA-007, FR-SPA-008, FR-SPA-009, FR-SID-010, FR-STA-002, FR-STA-004, FR-TXT-006, FR-DOL-004, FR-DOL-006, FR-DOL-007, FR-DOL-009, FR-DOL-011, FR-DOL-013, NFR-PERF-003, NFR-COMP-005, NFR-LEG-001
 
@@ -449,7 +449,7 @@ Kopiering på objektnivå uppfyller BG-009 per konstruktion. Kommentarer, formul
 
 ### ADR-005: Egen PDF/A-2b-modul med förkontroll och veraPDF i testerna
 
-**Status:** Proposed
+**Status:** Accepted
 **Datum:** 2026-11-12
 **Requirements addressed:** FR-SPA-004, FR-SPA-005, FR-SPA-006, FR-DOL-010, FR-DOL-012, NFR-COMP-004, NFR-LEG-001, UC-007
 
@@ -469,7 +469,7 @@ Filer med hinder kan sparas som vanlig PDF (FR-SPA-006) i stället för att sida
 
 ### ADR-006: Gemensam layoutmodell för förhandsvisning och export
 
-**Status:** Proposed
+**Status:** Accepted
 **Datum:** 2026-11-12
 **Requirements addressed:** FR-FHV-006, FR-SPA-008, FR-PLC-001, FR-PLC-004, FR-PLC-005, FR-PLC-006, FR-PLC-007, FR-PLC-008, FR-PLC-010, FR-PLC-011, FR-TXT-013, NFR-PERF-001
 
@@ -488,7 +488,7 @@ Avvikelser mellan förhandsvisning och resultat begränsas till hur pdf.js ritar
 
 ### ADR-007: Inbakade typsnitt för etiketter och gränssnitt
 
-**Status:** Proposed
+**Status:** Accepted
 **Datum:** 2026-11-12
 **Requirements addressed:** FR-TXT-003, FR-TXT-007, FR-TXT-008, FR-TXT-013, NFR-USE-002, NFR-LEG-001, NFR-COMP-004, NFR-MAINT-001
 
@@ -508,7 +508,7 @@ Tecken utanför typsnittets teckenuppsättning upptäcks med fontkit och varnas 
 
 ### ADR-008: TypeScript och Preact, tillstånd bara i minnet
 
-**Status:** Proposed
+**Status:** Accepted
 **Datum:** 2026-11-12
 **Requirements addressed:** FR-ALM-001, FR-ALM-002, FR-ALM-003, FR-ALM-008, FR-ALM-009, FR-SID-007, FR-SID-008, FR-DOK-010, NFR-ACC-001, NFR-ACC-002, NFR-COMP-003, NFR-MAINT-004, NFR-PERF-004
 
@@ -528,7 +528,7 @@ Typkontrollen och testerna fångar många fel innan Ägaren ser dem. Tillstånde
 
 ### ADR-009: Bygge och tester: Vite, Vitest, Playwright och GitHub Actions
 
-**Status:** Proposed
+**Status:** Accepted
 **Datum:** 2026-11-12
 **Requirements addressed:** NFR-MAINT-001, NFR-MAINT-004, NFR-LEG-001, NFR-SEC-004, NFR-COMP-001, NFR-COMP-002, NFR-COMP-004, NFR-ACC-001
 
@@ -548,7 +548,7 @@ Vi bygger med Vite och `vite-plugin-singlefile` (båda MIT) så att skript, stil
 
 ### ADR-010: Release och publicering med verifieringsrapport
 
-**Status:** Proposed
+**Status:** Accepted
 **Datum:** 2026-11-12
 **Requirements addressed:** NFR-MAINT-002, NFR-MAINT-003, NFR-SEC-004, NFR-SEC-005, FR-DOK-004, FR-DOK-006, FR-DOK-007, FR-DOK-008, UC-010
 
