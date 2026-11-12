@@ -107,6 +107,22 @@ Kraven skrivs i EARS: *När* (händelse), *Medan* (tillstånd), *Där* (valbar f
 | FR-SID-013 | När användaren väljer en sida som redan finns i resultatet en gång till ska appen lägga till ytterligare en förekomst av sidan i resultatet. | Could | Active | Källa: BH-001. Ägaren 2026-11-12: Could. Om Could inte byggs gäller FR-SID-002 och FR-SID-003 som val/bortval. |
 | FR-SID-014 | När användaren flyttar, lägger till, tar bort eller vrider en sida ska appen meddela ändringen i ett statusmeddelande som skärmläsare läser upp. | Must | Active | Källa: BG-004. T.ex. "Sida 2 ur Beslut.pdf flyttad till plats 4". |
 
+#### 3.1.3 FHV – Förhandsvisning
+
+| ID | Requirement | Priority | Status | Notes / rules |
+| :-- | :---------- | :------- | :----- | :------------ |
+| FR-FHV-001 | Medan resultatet innehåller minst en sida ska appen visa en förhandsvisning av en resultatsida i taget bredvid sidvalet. | Must | Active | Källa: BH-003 ("hela tiden"). |
+| FR-FHV-002 | När användaren väljer föregående eller nästa sida i förhandsvisningen ska appen visa den resultatsidan. | Must | Active | Källa: BH-003. |
+| FR-FHV-003 | Medan förhandsvisningen visar en sida ska appen visa sidans plats i resultatet i formen "Sida N av M". | Must | Active | Källa: BH-002, BH-003. |
+| FR-FHV-004 | När användaren väljer en sida i resultatraden ska appen visa den sidan i förhandsvisningen. | Must | Active | Källa: BH-003. |
+| FR-FHV-005 | När användaren ändrar sidval, sidordning, rotation, vattenstämpel eller textetikett ska appen uppdatera förhandsvisningen så att den visar ändringen. | Must | Active | Källa: BH-003. Svarstid enligt NFR-PERF (fas 3). |
+| FR-FHV-006 | Appen ska visa vattenstämpel och textetikett i förhandsvisningen med samma innehåll, placering, storlek, opacitet och färger som i den sparade filen. | Must | Active | Källa: BH-003, MF-02. Verifieras genom jämförelse med den sparade filen i en vanlig PDF-läsare. |
+| FR-FHV-007 | Medan förhandsvisningen visar en sida ska appen visa vilket dokument och vilken sida i dokumentet sidan kommer från. | Must | Active | Källa: BH-002, MF-01. |
+| FR-FHV-008 | När användaren väljer att zooma in, zooma ut eller anpassa till fönstrets bredd ska appen ändra förhandsvisningens skala därefter. | Should | Active | Källa: BH-003, BG-004 (förstoring). |
+| FR-FHV-009 | Medan fokus finns i förhandsvisningen, när användaren trycker på piltangenterna eller Page Up/Page Down, ska appen visa föregående eller nästa resultatsida. | Must | Active | Källa: BG-004. |
+| FR-FHV-010 | Medan resultatet saknar sidor ska appen i förhandsvisningens yta visa en kort förklaring av hur man läser in filer och väljer sidor. | Must | Active | Källa: FV-001. |
+| FR-FHV-011 | Där visning av flera sidor samtidigt ingår ska appen visa flera resultatsidor i förhandsvisningen samtidigt. | Won't | Active | Källa: BH-003 ("en sida i taget går bra"). Inte i version 1. |
+
 ### 3.2 External interface requirements
 *(fas 4)*
 
