@@ -17,5 +17,6 @@ const A4 = [595.28, 841.89]
 await skapa('beslut.pdf', [['Beslut', ...A4], ['Beslut', ...A4], ['Beslut', ...A4]])
 await skapa('underskrift.pdf', [['Underskriven sida', ...A4]])
 await skapa('blandade-format.pdf', [['Stående A4', ...A4], ['Liggande A4', A4[1], A4[0]], ['Letter', 612, 792]])
+await skapa('hundra-sidor.pdf', Array.from({ length: 100 }, () => ['Hundra sidor', ...A4]))
 writeFileSync(new URL('../tests/filer/inte-pdf.pdf', import.meta.url), 'Det här är ingen PDF.\n')
 console.log('Testfiler skapade i tests/filer/')

@@ -26,7 +26,7 @@ Ingen ankarskärm har tagits fram och manifestet var tomt, så detta är designs
    - Rad 2: metadata "3 sidor · 1,2 MB" i dämpad text, stil `liten`.
    - Rad 3: `knapp-sekundar` "Lägg till alla sidor" och "Ta bort ur resultatet", i rad med 8 px mellanrum; bryts till två rader om de inte får plats. "Lägg till alla sidor" är inaktiv med förklaringen "Alla sidor finns redan i resultatet." när så är fallet; "Ta bort ur resultatet" är inaktiv med "Inga sidor ur dokumentet finns i resultatet." när inga finns.
    - Under: miniatyrrutnät, 2 per rad (88 px + 16 px mellanrum + 88 px; ryms i 300 px med 24 px inre marginal).
-3. `miniatyr`: `<button aria-pressed>` med bilden (88 px bred, höjd efter sidans proportion), ram 2 px `--ui-kant`, radie 2 px, och under bilden "Sida 3" i stil `liten`. Tillgängligt namn "Sida 3 av 7 ur Beslut.pdf" och, när vald, ", vald" (FR-DOK-010). Vald: märket "Vald" i övre högra hörnet (bakgrund `--ui-valt`, vit liten fet text, radie 4 px) och ram 2 px `--ui-text`. Klick, Enter eller Mellanslag växlar (B3). Hover: ram `--ui-text`.
+3. `miniatyr`: `<button aria-pressed>` med bilden (88 px bred, höjd efter sidans proportion), ram 2 px `--ui-kant`, radie 2 px, och under bilden "Sida 3" i stil `liten`. Tillgängligt namn "Sida 3 av 7 ur Beslut.pdf" och, när vald, "Vald, sida 3 av 7 ur Beslut.pdf" (FR-DOK-010). Ordet "Vald" står först eftersom märket syns före sidtexten; annars bryter namnet mot WCAG 2.5.3 (synlig text ska ingå i namnet), vilket axe-core upptäckte vid bygget. Vald: märket "Vald" i övre högra hörnet (bakgrund `--ui-valt`, vit liten fet text, radie 4 px) och ram 2 px `--ui-text`. Klick, Enter eller Mellanslag växlar (B3). Hover: ram `--ui-text`.
 
 **Kolumn 2 Resultat:**
 1. Rubrik (kolumnrubrik) "2 Resultat · 4 sidor".

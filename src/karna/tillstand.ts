@@ -37,12 +37,9 @@ export function uniktNamn(filnamn: string, befintliga: readonly Dokument[]): str
   return lika === 0 ? filnamn : `${filnamn} (${lika + 1})`
 }
 
-/** Lägger till ett dokument och, i skelettet, alla dess sidor sist i resultatet. */
-export function laggTillDokument(nu: Arbetsyta, dok: Dokument): Arbetsyta {
-  const sidor = Array.from({ length: dok.sidantal }, (_, i) => ({ dokumentId: dok.id, sidindex: i }))
-  return { dokument: [...nu.dokument, dok], resultat: [...nu.resultat, ...sidor] }
-}
-
-export function uppdateraDokument(nu: Arbetsyta, id: string, andring: Partial<Dokument>): Arbetsyta {
-  return { ...nu, dokument: nu.dokument.map((d) => (d.id === id ? { ...d, ...andring } : d)) }
+let raknare = 0
+/** Nytt id inom fliken. Räknare i stället för crypto.randomUUID, som kräver säker kontext (design §4). */
+export function nyttId(prefix: string): string {
+  raknare += 1
+  return `${prefix}-${raknare}`
 }

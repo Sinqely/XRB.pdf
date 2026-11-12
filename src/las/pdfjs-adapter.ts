@@ -49,3 +49,8 @@ export async function ritaMiniatyr(pdf: PDFDocumentProxy, sidindex: number, bred
   if (!blob) throw new Error('miniatyr')
   return URL.createObjectURL(blob)
 }
+
+/** Stänger dokumentet i pdf.js och frigör dess minne i arbetstråden. */
+export async function stangPdf(pdf: PDFDocumentProxy): Promise<void> {
+  await pdf.loadingTask.destroy()
+}

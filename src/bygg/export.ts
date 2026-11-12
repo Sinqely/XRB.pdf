@@ -17,8 +17,12 @@ export async function bakaIhop(begaran: Byggbegaran): Promise<Uint8Array> {
     let kalla = oppnade.get(dokumentId)
     if (!kalla) {
       const bytes = begaran.dokument[dokumentId]
-      if (!bytes) throw new Error(`Dokumentet ${dokumentId} saknas`)
-      kalla = await PDFDocument.load(bytes, { updateMetadata: false })
+      if (!bytes) throw new Error(`kalla: dokumentet ${dokumentId} saknas`)
+      try {
+        kalla = await PDFDocument.load(bytes, { updateMetadata: false })
+      } catch (e) {
+        throw new Error(`kalla: dokumentet ${dokumentId} kunde inte öppnas`, { cause: e })
+      }
       oppnade.set(dokumentId, kalla)
     }
     const [sida] = await ut.copyPages(kalla, [sidindex])
