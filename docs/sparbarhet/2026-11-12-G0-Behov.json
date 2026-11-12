@@ -1,0 +1,36 @@
+{
+ "system": "PDF-bagaren (XRB.pdf)",
+ "grind": "G0 Behov",
+ "datum": "2026-11-12",
+ "baslinje": "baseline/G0-v1.0",
+ "summa": {
+  "alla": {
+   "totalt": 23,
+   "bekraftade": 17,
+   "tackta": 0,
+   "verifierade": 0,
+   "validerade": 0
+  },
+  "Måste": {
+   "totalt": 20,
+   "bekraftade": 14,
+   "tackta": 0,
+   "verifierade": 0,
+   "validerade": 0
+  },
+  "Bör": {
+   "totalt": 3,
+   "bekraftade": 3,
+   "tackta": 0,
+   "verifierade": 0,
+   "validerade": 0
+  }
+ },
+ "krav": {
+  "aktiva": 0,
+  "verifierade": 0,
+  "utan_behov": [],
+  "omgivning": [],
+  "ska_bort": []
+ }
+}

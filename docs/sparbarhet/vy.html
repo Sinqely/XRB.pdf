@@ -1,0 +1,249 @@
+<title>Spårbarhetsvy</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: ett tekniskt granskningsunderlag – sammanfattning överst, matris i mitten, träd och luckor under. */
+:root {
+  --bg: #f6f7f6; --surface: #ffffff; --fg: #1b2423; --muted: #5d6b69; --line: #d9dfdd;
+  --accent: #0f5f6b; --accent-soft: #d5e8ea;
+  --ok: #2f7d4a; --ok-soft: #dcefe2; --warn: #a86a12; --warn-soft: #f6e8cf;
+  --bad: #b23a2a; --bad-soft: #f6dcd7; --none: #8a9593; --none-soft: #e9edec;
+  --f-display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --f-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #131a19; --surface: #1b2423; --fg: #e3eae8; --muted: #9aa8a5; --line: #2f3b39;
+  --accent: #5fb3bf; --accent-soft: #1f3b3f;
+  --ok: #6cc28a; --ok-soft: #1d3527; --warn: #e0a64a; --warn-soft: #3a2d17;
+  --bad: #ec7d6c; --bad-soft: #3d221e; --none: #7d8a88; --none-soft: #253130; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #131a19; --surface: #1b2423; --fg: #e3eae8; --muted: #9aa8a5; --line: #2f3b39;
+  --accent: #5fb3bf; --accent-soft: #1f3b3f;
+  --ok: #6cc28a; --ok-soft: #1d3527; --warn: #e0a64a; --warn-soft: #3a2d17;
+  --bad: #ec7d6c; --bad-soft: #3d221e; --none: #7d8a88; --none-soft: #253130; color-scheme: dark; }
+body { background: var(--bg); color: var(--fg); font: 15px/1.5 var(--f-body); }
+.wrap { max-width: 1120px; margin: 0 auto; padding-block: 28px 64px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: grid; gap: 36px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; margin: 0; }
+h1 { font-size: 1.9rem; letter-spacing: -0.01em; }
+h2 { font-size: 1.25rem; }
+h3 { font-size: 1rem; }
+p { margin: 0; max-width: 68ch; }
+.eyebrow { font: 500 0.75rem var(--f-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.mono { font-family: var(--f-mono); font-size: 0.85em; }
+td.mono { white-space: nowrap; }
+.gap li .muted { margin-left: 6px; }
+.muted { color: var(--muted); }
+header { display: grid; gap: 8px; border-bottom: 1px solid var(--line); padding-bottom: 20px; }
+.meta { display: flex; flex-wrap: wrap; gap: 8px 20px; color: var(--muted); font-size: 0.9rem; }
+.meta b { color: var(--fg); font-weight: 600; }
+section { display: grid; gap: 14px; min-width: 0; }
+.lead { color: var(--muted); }
+
+/* Trappa */
+.stairs { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+.stair { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 16px; display: grid; gap: 10px; }
+.stair h3 { display: flex; justify-content: space-between; align-items: baseline; }
+.step { display: grid; grid-template-columns: 104px 1fr 54px; gap: 10px; align-items: center; font-size: 0.88rem; }
+.bar { height: 12px; background: var(--none-soft); border-radius: 2px; overflow: hidden; }
+.bar i { display: block; height: 100%; }
+.num { font-variant-numeric: tabular-nums; text-align: right; font-family: var(--f-mono); font-size: 0.82rem; }
+
+/* Tidslinje */
+.chart { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 12px; overflow-x: auto; }
+.chart svg { display: block; width: 100%; min-width: 520px; height: auto; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 0.82rem; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.sw { width: 12px; height: 12px; border-radius: 2px; display: inline-block; }
+
+/* Matris */
+.controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.controls button { font: 500 0.85rem var(--f-body); border: 1px solid var(--line); background: var(--surface); color: var(--fg);
+  padding: 5px 12px; border-radius: 999px; cursor: pointer; }
+.controls button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--surface); }
+.controls button:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.tablewrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; }
+table { border-collapse: collapse; width: 100%; font-size: 0.86rem; }
+th, td { padding: 7px 10px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+thead th { font: 600 0.74rem var(--f-body); letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); position: sticky; top: 0; background: var(--surface); white-space: nowrap; }
+th.vt, td.vt { text-align: center; padding-inline: 4px; width: 26px; }
+tr.group td { background: var(--accent-soft); font-weight: 600; font-family: var(--f-display); }
+td.need { min-width: 260px; }
+.cell { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; font-size: 0.8rem; padding: 2px 8px; border-radius: 3px; }
+.s-ok { background: var(--ok-soft); color: var(--ok); }
+.s-acc { background: var(--accent-soft); color: var(--accent); }
+.s-warn { background: var(--warn-soft); color: var(--warn); }
+.s-bad { background: var(--bad-soft); color: var(--bad); }
+.s-none { background: var(--none-soft); color: var(--muted); }
+.dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; background: var(--accent); }
+.dot.ok { background: var(--ok); } .dot.bad { background: var(--bad); }
+
+/* Träd */
+.tree { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 8px 14px; }
+.tree details { margin-left: 0; }
+.tree details details { margin-left: 18px; border-left: 1px solid var(--line); padding-left: 12px; }
+.tree summary { cursor: pointer; padding: 5px 0; display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: baseline; list-style: none; }
+.tree summary::-webkit-details-marker { display: none; }
+.tree summary::before { content: "▸"; color: var(--muted); width: 1em; }
+.tree details[open] > summary::before { content: "▾"; }
+.leaf { margin-left: 18px; border-left: 1px solid var(--line); padding: 4px 0 4px 12px; display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: baseline; font-size: 0.86rem; }
+.crit { margin-left: 18px; border-left: 1px solid var(--line); padding: 4px 0 6px 12px; font-size: 0.86rem; color: var(--muted); }
+
+/* Luckor */
+.gaps { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+.gap { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 16px; display: grid; gap: 8px; align-content: start; }
+.gap ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; font-size: 0.88rem; }
+footer { color: var(--muted); font-size: 0.82rem; border-top: 1px solid var(--line); padding-top: 14px; }
+@media (prefers-reduced-motion: no-preference) { .bar i { transition: width .4s ease; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <span class="eyebrow">Spårbarhetsvy · intressentbehov</span>
+    <h1 id="sys"></h1>
+    <div class="meta" id="meta"></div>
+  </header>
+
+  <section aria-labelledby="h-steg">
+    <h2 id="h-steg">Hur långt behoven har kommit</h2>
+    <p class="lead">Varje behov går igenom fyra steg: det bekräftas av intressenten, täcks av krav, verifieras (kraven har accepterade tester) och valideras (ägaren godkänner valideringstestet med skarp data).</p>
+    <div class="stairs" id="stairs"></div>
+  </section>
+
+  <section aria-labelledby="h-tid">
+    <h2 id="h-tid">Över tid</h2>
+    <p class="lead" id="tidtext"></p>
+    <div class="chart" id="chart"></div>
+    <div class="legend" id="legend"></div>
+  </section>
+
+  <section aria-labelledby="h-matris">
+    <h2 id="h-matris">Uppfyllnadsmatris</h2>
+    <p class="lead">En rad per behov, förväntning och begränsning. Kolumnerna till höger visar vilka avsnitt i valideringstesterna som prövar behovet.</p>
+    <div class="controls" role="group" aria-label="Filter">
+      <button type="button" id="f-alla" aria-pressed="true">Alla</button>
+      <button type="button" id="f-maste" aria-pressed="false">Bara Måste</button>
+      <button type="button" id="f-luckor" aria-pressed="false">Bara luckor</button>
+    </div>
+    <div class="tablewrap"><table id="matris"></table></div>
+  </section>
+
+  <section aria-labelledby="h-trad">
+    <h2 id="h-trad">Spårningsträd</h2>
+    <p class="lead">Intressent → behov → krav → test. Öppna en gren för att se kraven och hur de verifierats.</p>
+    <div class="tree" id="tree"></div>
+  </section>
+
+  <section aria-labelledby="h-luckor">
+    <h2 id="h-luckor">Luckor att ta ställning till</h2>
+    <div class="gaps" id="gaps"></div>
+  </section>
+
+  <footer id="foot"></footer>
+</div>
+
+<script id="data" type="application/json">{"system": "PDF-bagaren (XRB.pdf)", "grind": "G0 Behov", "datum": "2026-11-12", "baslinje": "baseline/G0-v1.0", "summa": {"alla": {"totalt": 23, "bekraftade": 17, "tackta": 0, "verifierade": 0, "validerade": 0}, "Måste": {"totalt": 20, "bekraftade": 14, "tackta": 0, "verifierade": 0, "validerade": 0}, "Bör": {"totalt": 3, "bekraftade": 3, "tackta": 0, "verifierade": 0, "validerade": 0}}, "krav": {"aktiva": 0, "verifierade": 0, "utan_behov": [], "omgivning": [], "ska_bort": []}, "intressenter": [{"id": "IN-01", "namn": "Ägaren", "roll": "Beslutar, prioriterar, godkänner"}, {"id": "IN-02", "namn": "Kollegor utan särskild datorvana", "roll": "Använder appen för att sätta ihop och märka PDF:er"}, {"id": "IN-03", "namn": "Ägaren (förvaltare), tillsammans med Claude", "roll": "Lägger upp appen på SharePoint, uppdaterar och vidareutvecklar den när nya behov dyker upp"}, {"id": "IN-04", "namn": "Mottagare av den färdiga filen (digitalt arkiv, e-postmottagare, den som signerar)", "roll": "Får, arkiverar, läser eller signerar resultatet"}, {"id": "IN-05", "namn": "Organisationens IT/informationssäkerhet", "roll": "Kan behöva godkänna att appen används på arbetsdatorer"}, {"id": "IN-06", "namn": "Personer som nämns i dokumenten", "roll": "Ingen"}, {"id": "IN-07", "namn": "Organisationen som sådan (genom t.ex. kommunikationsavdelningen och den grafiska profilen)", "roll": "Appen används i organisationens namn av dess medarbetare"}], "omgivning": [], "mf": [{"id": "MF-01", "matt": "\"En användare som prövar webb-applikationen första gången lyckas baka ihop två pdf och kan se och förstå vilka sidor som kommer med från respektive dokument.\""}, {"id": "MF-02", "matt": "\"Användarens förväntningar på slutresultatet (genom förhandsvisning) ska sedan mötas av den sammanslagna filen.\""}], "behov": [{"id": "BG-001", "intressent": "IN-01", "slag": "Begränsning", "tolkning": "Ägaren vill att inga PDF-filer eller delar av dem lämnar användarens dator.", "prio": "Måste", "kriterium": "Ägaren kan konstatera att appen fungerar med nätverket avstängt efter att den laddats, och att inget filinnehåll skickas iväg (granskas t.ex. i webbläsarens nätverkslogg).", "mf": "MF-01", "status": "Bekräftad", "beslut": "bekraftad", "tackning": "saknas", "verifiering": "saknas", "verifierade": 0, "antal_krav": 0, "validering": "ejutford", "krav": [], "tester": [], "krav_text": "", "test_text": "", "resultat": "", "kravdetalj": []}, {"id": "BG-002", "intressent": "IN-01", "slag": "Begränsning", "tolkning": "Ägaren vill att appen bara har de funktioner som behövs för grundbehoven.", "prio": "Måste", "kriterium": "Ägarens helhetsbedömning; varje ny funktion prövas mot BH-001–BH-005.", "mf": "MF-01", "status": "Bekräftad", "beslut": "bekraftad", "tackning": "saknas", "verifiering": "saknas", "verifierade": 0, "antal_krav": 0, "validering": "ejutford", "krav": [], "tester": [], "krav_text": "", "test_text": "", "resultat": "", "kravdetalj": []}, {"id": "BG-003", "intressent": "IN-01", "slag": "Begränsning", "tolkning": "Ägaren har bestämt att en stämpel eller text får samma placering på alla sidor där den läggs, så att man inte behöver placera den sida för sida, åtminstone i första versionen. Tolkningen \"samma ställe\" TO VERIFY].", "prio": "Måste", "kriterium": "Stämpel och text placeras en gång och hamnar på samma ställe på alla valda sidor i den sparade filen.", "mf": "MF-01", "status": "Förslag TO VERIFY]", "beslut": "forslag", "tackning": "saknas", "verifiering": "saknas", "verifierade": 0, "antal_krav": 0, "validering": "ejutford", "krav": [], "tester": [], "krav_text": "", "test_text": "", "resultat": "", "kravdetalj": []}, {"id": "BH-001", "intressent": "IN-02", "slag": "Behov", "tolkning": "Användaren behöver att systemet på ett enkelt sätt låter hen plocka valfria sidor ur två eller fler PDF:er, i valfri ordning, och sätta ihop dem till en fil. Sidor som inte väljs kommer inte med.", "prio": "Måste", "kriterium": "Med ett riktigt originaldokument, ett skannat beslut och en tredje fil skapas en fil där beslutssidan ersätter motsvarande originalsida, några sidor är bortvalda och ordningen är den användaren valt.", "mf": "MF-01", "status": "Bekräftad", "beslut": "bekraftad", "tackning": "saknas", "verifiering": "saknas", "verifierade": 0, "antal_krav": 0, "validering": "ejutford", "krav": [], "tester": [], "krav_text": "", "test_text": "", "resultat": "", "kravdetalj": []}, {"id": "BH-002", "intressent": "IN-02", "slag": "Behov", "tolkning": "Användaren behöver att systemet tydligt visar vilka sidor som är valda och vilket dokument varje sida kommer ifrån.", "prio": "Måste", "kriterium": "En ny användare kan, utan hjälp, peka ut ursprung för varje sida i resultatet.", "mf": "MF-01", "status": "Förslag TO VERIFY]", "beslut": "forslag", "tackning": "saknas", "verifiering": "saknas", "verifierade": 0, "antal_krav": 0, "validering": "ejutford", "krav": [], "tester": [], "krav_text": "", "test_text": "", "resultat": "", "kravdetalj": []}, {"id": "BH-003", "intressent": "IN-02", "slag": "Behov", "tolkning": "Användaren behöver att systemet hela tiden visar hur resultatet kommer att se ut, inklusive vattenstämplar och textetiketter, och att den sparade filen ser ut precis som förhandsvisningen. En sida i taget räcker.", "prio": "Måste", "kriterium": "Under hela arbetet syns en förhandsvisning som uppdateras när användaren ändrar något. Den nedladdade filen jämförs sida för sida med förhandsvisningen: samma sidor, ordning, stämplar och texter på samma ställen.", "mf": "MF-02", "status": "Bekräftad", "beslut": "bekraftad", "tackning": "saknas", "verifiering": "saknas", "verifierade": 0, "antal_krav": 0, "validering": "ejutford", "krav": [], "tester": [], "krav_text": "", "test_text": "", "resultat": "", "kravdetalj": []}, {"id": "BH-004", "intressent": "IN-02", "slag": "Behov", "tolkning": "Användaren behöver att systemet kan lägga en egen bild som vattenstämpel på alla eller valda sidor.", "prio": "Måste", "kriterium": "Användaren väljer en egen bild, väljer \"alla sidor\" respektive några enskilda sidor, och stämpeln finns på exakt de sidorna i både förhandsvisningen och den sparade filen (se även BH-007, BH-008, BH-009, BH-015).", "mf": "MF-02", "status": "Förslag TO VERIFY]", "beslut": "forslag", "tackning": "saknas", "verifiering": "saknas", "verifierade": 0, "antal_krav": 0, "validering": "ejutford", "krav": [], "tester": [], "krav_text": "", "test_text": "", "resultat": "", "kravdetalj": []}, {"id": "BH-007", "intressent": "IN-02", "slag": "Behov", "tolkning": "Användaren behöver att genomskinliga delar av vattenstämpelns bild förblir genomskinliga på sidan, så att innehållet under syns.", "prio": "Måste", "kriterium": "En bild med genomskinlig bakgrund läggs på en textsida; texten syns i de genomskinliga delarna, både i förhandsvisningen och i den sparade filen.", "mf": "MF-02", "status": "Bekräftad", "beslut": "bekraftad", "tackning": "saknas", "verifiering": "saknas", "verifierade": 0, "antal_krav": 0, "validering": "ejutford", "krav": [], "tester": [], "krav_text": "", "test_text": "", "resultat": "", "kravdetalj": []}, {"id": "BH-008", "intressent": "IN-02", "slag": "Behov", "tolkning": "Användaren behöver kunna välja hur genomskinlig hela vattenstämpeln ska vara.", "prio": "Måste", "kriterium": "Användaren ställer in en lägre opacitet och ser i förhandsvisningen och i den sparade filen att stämpeln blir svagare och sidans innehåll går att läsa igenom den.", "mf": "MF-02", "status": "Bekräftad", "beslut": "bekraftad", "tackning": "saknas", "verifiering": "saknas", "verifierade": 0, "antal_krav": 0, "validering": "ejutford", "krav": [], "tester": [], "krav_text": "", "test_text": "", "resultat": "", "kravdetalj": []}, {"id": "BH-005", "intressent": "IN-02", "slag": "Behov", "tolkning": "Användaren behöver att systemet kan lägga en valfri text på alla eller valda sidor.", "prio": "Måste", "kriterium": "Användaren skriver en egen text med å, ä och ö, väljer \"alla sidor\" respektive några enskilda sidor, och texten finns på exakt de sidorna, rättstavad, i både förhandsvisningen och den sparade filen (se även BH-009, BH-012).", "mf": "MF-02", "status": "Förslag TO VERIFY]", "beslut": "forslag", "tackning": "saknas", "verifiering": "saknas", "verifierade": 0, "antal_krav": 0, "validering": "ejutford", "krav": [], "tester": [], "krav_text": "", "test_text": "", "resultat": "", "kravdetalj": []}, {"id": "BH-006", "intressent": "IN-02", "slag": "Behov", "tolkning": "Användaren behöver att text i originalsidorna går att söka i och kopiera även i den sammanslagna filen.", "prio": "Måste", "kriterium": "Sök efter ett ord från originalet i den sammanslagna filen i en vanlig PDF-läsare och kopiera ett stycke.", "mf": "MF-02", "status": "Förslag TO VERIFY]", "beslut": "forslag", "tackning": "saknas", "verifiering": "saknas", "verifierade": 0, "antal_krav": 0, "validering": "ejutford", "krav": [], "tester": [], "krav_text": "", "test_text": "", "resultat": "", "kravdetalj": []}, {"id": "BH-009", "intressent": "IN-02", "slag": "Behov", "tolkning": "Användaren behöver kunna bestämma var vattenstämpel och textetikett hamnar på sidan.", "prio": "Måste", "kriterium": "Användaren flyttar en stämpel och en text till en tom yta på en riktig sida, och de hamnar på samma ställe i den sparade filen.", "mf": "MF-02", "status": "Bekräftad", "beslut": "bekraftad", "tackning": "saknas", "verifiering": "saknas", "verifierade": 0, "antal_krav": 0, "validering": "ejutford", "krav": [], "tester": [], "krav_text": "", "test_text": "", "resultat": "", "kravdetalj": []}, {"id": "BH-010", "intressent": "IN-02", "slag": "Behov", "tolkning": "Användaren behöver att systemet hindrar eller tydligt varnar för att en stämpel eller text oavsiktligt hamnar för nära eller utanför sidans kant.", "prio": "Måste", "kriterium": "Användaren försöker placera en text nära kanten och märker i förhandsvisningen att den hålls innanför eller att det tydligt syns att den är för nära. Ingen stämpel eller text klipps av i den sparade filen.", "mf": "MF-02", "status": "Bekräftad", "beslut": "bekraftad", "tackning": "saknas", "verifiering": "saknas", "verifierade": 0, "antal_krav": 0, "validering": "ejutford", "krav": [], "tester": [], "krav_text": "", "test_text": "", "resultat": "", "kravdetalj": []}, {"id": "BH-011", "intressent": "IN-02", "slag": "Behov", "tolkning": "Användaren behöver att resultatet är en vanlig PDF som kan arkiveras, mejlas och signeras digitalt efteråt.", "prio": "Måste", "kriterium": "Den färdiga filen öppnas i vanliga PDF-läsare, tas emot av arkivet och kan signeras digitalt i organisationens signeringsverktyg.", "mf": "MF-02", "status": "Bekräftad", "beslut": "bekraftad", "tackning": "saknas", "verifiering": "saknas", "verifierade": 0, "antal_krav": 0, "validering": "ejutford", "krav": [], "tester": [], "krav_text": "", "test_text": "", "resultat": "", "kravdetalj": []}, {"id": "BH-012", "intressent": "IN-02", "slag": "Behov", "tolkning": "Användaren behöver kunna välja textetikettens storlek och färg, och en bakgrundsfärg bakom texten så att den syns bättre.", "prio": "Måste", "kriterium": "Användaren ändrar storlek, färg och bakgrundsfärg och ser resultatet i förhandsvisningen och i den sparade filen. Texten går att läsa på både ljusa och mörka delar av en sida.", "mf": "MF-02", "status": "Bekräftad", "beslut": "bekraftad", "tackning": "saknas", "verifiering": "saknas", "verifierade": 0, "antal_krav": 0, "validering": "ejutford", "krav": [], "tester": [], "krav_text": "", "test_text": "", "resultat": "", "kravdetalj": []}, {"id": "BH-013", "intressent": "IN-02", "slag": "Behov", "tolkning": "Användaren vill kunna välja typsnitt för textetiketten.", "prio": "Bör", "kriterium": "Användaren väljer mellan några typsnitt och ser valet i den sparade filen. Å, ä och ö visas korrekt.", "mf": "MF-02", "status": "Bekräftad", "beslut": "bekraftad", "tackning": "saknas", "verifiering": "saknas", "verifierade": 0, "antal_krav": 0, "validering": "ejutford", "krav": [], "tester": [], "krav_text": "", "test_text": "", "resultat": "", "kravdetalj": []}, {"id": "BH-014", "intressent": "IN-02", "slag": "Behov", "tolkning": "Användaren vill kunna vrida en sida mellan liggande och stående.", "prio": "Bör", "kriterium": "En liggande inskannad sida vrids till stående och är rättvänd i den sparade filen.", "mf": "MF-02", "status": "Bekräftad", "beslut": "bekraftad", "tackning": "saknas", "verifiering": "saknas", "verifierade": 0, "antal_krav": 0, "validering": "ejutford", "krav": [], "tester": [], "krav_text": "", "test_text": "", "resultat": "", "kravdetalj": []}, {"id": "BH-015", "intressent": "IN-02", "slag": "Behov", "tolkning": "Användaren behöver kunna ändra storleken på vattenstämpelns bild på ett sätt som känns självklart.", "prio": "Måste", "kriterium": "En kollega som inte sett appen förut gör stämpeln större och mindre utan hjälp, och storleken i den sparade filen är densamma som i förhandsvisningen. Bilden behåller sina proportioner om inte användaren vill annat.", "mf": "MF-01, MF-02", "status": "Bekräftad", "beslut": "bekraftad", "tackning": "saknas", "verifiering": "saknas", "verifierade": 0, "antal_krav": 0, "validering": "ejutford", "krav": [], "tester": [], "krav_text": "", "test_text": "", "resultat": "", "kravdetalj": []}, {"id": "BH-017", "intressent": "IN-02", "slag": "Behov", "tolkning": "Användaren behöver att den färdiga filen kan bevaras i det digitala arkivet enligt arkivreglerna.", "prio": "Måste", "kriterium": "Den färdiga filen godkänns vid en kontroll mot PDF/A-2 (t.ex. med en PDF/A-validerare) och tas emot av organisationens digitala arkiv.", "mf": "MF-02", "status": "Bekräftad (PDF/A-2 beslutad 2026-11-12; arkivets mottagande TO VERIFY])", "beslut": "bekraftad", "tackning": "saknas", "verifiering": "saknas", "verifierade": 0, "antal_krav": 0, "validering": "ejutford", "krav": [], "tester": [], "krav_text": "", "test_text": "", "resultat": "", "kravdetalj": []}, {"id": "FV-001", "intressent": "IN-02", "slag": "Förväntning", "tolkning": "Användaren förväntar sig att förstå appen direkt, utan instruktioner eller utbildning.", "prio": "Måste", "kriterium": "Ägarens helhetsbedömning efter test med en kollega (MF-01).", "mf": "MF-01", "status": "Förslag TO VERIFY]", "beslut": "forslag", "tackning": "saknas", "verifiering": "saknas", "verifierade": 0, "antal_krav": 0, "validering": "ejutford", "krav": [], "tester": [], "krav_text": "", "test_text": "", "resultat": "", "kravdetalj": []}, {"id": "BH-016", "intressent": "IN-03", "slag": "Behov", "tolkning": "Förvaltaren behöver kunna publicera och byta version av appen genom att bara lägga upp den på SharePoint, utan server, installation eller byggsteg.", "prio": "Måste", "kriterium": "Ägaren lägger själv upp en ny version på SharePoint, och en kollega kan använda den direkt utan att installera något.", "mf": "MF-01", "status": "Bekräftad", "beslut": "bekraftad", "tackning": "saknas", "verifiering": "saknas", "verifierade": 0, "antal_krav": 0, "validering": "ejutford", "krav": [], "tester": [], "krav_text": "", "test_text": "", "resultat": "", "kravdetalj": []}, {"id": "FV-002", "intressent": "IN-07", "slag": "Förväntning", "tolkning": "Organisationen förväntar sig att appens gränssnitt (inte de sidor användaren skapar) följer den grafiska profilen GP MS (Grafisk profil materielsystem, version 2026-11-12): mörkt tema som standard, profilens färger och kontrastregler, och typsnittet Calibri med Carlito som inbäddad reserv.", "prio": "Bör", "kriterium": "Ägaren jämför appen med GP MS: mörk grund (ui-bakgrund skiffer, ui-yta petrol, ui-text sten-ljus, ui-primar gron, ui-fokus gul), typsnittsstacken Calibri, Carlito, \"Segoe UI\", Arial, och att inga typsnitt hämtas från en extern tjänst (BG-001, BH-016).", "mf": "MF-01", "status": "Bekräftad", "beslut": "bekraftad", "tackning": "saknas", "verifiering": "saknas", "verifierade": 0, "antal_krav": 0, "validering": "ejutford", "krav": [], "tester": [], "krav_text": "", "test_text": "", "resultat": "", "kravdetalj": []}, {"id": "BG-004", "intressent": "IN-07", "slag": "Begränsning", "tolkning": "Organisationen behöver att appen uppfyller tillgänglighetskraven: allt går att göra med tangentbord, dra och släpp har ett alternativ, information visas inte bara med färg, och appen fungerar med operativsystemets skärmläsare genom beskrivande namn, roller och statusmeddelanden.", "prio": "Måste", "kriterium": "Kontroll mot WCAG 2.1 AA. Hela DS-01 och DS-02 går att genomföra med bara tangentbord och med en skärmläsare (t.ex. NVDA eller Windows Skärmläsaren).", "mf": "MF-01", "status": "Bekräftad", "beslut": "bekraftad", "tackning": "saknas", "verifiering": "saknas", "verifierade": 0, "antal_krav": 0, "validering": "ejutford", "krav": [], "tester": [], "krav_text": "", "test_text": "", "resultat": "", "kravdetalj": []}], "tidslinje": [{"grind": "G0 Behov", "datum": "2026-11-12", "totalt": 23, "bekraftade": 17, "tackta": 0, "verifierade": 0, "validerade": 0}]}</script>
+<script>
+(function () {
+  const D = JSON.parse(document.getElementById("data").textContent);
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const STEG = [
+    ["totalt", "Behov", "var(--none)"],
+    ["bekraftade", "Bekräftade", "var(--muted)"],
+    ["tackta", "Täckta av krav", "var(--accent)"],
+    ["verifierade", "Verifierade", "var(--warn)"],
+    ["validerade", "Validerade", "var(--ok)"],
+  ];
+  document.title = "Spårbarhetsvy " + D.system;
+  $("sys").textContent = D.system;
+  $("meta").innerHTML = `<span>Grind <b>${esc(D.grind)}</b></span><span>Datum <b>${esc(D.datum)}</b></span>` +
+    (D.baslinje ? `<span>Baslinje <b class="mono">${esc(D.baslinje)}</b></span>` : "") +
+    `<span>Intressenter <b>${D.intressenter.length}</b></span><span>Aktiva krav <b>${D.krav.aktiva}</b>, varav verifierade <b>${D.krav.verifierade}</b></span>`;
+
+  // Trappa
+  const stairs = [["alla", "Alla behov"], ["Måste", "Måste"], ["Bör", "Bör"]];
+  $("stairs").innerHTML = stairs.map(([k, label]) => {
+    const s = D.summa[k]; const tot = s.totalt || 1;
+    return `<div class="stair"><h3><span>${label}</span><span class="num">${s.totalt}</span></h3>` +
+      STEG.slice(1).map(([key, name, col]) =>
+        `<div class="step"><span>${name}</span><span class="bar"><i style="width:${(100 * s[key] / tot).toFixed(1)}%;background:${col}"></i></span><span class="num">${s[key]}/${s.totalt}</span></div>`).join("") + `</div>`;
+  }).join("");
+
+  // Tidslinje
+  const T = D.tidslinje; const W = 760, H = 240, L = 44, R = 20, TOP = 16, B = 46;
+  const maxY = Math.max(1, ...T.map((t) => t.totalt));
+  const x = (i) => T.length === 1 ? L + (W - L - R) / 2 : L + i * (W - L - R) / (T.length - 1);
+  const y = (v) => TOP + (H - TOP - B) * (1 - v / maxY);
+  const ticks = [0, Math.round(maxY / 2), maxY];
+  let svg = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Antal behov per steg vid varje grind">`;
+  ticks.forEach((v) => { svg += `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)" stroke-width="1"/><text x="${L - 8}" y="${y(v) + 4}" text-anchor="end" font-size="11" fill="var(--muted)" font-family="IBM Plex Mono, monospace">${v}</text>`; });
+  T.forEach((t, i) => { svg += `<text x="${x(i)}" y="${H - B + 18}" text-anchor="middle" font-size="11" fill="var(--fg)">${esc(t.grind)}</text><text x="${x(i)}" y="${H - B + 33}" text-anchor="middle" font-size="10" fill="var(--muted)" font-family="IBM Plex Mono, monospace">${esc(t.datum)}</text>`; });
+  STEG.forEach(([key, , col]) => {
+    if (T.length > 1) svg += `<polyline fill="none" stroke="${col}" stroke-width="2" points="${T.map((t, i) => x(i) + "," + y(t[key])).join(" ")}"/>`;
+    T.forEach((t, i) => { svg += `<circle cx="${x(i)}" cy="${y(t[key])}" r="${i === T.length - 1 ? 5 : 3.5}" fill="${col}" stroke="var(--surface)" stroke-width="1.5"><title>${t.grind}: ${t[key]}</title></circle>`; });
+  });
+  svg += `</svg>`;
+  $("chart").innerHTML = svg;
+  $("legend").innerHTML = STEG.map(([, n, c]) => `<span><i class="sw" style="background:${c}"></i>${n}</span>`).join("");
+  $("tidtext").textContent = T.length === 1
+    ? "Bara en ögonblicksbild finns ännu. En ny punkt läggs till vid varje grind, så att det syns hur behoven rör sig mot validering."
+    : `Antal behov i varje steg vid de ${T.length} senaste grindarna.`;
+
+  // Statusceller
+  const BESLUT = { bekraftad: ["s-ok", "Bekräftad"], forslag: ["s-warn", "Förslag"], bortvald: ["s-none", "Bortvald"] };
+  const TACK = { tackt: (b) => ["s-acc", b.antal_krav + " krav"], delvis: (b) => ["s-warn", "Delvis, " + b.antal_krav + " krav"], annat: () => ["s-none", "Annat underlag"], saknas: () => ["s-bad", "Inget krav"] };
+  const VER = { verifierad: (b) => ["s-ok", b.verifierade + "/" + b.antal_krav], delvis: (b) => ["s-warn", b.verifierade + "/" + b.antal_krav], saknas: () => ["s-bad", "–"], ejtillamplig: () => ["s-none", "Ej krav"] };
+  const VAL = { validerad: ["s-ok", "Godkänd"], underkand: ["s-bad", "Underkänd"], ejbyggt: ["s-bad", "Ej byggt"], ejutford: ["s-none", "Ej utförd"] };
+  const chip = ([cls, t]) => `<span class="cell ${cls}">${esc(t)}</span>`;
+  const isGap = (b) => b.beslut === "forslag" || b.tackning === "saknas" || b.tackning === "delvis" || b.verifiering === "saknas" || b.validering === "underkand" || b.validering === "ejbyggt";
+  const letters = [...new Set(D.behov.flatMap((b) => b.tester))].sort();
+  const iname = Object.fromEntries(D.intressenter.map((i) => [i.id, i.namn]));
+
+  let filter = "alla";
+  function renderMatris() {
+    const rows = D.behov.filter((b) => filter === "alla" || (filter === "maste" && b.prio === "Måste") || (filter === "luckor" && isGap(b)));
+    let h = `<thead><tr><th>ID</th><th>Behov</th><th>Prio</th><th>Beslut</th><th>Krav</th><th>Verifierat</th><th>Validerat</th>${letters.map((l) => `<th class="vt" title="Valideringsavsnitt ${l}">${l}</th>`).join("")}</tr></thead><tbody>`;
+    let cur = null;
+    rows.forEach((b) => {
+      if (b.intressent !== cur) { cur = b.intressent; h += `<tr class="group"><td colspan="${7 + letters.length}">${esc(cur)} ${esc(iname[cur] || "")}</td></tr>`; }
+      const dotCls = b.validering === "validerad" ? "ok" : b.validering === "underkand" ? "bad" : "";
+      h += `<tr><td class="mono">${b.id}</td><td class="need">${esc(b.tolkning)}</td><td>${esc(b.prio)}</td><td>${chip(BESLUT[b.beslut])}</td><td>${chip(TACK[b.tackning](b))}</td><td>${chip(VER[b.verifiering](b))}</td><td>${chip(VAL[b.validering])}</td>` +
+        letters.map((l) => `<td class="vt">${b.tester.includes(l) ? `<i class="dot ${dotCls}" title="${b.id} prövas i ${l}"></i>` : ""}</td>`).join("") + `</tr>`;
+    });
+    if (!rows.length) h += `<tr><td colspan="${7 + letters.length}" class="muted">Inga behov matchar filtret.</td></tr>`;
+    $("matris").innerHTML = h + "</tbody>";
+  }
+  [["f-alla", "alla"], ["f-maste", "maste"], ["f-luckor", "luckor"]].forEach(([id, f]) => $(id).addEventListener("click", () => {
+    filter = f; ["f-alla", "f-maste", "f-luckor"].forEach((x) => $(x).setAttribute("aria-pressed", String(x === id))); renderMatris();
+  }));
+  renderMatris();
+
+  // Träd
+  const VERK = { verifierad: ["s-ok", "Verifierad"], ogranskad: ["s-warn", "Test ej granskat"], saknas: ["s-bad", "Test saknas"] };
+  $("tree").innerHTML = D.intressenter.map((i) => {
+    const bs = D.behov.filter((b) => b.intressent === i.id);
+    const done = bs.filter((b) => b.validering === "validerad").length;
+    return `<details open><summary><span class="mono">${i.id}</span><b>${esc(i.namn)}</b><span class="muted">${bs.length} behov, ${done} validerade</span></summary>` +
+      bs.map((b) => `<details><summary><span class="mono">${b.id}</span><span>${esc(b.tolkning)}</span>${chip(TACK[b.tackning](b))}${chip(VER[b.verifiering](b))}${chip(VAL[b.validering])}</summary>` +
+        `<div class="crit">Valideringskriterium: ${esc(b.kriterium)}${b.mf ? ` · Mått på framgång: <span class="mono">${esc(b.mf)}</span>` : ""}${b.test_text ? ` · Valideringstest: <span class="mono">${esc(b.test_text)}</span>` : ""}</div>` +
+        (b.kravdetalj.length ? b.kravdetalj.map((r) => `<div class="leaf"><span class="mono">${r.id}</span><span>${esc(r.text)}</span>${chip(VERK[r.ver])}${r.test ? `<span class="muted mono">${esc(r.test)}</span>` : ""}</div>`).join("")
+          : `<div class="leaf muted">${b.krav_text ? esc(b.krav_text) : "Inget krav"}</div>`) + `</details>`).join("") + `</details>`;
+  }).join("");
+
+  // Luckor
+  const utan = D.behov.filter((b) => b.tackning === "saknas" || b.tackning === "delvis");
+  const ejver = D.behov.filter((b) => b.tackning === "tackt" && b.verifiering !== "verifierad");
+  $("gaps").innerHTML =
+    `<div class="gap"><h3>Behov utan fullständiga krav (${utan.length})</h3><ul>${utan.map((b) => `<li><span class="mono">${b.id}</span> ${esc(b.tolkning)}${b.tackning === "delvis" ? " <span class='muted'>(delvis täckt)</span>" : ""}</li>`).join("") || "<li class='muted'>Inga.</li>"}</ul></div>` +
+    `<div class="gap"><h3>Behov som inte är helt verifierade (${ejver.length})</h3><ul>${ejver.map((b) => `<li><span class="mono">${b.id}</span> ${b.verifierade} av ${b.antal_krav} krav verifierade</li>`).join("") || "<li class='muted'>Inga.</li>"}</ul></div>` +
+    `<div class="gap"><h3>Krav utan behov (${D.krav.utan_behov.length})</h3><p class="muted">Glömt behov, eller ett krav som kan tas bort.</p><ul>${D.krav.utan_behov.map((k) => `<li class="mono">${k}</li>`).join("") || "<li class='muted'>Inga.</li>"}</ul></div>` +
+    `<div class="gap"><h3>Krav som ska tas bort (${(D.krav.ska_bort || []).length})</h3><p class="muted">Beslutade; genomförs med ändringsförslag.</p><ul>${(D.krav.ska_bort || []).map((k) => `<li class="mono">${k}</li>`).join("") || "<li class='muted'>Inga.</li>"}</ul></div>` +
+    `<div class="gap"><h3>Krav som hanterar omgivningen (${D.krav.omgivning.length})</h3><ul>${D.krav.omgivning.map((k) => `<li><span class="mono">${k.id}</span> <span class="muted">${k.om.join(", ")}</span></li>`).join("") || "<li class='muted'>Inga.</li>"}</ul></div>`;
+
+  $("foot").innerHTML = `Framräknad ur <span class="mono">behov.md</span>, <span class="mono">systemkontext.md</span> och <span class="mono">rtm.md</span> vid grinden. Vyn lagrar ingenting; ögonblicksbilden per grind ändras aldrig i efterhand.`;
+})();
+</script>
