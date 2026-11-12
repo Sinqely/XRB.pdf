@@ -198,6 +198,24 @@ Kraven skrivs i EARS: *När* (händelse), *Medan* (tillstånd), *Där* (valbar f
 | FR-DOL-014 | Medan inga berörda dokument innehåller dold information utöver metadata ska appen visa "Ingen dold information hittades" i panelen. | Must | Active | Källa: BH-018, FV-001. |
 | FR-DOL-015 | Där bevarande av bokmärken ingår ska appen behålla bokmärken som pekar på sidor i resultatet och låta dem peka på sidornas nya plats. | Could | Active | Källa: BH-018. Byggs det inte tas alla bokmärken bort. |
 
+#### 3.1.8 SPA – Skapa och spara resultatet
+
+| ID | Requirement | Priority | Status | Notes / rules |
+| :-- | :---------- | :------- | :----- | :------------ |
+| FR-SPA-001 | När användaren väljer "Baka ihop och spara" ska appen skapa resultatfilen och erbjuda den för sparande på användarens dator via webbläsarens sparfunktion. | Must | Active | Källa: BH-001, BG-001. Filen lämnar aldrig datorn. Panelen för dold information visas först (FR-DOL-001). |
+| FR-SPA-002 | När användaren anger ett filnamn ska appen använda det som namn på den sparade filen, med ändelsen .pdf. | Must | Active | Källa: FV-001. |
+| FR-SPA-003 | När resultatet får sin första sida ska appen föreslå filnamnet "<första dokumentets namn>-ihopbakad.pdf". | Should | Active | Källa: FV-001. |
+| FR-SPA-004 | När användaren sparar ett resultat där alla sidor tillåter det ska appen skapa filen som PDF/A-2b. | Must | Active | Källa: BH-017. Nivå b (grundnivå); nivå a kräver taggad struktur som källfilerna normalt saknar. |
+| FR-SPA-005 | Om någon sida i resultatet hindrar att filen blir giltig PDF/A-2b så ska appen, innan filen skapas, visa en varning som listar sidorna och orsaken och låta användaren ta bort sidorna, avbryta eller spara som vanlig PDF. | Must | Active | Källa: BH-017, BG-009 (sidan görs inte om). Ägaren 2026-11-12: det ska gå att spara som vanlig PDF. |
+| FR-SPA-006 | När användaren väljer att spara som vanlig PDF ska appen skapa filen utan att märka den som PDF/A. | Must | Active | Källa: BH-017, BH-011. |
+| FR-SPA-007 | Appen ska kopiera varje sidas innehåll till resultatfilen utan att omvandla text till bild eller lägga till text från bild. | Must | Active | Källa: BG-009, BH-006. |
+| FR-SPA-008 | Appen ska lägga vattenstämpel och textetikett ovanpå sidornas innehåll i resultatfilen med samma placering, storlek, opacitet, färger och typsnitt som i förhandsvisningen. | Must | Active | Källa: BH-003, MF-02. |
+| FR-SPA-009 | Appen ska skapa resultatfilen utan kryptering, lösenord eller behörighetsbegränsningar. | Must | Active | Källa: BH-011 (ska kunna signeras digitalt efteråt). |
+| FR-SPA-010 | Medan resultatet saknar sidor ska appen visa "Baka ihop och spara" som inaktiv tillsammans med en förklaring av varför. | Must | Active | Källa: FV-001. |
+| FR-SPA-011 | Medan resultatfilen skapas ska appen visa en väntindikator. | Must | Active | Källa: FV-001. |
+| FR-SPA-012 | Om skapandet av resultatfilen misslyckas så ska appen visa ett felmeddelande som förklarar vad som hände och behålla arbetsytan oförändrad. | Must | Active | Källa: DS-04. |
+| FR-SPA-013 | När resultatfilen har sparats ska appen behålla arbetsytan så att användaren kan ändra och spara igen. | Must | Active | Källa: FV-001. |
+
 ### 3.2 External interface requirements
 *(fas 4)*
 
