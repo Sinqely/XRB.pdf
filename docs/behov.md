@@ -8,6 +8,7 @@
 | :-- | :-- | :-- | :-- |
 | 0.1 | 2026-11-12 | Första utkast ur intervju 1. | Behovsfångst steg 4 påbörjat |
 | 0.2 | 2026-11-12 | La till BH-007 (genomskinliga områden) och BH-008 (opacitet) för vattenstämpel. | Ägarens tillägg |
+| 0.13 | 2026-11-12 | La till BG-005 (Edge), BG-006 (Safari) och UB-02 (verifieringsrapport för informationssäkerhet). | Ägarens svar |
 | 0.12 | 2026-11-12 | Valideringskriterier för BH-004 och BH-005 skrivna ur ägarens svar. | Förberedelse G0 |
 | 0.11 | 2026-11-12 | Driftbild bekräftad. Ägaren benämns neutralt "Ägaren". | Ägarens svar |
 | 0.10 | 2026-11-12 | BG-004 tillgänglighet bekräftad som Måste. | Ägarens svar |
@@ -29,6 +30,8 @@ Rangordning av de viktigaste behoven (ägaren 2026-11-12: "Användbarhet, ingen 
 | BG-001 | Begränsning | "Det är viktigt att data (pdf-filerna) aldrig skickas till externa källor." | Ägaren vill att inga PDF-filer eller delar av dem lämnar användarens dator. | Måste | Ägaren kan konstatera att appen fungerar med nätverket avstängt efter att den laddats, och att inget filinnehåll skickas iväg (granskas t.ex. i webbläsarens nätverkslogg). | MF-01 | Allt körs i webbläsaren | Bekräftad |
 | BG-002 | Begränsning | "Det får aldrig bli så mycket funktioner som gör att de basala behoven inte möts." | Ägaren vill att appen bara har de funktioner som behövs för grundbehoven. | Måste | Ägarens helhetsbedömning; varje ny funktion prövas mot BH-001–BH-005. | MF-01 | | Bekräftad |
 | BG-003 | Begränsning | "Textetiketter och stämplar ska hamna på samma sida hela tiden för att undvika för komplicerade funktioner (i alla fall i en första version)." (2026-11-12) | Ägaren har bestämt att en stämpel eller text får samma placering på alla sidor där den läggs, så att man inte behöver placera den sida för sida, åtminstone i första versionen. Tolkningen "samma ställe" `[TO VERIFY]`. | Måste | Stämpel och text placeras en gång och hamnar på samma ställe på alla valda sidor i den sparade filen. | MF-01 | | Förslag [TO VERIFY] |
+| BG-005 | Begränsning | "Microsoft Edge primärt" (2026-11-12) | Ägaren vill att appen fungerar fullt ut i Microsoft Edge. | Måste | DS-01 och DS-02 genomförs i aktuell Edge på en arbetsdator, och resultatet stämmer med förhandsvisningen. | MF-01, MF-02 | | Bekräftad |
+| BG-006 | Begränsning | "och Mac Safari sekundärt" (2026-11-12) | Ägaren vill att appen fungerar i Safari på Mac. | Bör | DS-01 och DS-02 genomförs i aktuell Safari på Mac. | MF-01, MF-02 | | Bekräftad |
 
 ### IN-02 Kollegor utan särskild datorvana (användare)
 | ID | Slag | Egna ord / källa | Tolkning ("… behöver att systemet …") | Prio | Valideringskriterium | MF | Lösningsidé | Status |
@@ -48,7 +51,7 @@ Rangordning av de viktigaste behoven (ägaren 2026-11-12: "Användbarhet, ingen 
 | BH-013 | Behov | "I den mån det är möjligt även typsnitt." (2026-11-12) | Användaren vill kunna välja typsnitt för textetiketten. | Bör | Användaren väljer mellan några typsnitt och ser valet i den sparade filen. Å, ä och ö visas korrekt. | MF-02 | Ett litet urval fria typsnitt (t.ex. Carlito) som följer med appen och kan bäddas in i PDF/A-2 (BH-017) | Bekräftad |
 | BH-014 | Behov | "Det är dock bra om sidor kan roteras mellan landskap och porträtt." (2026-11-12) | Användaren vill kunna vrida en sida mellan liggande och stående. | Bör | En liggande inskannad sida vrids till stående och är rättvänd i den sparade filen. | MF-02 | | Bekräftad |
 | BH-015 | Behov | "Ja storlek på vattenstämpel (obs bild!) ska kunna ändras av användaren på ett intuitivt sätt." (2026-11-12) | Användaren behöver kunna ändra storleken på vattenstämpelns bild på ett sätt som känns självklart. | Måste | En kollega som inte sett appen förut gör stämpeln större och mindre utan hjälp, och storleken i den sparade filen är densamma som i förhandsvisningen. Bilden behåller sina proportioner om inte användaren vill annat. | MF-01, MF-02 | Dra i hörnet i förhandsvisningen | Bekräftad |
-| BH-017 | Behov | "Utgå från de krav som härstammar från Arkivlagen (1990:782) samt Riksarkivets föreskrifter … (RA-FS 2009:2)" (2026-11-12) | Användaren behöver att den färdiga filen kan bevaras i det digitala arkivet enligt arkivreglerna. | Måste | Den färdiga filen godkänns vid en kontroll mot PDF/A-2 (t.ex. med en PDF/A-validerare) och tas emot av organisationens digitala arkiv. | MF-02 | Spara som PDF/A-2 | Bekräftad (PDF/A-2 beslutad 2026-11-12; arkivets mottagande `[TO VERIFY]`) |
+| BH-017 | Behov | "Utgå från de krav som härstammar från Arkivlagen (1990:782) samt Riksarkivets föreskrifter … (RA-FS 2009:2)" (2026-11-12) | Användaren behöver att den färdiga filen kan bevaras i det digitala arkivet enligt arkivreglerna. | Måste | Den färdiga filen godkänns vid en kontroll mot PDF/A-2 (t.ex. med en PDF/A-validerare) och tas emot av organisationens digitala arkiv. | MF-02 | Spara som PDF/A-2 | Bekräftad (PDF/A-2 beslutad 2026-11-12; arkivets mottagande oklart, ägaren: "utgå från det") |
 | FV-001 | Förväntning | "kollegor utan särskild datorvana"; "första gången lyckas" | Användaren förväntar sig att förstå appen direkt, utan instruktioner eller utbildning. | Måste | Ägarens helhetsbedömning efter test med en kollega (MF-01). | MF-01 | | Förslag [TO VERIFY] |
 
 ### IN-03 Ägaren (förvaltare)
@@ -66,6 +69,7 @@ Rangordning av de viktigaste behoven (ägaren 2026-11-12: "Användbarhet, ingen 
 ## 2. Behov på utvecklingen (inte systemkrav)
 | ID | Egna ord | Vad det betyder för metoden |
 | :-- | :-- | :-- |
+| UB-02 | "jag vill ha särskild redovisning, en verifieringsrapport, avseende de krav som rör informationssäkerhet" (2026-11-12) | Kraven som rör informationssäkerhet märks i SRS:en. Före release tas en separat verifieringsrapport fram som visar hur vart och ett av dem har verifierats (t.ex. att inget filinnehåll skickas ut, BG-001). Ägaren beslutar utifrån rapporten. |
 | UB-01 | "Det är jag, som tillsammans med dig, håller den uppdaterad och utvecklar den om nya behov kommer fram under användning." | Ägaren styr via behov och krav. Nya behov läggs först till här, med valideringskriterium, och tas sedan vidare med ändringsförslag. Appen måste kunna byggas om och publiceras på SharePoint av ägaren utan särskild teknisk kunskap. |
 
 ## 3. Driftbild
