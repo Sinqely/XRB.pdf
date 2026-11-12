@@ -2,6 +2,23 @@
 
 Alla versioner av PDF-bagaren (NFR-MAINT-003).
 
+## 1.0.0-rc.1 – 2026-11-12
+
+Alla funktioner i byggplanen (FEAT-002..011), för samlad granskning före version 1.0.
+
+- **Förhandsvisning** (FEAT-003): en sida i taget med bläddring, tangenter och zoom.
+- **Felbesked** (FEAT-002): inte PDF, för stor, lösenord, skadad fil och sidgräns.
+- **Ångra, gör om och börja om** (FEAT-005), och en fråga innan fliken stängs med osparat arbete.
+- **Arkivformat PDF/A-2b** (FEAT-009) är förvalt. Sidor som hindrar arkivformatet listas med orsak; du kan ta bort dem, avbryta eller spara som vanlig PDF.
+- **Vattenstämpel** (FEAT-006): PNG eller JPEG, opacitet, storlek, sex placeringar eller dra själv, val av sidor.
+- **Textetikett** (FEAT-007): text upp till 200 tecken, storlek, färg, bakgrund, tre typsnitt, fet och kursiv.
+- **Dold information** (FEAT-008): visas före sparandet. Ändra titel, författare, ämne och nyckelord, ändra eller ta bort kommentarer, bifogade filer och formulärfält. Skript tas alltid bort, och inget från sidor som inte valts följer med i filen.
+- **Hjälp och kortkommandon** (FEAT-010): hjälpknapp vid varje steg, steg för steg för de två vardagsfallen, kortkommandon med ?.
+- **Om PDF-bagaren** (FEAT-011): version, licenser, verifieringsrapport och tillgänglighetsredogörelse.
+- **Vrida, visa stort och lägga till igen** (FEAT-004): R och Skift+R vrider sidan.
+- Rättat: sifferfält återställdes ibland medan man skrev. Miniatyrerna ritas snabbare.
+- Typsnitten i etiketten är Carlito, Tinos och Cousine (Tinos och Cousine i stället för Liberation Serif och Liberation Mono, som bygger på dem).
+
 ## 0.2.0 – 2026-11-12
 
 FEAT-001 Baka ihop sidor ur flera filer.
