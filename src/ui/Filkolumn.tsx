@@ -3,7 +3,7 @@ import { texter } from '../karna/texter'
 import { arVald, laggTillAlla, taBortAlla, taBortDokument, vaxlaSida, type Andring } from '../karna/arbetsyta'
 import type { Arbetsyta, Dokument } from '../karna/typer'
 import { Ikon } from './ikoner'
-import { avregistrera, miniatyr, useMiniatyrer } from './dokumentregister'
+import { miniatyr, useMiniatyrer } from './dokumentregister'
 
 interface Props {
   yta: Arbetsyta
@@ -76,10 +76,7 @@ function Dokumentkort({ d, yta, andra }: { d: Dokument; yta: Arbetsyta; andra: P
           class="ikonknapp"
           aria-label={texter.taBortFil(d.namn)}
           title={texter.taBortFil(d.namn)}
-          onClick={() => {
-            andra((y) => taBortDokument(y, d.id))
-            avregistrera(d.id)
-          }}
+          onClick={() => andra((y) => taBortDokument(y, d.id))}
         >
           <Ikon namn="taBort" />
         </button>

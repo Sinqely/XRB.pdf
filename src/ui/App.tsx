@@ -11,6 +11,8 @@ import { Resultatrad } from './Resultatrad'
 import { Forhandsvisning } from './Forhandsvisning'
 import { SparaDialog } from './SparaDialog'
 import { Ikon } from './ikoner'
+import { Bekrafta } from './Bekrafta'
+import { stada } from './dokumentregister'
 
 const tillstand = skapaTillstand()
 
@@ -21,13 +23,63 @@ export function App() {
   const [lasesIn, sattLasesIn] = useState<string | null>(null)
   const [dragOver, sattDragOver] = useState(false)
   const [dialog, sattDialog] = useState(false)
+  const [sparad, sattSparad] = useState<Arbetsyta>(tillstand.hamta())
+  const [borjaOmFraga, sattBorjaOmFraga] = useState(false)
   const [aktivOnskad, sattAktiv] = useState<string | null>(null)
   const senasteAktivPlats = useRef(0)
   const [tema, sattTemaVal] = useState<Tema>(lasTema())
   const filval = useRef<HTMLInputElement>(null)
   const bakaKnapp = useRef<HTMLButtonElement>(null)
 
-  useEffect(() => tillstand.lyssna(sattYta), [])
+  useEffect(
+    () =>
+      tillstand.lyssna((y) => {
+        sattYta(y)
+        stada(tillstand.dokumentIHistoriken())
+      }),
+    [],
+  )
+
+  // Osparat arbete: webbläsaren frågar innan fliken stängs eller laddas om (FR-ALM-004).
+  const osparat = yta !== sparad && yta.dokument.length > 0
+  useEffect(() => {
+    if (!osparat) return
+    const fraga = (e: BeforeUnloadEvent) => {
+      e.preventDefault()
+      e.returnValue = ''
+    }
+    window.addEventListener('beforeunload', fraga)
+    return () => window.removeEventListener('beforeunload', fraga)
+  }, [osparat])
+
+  function angra() {
+    const m = tillstand.angra()
+    if (m !== null) sattStatus(m ? texter.angrade(m) : texter.angradeUtan)
+  }
+  function gorOm() {
+    const m = tillstand.gorOm()
+    if (m !== null) sattStatus(m ? texter.gjordesOm(m) : texter.gjordesOmUtan)
+  }
+
+  // Kortkommandon Ctrl/Cmd+Z, Ctrl+Y och Cmd+Skift+Z; inte i textfält, där webbläsarens egen ångra gäller.
+  useEffect(() => {
+    const tangent = (e: KeyboardEvent) => {
+      const mal = e.target as HTMLElement
+      if (mal.closest('input, textarea, dialog')) return
+      const mod = e.ctrlKey || e.metaKey
+      if (!mod) return
+      const k = e.key.toLowerCase()
+      if (k === 'z' && !e.shiftKey) {
+        e.preventDefault()
+        angra()
+      } else if (k === 'y' || (k === 'z' && e.shiftKey)) {
+        e.preventDefault()
+        gorOm()
+      }
+    }
+    document.addEventListener('keydown', tangent)
+    return () => document.removeEventListener('keydown', tangent)
+  }, [])
   useEffect(() => sattTema(tema), [tema])
 
   // Samma meddelande två gånger i rad ska också läsas upp: töm först (design §5).
@@ -43,7 +95,7 @@ export function App() {
       const a = fn(nu)
       meddelande = a.meddelande
       return a.yta
-    })
+    }, () => meddelande)
     sattStatus(meddelande)
   }
 
@@ -107,6 +159,20 @@ export function App() {
           {texter.appnamn}
         </span>
         <div class="verktyg">
+          <span class="verktygsgrupp">
+            <button type="button" class="knapp-text" aria-disabled={!tillstand.kanAngra()} aria-keyshortcuts="Control+Z" onClick={() => tillstand.kanAngra() && angra()}>
+              <Ikon namn="angra" />
+              {texter.angra}
+            </button>
+            <button type="button" class="knapp-text" aria-disabled={!tillstand.kanGorOm()} aria-keyshortcuts="Control+Y" onClick={() => tillstand.kanGorOm() && gorOm()}>
+              <Ikon namn="gorOm" />
+              {texter.gorOm}
+            </button>
+            <button type="button" class="knapp-text" aria-disabled={yta.dokument.length === 0} onClick={() => yta.dokument.length > 0 && sattBorjaOmFraga(true)}>
+              <Ikon namn="borjaOm" />
+              {texter.borjaOm}
+            </button>
+          </span>
           <button type="button" class="knapp-text" onClick={() => sattTemaVal(tema === 'mork' ? 'ljus' : 'mork')}>
             <Ikon namn={tema === 'mork' ? 'sol' : 'mane'} />
             {tema === 'mork' ? texter.temaLjust : texter.temaMorkt}
@@ -173,13 +239,34 @@ export function App() {
         {status}
       </div>
 
+      {borjaOmFraga && (
+        <Bekrafta
+          rubrik={texter.borjaOmRubrik}
+          text={texter.borjaOmText}
+          ja={texter.borjaOmJa}
+          nej={texter.avbryt}
+          svar={(ja) => {
+            sattBorjaOmFraga(false)
+            if (ja) {
+              tillstand.borjaOm()
+              sattSparad(tillstand.hamta())
+              sattFel([])
+              sattStatus(texter.borjadeOm)
+            }
+          }}
+        />
+      )}
+
       {dialog && (
         <SparaDialog
           yta={yta}
           status={sattStatus}
           stang={(sparatSom) => {
             sattDialog(false)
-            if (sparatSom) tillstand.andra((nu) => ({ ...nu, sparval: { ...nu.sparval, filnamn: sparatSom } }))
+            if (sparatSom) {
+              tillstand.ersatt((nu) => ({ ...nu, sparval: { ...nu.sparval, filnamn: sparatSom } }))
+              sattSparad(tillstand.hamta())
+            }
             bakaKnapp.current?.focus()
           }}
         />

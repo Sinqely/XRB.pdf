@@ -33,3 +33,40 @@ describe('tillstånd', () => {
     expect(ids.size).toBe(100)
   })
 })
+
+describe('ångra och gör om (FR-ALM-001..003)', () => {
+  it('ångrar och gör om med meddelanden, och ny ändring tar bort gör om', () => {
+    const t = skapaTillstand()
+    t.andra((nu) => laggTillDokument(nu, dok('a', 'A.pdf')).yta, 'A inläst')
+    t.andra((nu) => laggTillDokument(nu, dok('b', 'B.pdf')).yta, 'B inläst')
+    expect(t.angra()).toBe('B inläst')
+    expect(t.hamta().dokument.map((d) => d.id)).toEqual(['a'])
+    expect(t.kanGorOm()).toBe(true)
+    expect(t.gorOm()).toBe('B inläst')
+    expect(t.hamta().dokument).toHaveLength(2)
+    t.angra()
+    t.andra((nu) => laggTillDokument(nu, dok('c', 'C.pdf')).yta, 'C')
+    expect(t.kanGorOm()).toBe(false)
+    expect([...t.dokumentIHistoriken()].sort()).toEqual(['a', 'c'])
+    expect(t.angra()).toBe('C')
+    expect(t.angra()).toBe('A inläst')
+    expect(t.angra()).toBeNull()
+  })
+
+  it('ersätt ger inget eget ångra-steg', () => {
+    const t = skapaTillstand()
+    t.andra((nu) => laggTillDokument(nu, dok('a', 'A.pdf')).yta, 'A')
+    t.ersatt((nu) => ({ ...nu, sparval: { ...nu.sparval, filnamn: 'x.pdf' } }))
+    expect(t.hamta().sparval.filnamn).toBe('x.pdf')
+    t.angra()
+    expect(t.hamta().dokument).toHaveLength(0)
+  })
+
+  it('börja om tömmer arbetsytan och historiken', () => {
+    const t = skapaTillstand()
+    t.andra((nu) => laggTillDokument(nu, dok('a', 'A.pdf')).yta, 'A')
+    t.borjaOm()
+    expect(t.hamta().dokument).toHaveLength(0)
+    expect(t.kanAngra()).toBe(false)
+  })
+})

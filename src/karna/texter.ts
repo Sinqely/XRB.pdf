@@ -85,4 +85,16 @@ export const texter = {
   steg2Text: 'Klicka på de sidor du vill ha. De hamnar i resultatraden, där du kan flytta dem.',
   steg3Rubrik: '3 Märk och spara.',
   steg3Text: 'Lägg till vattenstämpel eller textetikett om du vill, och välj "Baka ihop och spara".',
+  // Ångra, gör om, börja om (FEAT-005)
+  angra: 'Ångra',
+  gorOm: 'Gör om',
+  borjaOm: 'Börja om',
+  angrade: (m: string) => `Ångrade: ${m}`,
+  angradeUtan: 'Ångrade den senaste ändringen.',
+  gjordesOm: (m: string) => `Gjorde om: ${m}`,
+  gjordesOmUtan: 'Gjorde om ändringen.',
+  borjaOmRubrik: 'Börja om?',
+  borjaOmText: 'Alla inlästa filer, valda sidor och inställningar tas bort från arbetsytan. Filerna på din dator påverkas inte.',
+  borjaOmJa: 'Töm arbetsytan',
+  borjadeOm: 'Arbetsytan är tömd.',
 } as const

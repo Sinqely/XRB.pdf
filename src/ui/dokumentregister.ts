@@ -53,3 +53,8 @@ export function useMiniatyrer() {
 export function pdfFor(dokId: string): PDFDocumentProxy | null {
   return pdfer.get(dokId) ?? null
 }
+
+/** Frigör pdf.js-dokument och bilder för dokument som inte längre finns i någon version (efter ångra-historik). */
+export function stada(behall: Set<string>) {
+  for (const id of [...pdfer.keys()]) if (!behall.has(id)) avregistrera(id)
+}

@@ -51,7 +51,7 @@ export async function lasInFiler(filer: Iterable<File>, tillstand: Tillstand, vy
         const a = laggTillDokument(nu, { id, namn, bytes, sidantal, storlekByte: fil.size })
         meddelande = a.meddelande
         return a.yta
-      })
+      }, () => meddelande)
       registrera(id, pdf, sidantal)
       vy.status(meddelande)
     } catch {

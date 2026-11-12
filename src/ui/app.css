@@ -123,3 +123,5 @@ p, h2, h3, ul, ol { margin: 0; }
 .resultatsida { cursor: pointer; }
 .resultatsida.aktiv { outline: var(--storlek-fokus-bredd) solid var(--ui-text); outline-offset: 0; }
 .resultatsida.aktiv:focus-visible { outline-color: var(--ui-fokus); }
+.verktygsgrupp { display: flex; gap: var(--space-1); margin-right: var(--space-4); }
+.dialoginnehall { display: grid; gap: var(--space-4); }
