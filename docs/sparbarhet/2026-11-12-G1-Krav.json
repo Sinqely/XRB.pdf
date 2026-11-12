@@ -8,14 +8,14 @@
    "totalt": 30,
    "bekraftade": 30,
    "tackta": 30,
-   "verifierade": 1,
+   "verifierade": 0,
    "validerade": 0
   },
   "Måste": {
    "totalt": 26,
    "bekraftade": 26,
    "tackta": 26,
-   "verifierade": 1,
+   "verifierade": 0,
    "validerade": 0
   },
   "Bör": {
@@ -35,10 +35,7 @@
    "FR-FIL-009",
    "FR-FIL-010",
    "FR-FIL-014",
-   "FR-FHV-011",
    "FR-STA-011",
-   "FR-STA-013",
-   "FR-TXT-015",
    "FR-SPA-012",
    "FR-ALM-007",
    "FR-DOK-004",

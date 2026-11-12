@@ -115,7 +115,7 @@ Kraven är hämtade ur kolumnen Source i docs/rtm.md (SRS-utkast 2026-11-12). Kr
 | Behov | Prio | Krav (SRS) | Valideringstest | Resultat |
 | :-- | :-- | :-- | :-- | :-- |
 | BG-001 | Måste | FR-SPA-001, FR-ALM-008, FR-DOK-005, FR-DOK-007, NFR-SEC-001..002, NFR-PRIV-001..002 | Ej utförd | Ej utförd |
-| BG-002 | Måste | Avgränsningen i SRS 1.2 och Won't-kraven; prövas med ägarens helhetsbedömning | Ej utförd | Ej utförd |
+| BG-002 | Måste | Avgränsningen i SRS 1.2 och Won't-kraven; prövas med ägarens helhetsbedömning; Won't: FR-STA-013  | Ej utförd | Ej utförd |
 | BG-003 | Måste | FR-STA-009, FR-STA-012, FR-TXT-014, FR-PLC-001, FR-PLC-008 | Ej utförd | Ej utförd |
 | BG-005 | Måste | NFR-COMP-001 | Ej utförd | Ej utförd |
 | BG-006 | Bör | NFR-COMP-002 | Ej utförd | Ej utförd |
@@ -124,7 +124,7 @@ Kraven är hämtade ur kolumnen Source i docs/rtm.md (SRS-utkast 2026-11-12). Kr
 | BG-009 | Måste | FR-SPA-005, FR-SPA-007 | Ej utförd | Ej utförd |
 | BH-001 | Måste | FR-FIL-001..003, FR-FIL-005, FR-FIL-012, FR-SID-002..005, FR-SID-007, FR-SID-009, FR-SID-013, FR-SPA-001, NFR-PERF-002..003 | Ej utförd | Ej utförd |
 | BH-002 | Måste | FR-FIL-004, FR-SID-001, FR-SID-006, FR-SID-011..012, FR-FHV-003, FR-FHV-007 | Ej utförd | Ej utförd |
-| BH-003 | Måste | FR-FIL-005, FR-FHV-001..006, FR-FHV-008, FR-TXT-013, FR-SPA-008, NFR-PERF-001 | Ej utförd | Ej utförd |
+| BH-003 | Måste | FR-FIL-005, FR-FHV-001..006, FR-FHV-008, FR-TXT-013, FR-SPA-008, NFR-PERF-001; Won't: FR-FHV-011  | Ej utförd | Ej utförd |
 | BH-004 | Måste | FR-STA-001, FR-STA-007..010, FR-STA-012 | Ej utförd | Ej utförd |
 | BH-007 | Måste | FR-STA-002 | Ej utförd | Ej utförd |
 | BH-008 | Måste | FR-STA-003..004 | Ej utförd | Ej utförd |
@@ -134,7 +134,7 @@ Kraven är hämtade ur kolumnen Source i docs/rtm.md (SRS-utkast 2026-11-12). Kr
 | BH-010 | Måste | FR-PLC-009..011 | Ej utförd | Ej utförd |
 | BH-019 | Måste | FR-PLC-004..007 | Ej utförd | Ej utförd |
 | BH-011 | Måste | FR-SPA-006, FR-SPA-009, NFR-COMP-005 | Ej utförd | Ej utförd |
-| BH-012 | Måste | FR-TXT-003..006, FR-TXT-008 | Ej utförd | Ej utförd |
+| BH-012 | Måste | FR-TXT-003..006, FR-TXT-008; Won't: FR-TXT-015  | Ej utförd | Ej utförd |
 | BH-013 | Bör | FR-TXT-003, FR-TXT-007 | Ej utförd | Ej utförd |
 | BH-014 | Bör | FR-SID-010 | Ej utförd | Ej utförd |
 | BH-015 | Måste | FR-STA-005..006 | Ej utförd | Ej utförd |
