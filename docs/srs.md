@@ -66,7 +66,27 @@ Microsoft Edge (primärt) och Safari på Mac (sekundärt) på organisationens da
 
 ## 3. Specific Requirements
 ### 3.1 Functional requirements
-*(fylls i område för område)*
+
+Kraven skrivs i EARS: *När* (händelse), *Medan* (tillstånd), *Där* (valbar funktion), *Om … så* (oönskad händelse) eller utan villkor. Systemet kallas "appen". Prioritet: Must, Should, Could, Won't.
+
+#### 3.1.1 FIL – Inläsning av filer
+
+| ID | Requirement | Priority | Status | Notes / rules |
+| :-- | :---------- | :------- | :----- | :------------ |
+| FR-FIL-001 | När användaren väljer en eller flera filer i appens filväljare ska appen läsa in de valda filerna till arbetsytan. | Must | Active | Källa: BH-001. Filväljaren är också tangentbordsalternativet till FR-FIL-002 (BG-004). |
+| FR-FIL-002 | När användaren drar en eller flera filer från datorn och släpper dem på arbetsytan ska appen läsa in filerna. | Must | Active | Källa: BH-001, FV-001. |
+| FR-FIL-003 | När användaren läser in filer medan arbetsytan redan innehåller filer ska appen lägga till de nya filerna och behålla de befintliga filerna och användarens val oförändrade. | Must | Active | Källa: BH-001 (två eller fler filer). |
+| FR-FIL-004 | När en fil har lästs in ska appen visa filens namn och antal sidor på arbetsytan. | Must | Active | Källa: BH-002. |
+| FR-FIL-005 | När användaren väljer att ta bort en inläst fil ska appen ta bort filen och alla dess sidor från arbetsytan, resultatet och förhandsvisningen. | Must | Active | Källa: BH-001, BH-003. |
+| FR-FIL-006 | Om användaren försöker läsa in en fil som inte är en PDF så ska appen avvisa filen och visa ett meddelande som namnger filen och förklarar att bara PDF-filer kan läsas in. | Must | Active | Källa: DS-04, FV-001. Avgörs av filens innehåll, inte bara filändelsen. |
+| FR-FIL-007 | Om en fil är skadad eller inte går att läsa så ska appen avvisa filen, visa ett meddelande som namnger filen och orsaken, och behålla övriga filer oförändrade. | Must | Active | Källa: DS-04. |
+| FR-FIL-008 | Om en fil är lösenordsskyddad så ska appen avvisa filen och visa ett meddelande som namnger filen och förklarar att lösenordsskyddade filer inte kan läsas in. | Must | Active | Källa: DS-04. Upplåsning med lösenord är Won't i version 1 (se FR-FIL-014). |
+| FR-FIL-009 | Om en fil är större än 100 MB så ska appen avvisa filen och visa ett meddelande som namnger filen och anger gränsen. | Must | Active | Källa: DS-04. Gränsen bekräftad av ägaren 2026-11-12. |
+| FR-FIL-010 | Om en inläsning skulle göra att arbetsytan innehåller fler än 500 sidor totalt så ska appen avvisa filen och visa ett meddelande som anger gränsen och hur många sidor som redan finns. | Must | Active | Källa: DS-04. |
+| FR-FIL-011 | Medan en fil läses in ska appen visa en väntindikator som namnger filen. | Should | Active | Källa: FV-001. |
+| FR-FIL-012 | När användaren läser in samma fil mer än en gång ska appen visa varje inläsning som ett separat dokument. | Should | Active | Källa: BH-001. Dokumenten skiljs åt med löpnummer i namnet, inte bara med färg (BG-004). |
+| FR-FIL-013 | När en fil har lästs in eller avvisats ska appen meddela utfallet i ett statusmeddelande som skärmläsare läser upp. | Must | Active | Källa: BG-004. |
+| FR-FIL-014 | Där upplåsning av lösenordsskyddade filer ingår ska appen låta användaren skriva in lösenordet för att läsa in filen. | Won't | Active | Källa: DS-04. Inte i version 1 (ägaren 2026-11-12). |
 
 ### 3.2 External interface requirements
 *(fas 4)*
@@ -90,3 +110,4 @@ Microsoft Edge (primärt) och Safari på Mac (sekundärt) på organisationens da
 ## Appendix B — Open questions / TBD
 | ID | Fråga | Status |
 | :-- | :-- | :-- |
+| TBD-01 | Ska lösenordsskyddade filer kunna låsas upp i en senare version (FR-FIL-014)? | Öppen, inte version 1 |
