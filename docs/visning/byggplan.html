@@ -1,0 +1,596 @@
+<title>Byggplan PDF-bagaren</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Läsdokument: smal textspalt, innehållsförteckning överst, diagram i egna ytor. GP MS, mörkt tema först. */
+:root { --bg:#484b43; --yta:#003d4c; --text:#eceae6; --dampad:#d4d5ce; --linje:#74776f; --accent:#ffdd00; --kod:#3c3f38;
+  --f-text: Calibri, Carlito, "Segoe UI", Arial, sans-serif; --f-mono: ui-monospace, Consolas, Menlo, monospace; color-scheme: dark; }
+@media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) { --bg:#eceae6; --yta:#d4d5ce; --text:#484b43; --dampad:#484b43; --linje:#74776f; --accent:#003d4c; --kod:#e2e1dc; color-scheme: light; } }
+:root[data-theme="light"] { --bg:#eceae6; --yta:#d4d5ce; --text:#484b43; --dampad:#484b43; --linje:#74776f; --accent:#003d4c; --kod:#e2e1dc; color-scheme: light; }
+body { background: var(--bg); color: var(--text); font: 16px/1.5 var(--f-text); }
+.wrap { max-width: 980px; margin: 0 auto; padding-block: 32px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 4px; }
+h1 { font-size: 2rem; line-height: 1.2; margin: 0 0 8px; text-wrap: balance; }
+h2 { font-size: 1.4rem; margin: 40px 0 8px; padding-top: 16px; border-top: 1px solid var(--linje); text-wrap: balance; }
+h3 { font-size: 1.15rem; margin: 28px 0 4px; }
+p, li { max-width: 72ch; }
+a { color: var(--accent); }
+blockquote { margin: 0; padding: 8px 16px; background: var(--yta); border-radius: 8px; color: var(--dampad); }
+blockquote p { margin: 4px 0; }
+code { font-family: var(--f-mono); font-size: 0.88em; background: var(--kod); padding: 1px 4px; border-radius: 3px; }
+pre:not(.mermaid) { background: var(--kod); padding: 12px; border-radius: 8px; overflow-x: auto; }
+.diagram { background: #ffffff; border-radius: 8px; padding: 16px; overflow-x: auto; margin: 8px 0 16px; }
+.diagram pre { margin: 0; background: transparent; color: #000; }
+.tabell { overflow-x: auto; margin: 8px 0 16px; }
+table { border-collapse: collapse; font-size: 0.92rem; min-width: 560px; }
+th, td { text-align: left; vertical-align: top; padding: 6px 10px; border-bottom: 1px solid var(--linje); }
+th { color: var(--dampad); font-weight: 700; }
+nav.toc { background: var(--yta); border-radius: 8px; padding: 12px 16px; margin: 8px 0; }
+nav.toc ol { margin: 4px 0 0; padding-left: 20px; columns: 2 220px; }
+nav.toc .rubrik { font-weight: 700; }
+a:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+</style>
+<main class="wrap">
+<h1 id="byggplan-pdf-bagaren">Byggplan: PDF-bagaren</h1>
+<nav class="toc" aria-label="Innehåll"><div class="rubrik">Innehåll</div><ol><li><a href="#1-översikt">1. Översikt</a></li><li><a href="#2-gångbart-skelett">2. Gångbart skelett</a></li><li><a href="#3-epics-och-funktioner">3. Epics och funktioner</a></li><li><a href="#4-byggordning">4. Byggordning</a></li><li><a href="#6-grundarbete">6. Grundarbete</a></li><li><a href="#7-risker-och-antaganden">7. Risker och antaganden</a></li></ol></nav>
+
+<blockquote>
+<p>Status: Draft · Senast uppdaterad: 2026-11-12 Underlag: <a
+href="srs.md">srs.md</a> v1.0 · <a href="use-cases.md">use-cases.md</a>
+v1.0 · <a href="architecture.md">architecture.md</a> v1.0 · <a
+href="ux-foundations.md">ux-foundations.md</a> v1.0 (alla fyra
+finns)</p>
+</blockquote>
+<h2 id="1-översikt">1. Översikt</h2>
+<p>Planen bygger PDF-bagaren i tunna, genomgående funktioner, var och en
+från gränssnitt till sparad fil. Ordningen styrs först av
+<strong>risk</strong>: det mest osäkra prövas först, alltså att
+SharePoint kör HTML-filen (architecture.md avsnitt 11), att sidor kan
+kopieras orörda (ADR-004) och att arkivformatet PDF/A-2b går att
+uppfylla (ADR-005). Därefter styr beroenden och prioritet (Must före
+Should före Could).</p>
+<p>Planen har fem delmål. Efter delmål 1 kan en kollega göra DS-01 utom
+arkivformatet, efter delmål 3 även DS-02, och efter delmål 5 är alla
+Must-krav byggda och version 1.0 kan gå till grind G6. Inga datum är
+satta; ordningen efter de närmaste funktionerna kan ändras när vi lär
+oss mer.</p>
+<h2 id="2-gångbart-skelett">2. Gångbart skelett</h2>
+<p>Det minsta som går hela vägen och prövar de största riskerna innan
+någon funktion byggs.</p>
+<p><strong>Verkligt:</strong></p>
+<ul>
+<li>Repo med Vite, TypeScript och Preact som bygger <strong>en enda
+HTML-fil</strong> (ADR-001, ADR-009), med CSP-taggen först i
+<code>head</code> (ADR-002).</li>
+<li>Skalet för SCR-APP-001: sidhuvud med "Baka ihop och spara", de tre
+kolumnerna och statusytan, med GP MS-tokens ur tokens.json som
+CSS-variabler, Carlito inbakad, mörkt tema och temaväxling
+(FR-ALM-009).</li>
+<li>En PDF kan läsas in med filväljaren; läs-arbetstråden (pdf.js,
+skript avstängt) läser antal sidor och ritar första sidan som
+miniatyr.</li>
+<li>"Baka ihop och spara" kopierar alla sidor i filen med pdf-lib i
+bygg-arbetstråden och erbjuder en ny fil via webbläsarens
+nedladdning.</li>
+<li>Tillståndslagret med oföränderliga versioner (utan ångra-knappar
+än).</li>
+<li>GitHub Actions: bygge, Vitest, Playwright i Chromium och WebKit,
+testet "noll nätverksanrop efter laddning", kontroll av R1, R2, R5 och
+R7, licens- och sårbarhetskontroll, filstorlek i byggloggen.</li>
+</ul>
+<p><strong>Stubbat:</strong> dra och släpp, sidval och ordning,
+förhandsvisning, märkning, dold information, PDF/A, felbesked (bara ett
+allmänt felmeddelande), hjälp och om-sida.</p>
+<p><strong>Klart när:</strong></p>
+<ol type="1">
+<li>CI är grön på <code>main</code>.</li>
+<li>Ägaren har lagt HTML-filen i en test-mapp på SharePoint, öppnat den
+i Edge (och Safari om möjligt), läst in en PDF och sparat en kopia.</li>
+<li>Webbläsarens nätverkslogg visar inga anrop efter laddning, och appen
+fungerar med nätverket avstängt.</li>
+<li>Starttiden från SharePoint är mätt och noterad (mål ≤ 3 s,
+NFR-PERF-004).</li>
+</ol>
+<p>Om punkt 2 inte går (SharePoint laddar ner filen i stället för att
+visa den) stannar vi och väljer reservväg med Ägaren innan funktionerna
+byggs.</p>
+<h2 id="3-epics-och-funktioner">3. Epics och funktioner</h2>
+<p>Funktions-ID:n (<code>FEAT-NNN</code>) är fasta och sätts i den
+ordning funktionerna definieras här, inte i byggordning. De numreras
+aldrig om; borttagna markeras <code>Removed</code>.</p>
+<h3 id="e1-inläsning-och-arbetsyta">E1 Inläsning och arbetsyta</h3>
+<p>Byggblock: Inläsning och validering, Arbetsyta, Tillstånd och
+historik, pdf.js-adapter, Meddelanden.</p>
+<div class="tabell"><table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">ID</th>
+<th style="text-align: left;">Funktion</th>
+<th style="text-align: left;">FRs</th>
+<th style="text-align: left;">UCs</th>
+<th style="text-align: left;">Skärmar</th>
+<th style="text-align: left;">Byggblock</th>
+<th style="text-align: left;">Data</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">FEAT-001</td>
+<td style="text-align: left;">Baka ihop sidor ur flera filer: läsa in,
+välja, ordna och spara som PDF</td>
+<td style="text-align: left;">FR-FIL-001..005, FR-SID-001..009,
+FR-SID-011, FR-SID-014, FR-SPA-001, FR-SPA-002, FR-SPA-007,
+FR-SPA-009..013</td>
+<td style="text-align: left;">UC-001, UC-002, UC-007 (utan dold
+information och PDF/A)</td>
+<td style="text-align: left;">SCR-APP-001, SCR-APP-005 (delvis: filnamn,
+vanlig PDF)</td>
+<td style="text-align: left;">Arbetsyta, Inläsning, pdf.js-adapter,
+Tillstånd, Export, Meddelanden</td>
+<td style="text-align: left;">Dokument, Resultatsida, Sparval
+(filnamn)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FEAT-002</td>
+<td style="text-align: left;">Tydliga felbesked och gränser vid
+inläsning</td>
+<td style="text-align: left;">FR-FIL-006..013</td>
+<td style="text-align: left;">UC-001 (undantag)</td>
+<td style="text-align: left;">SCR-APP-001</td>
+<td style="text-align: left;">Inläsning och validering, Meddelanden</td>
+<td style="text-align: left;">Dokument</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">FEAT-005</td>
+<td style="text-align: left;">Ångra, gör om och börja om</td>
+<td style="text-align: left;">FR-ALM-001..004</td>
+<td style="text-align: left;">UC-008</td>
+<td style="text-align: left;">SCR-APP-001, SCR-APP-012</td>
+<td style="text-align: left;">Tillstånd och historik, Skal</td>
+<td style="text-align: left;">Arbetsyta (historik)</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="e2-förhandsvisning-och-sidverktyg">E2 Förhandsvisning och
+sidverktyg</h3>
+<p>Byggblock: Förhandsvisning, Arbetsyta, pdf.js-adapter.</p>
+<div class="tabell"><table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">ID</th>
+<th style="text-align: left;">Funktion</th>
+<th style="text-align: left;">FRs</th>
+<th style="text-align: left;">UCs</th>
+<th style="text-align: left;">Skärmar</th>
+<th style="text-align: left;">Byggblock</th>
+<th style="text-align: left;">Data</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">FEAT-003</td>
+<td style="text-align: left;">Förhandsvisning av resultatet, en sida i
+taget</td>
+<td style="text-align: left;">FR-FHV-001..005, FR-FHV-007..010</td>
+<td style="text-align: left;">UC-002</td>
+<td style="text-align: left;">SCR-APP-001</td>
+<td style="text-align: left;">Förhandsvisning, pdf.js-adapter</td>
+<td style="text-align: left;">Resultatsida</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FEAT-004</td>
+<td style="text-align: left;">Vrida sidor, visa en sida stort och lägga
+till en sida två gånger</td>
+<td style="text-align: left;">FR-SID-010 (Should), FR-SID-012 (Should),
+FR-SID-013 (Could)</td>
+<td style="text-align: left;">UC-002</td>
+<td style="text-align: left;">SCR-APP-001, SCR-APP-007</td>
+<td style="text-align: left;">Arbetsyta, Förhandsvisning, Export</td>
+<td style="text-align: left;">Resultatsida (rotation)</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="e3-märkning">E3 Märkning</h3>
+<p>Byggblock: Paneler, Layoutmodell, Förhandsvisning, Export, typsnitt
+(ADR-006, ADR-007).</p>
+<div class="tabell"><table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">ID</th>
+<th style="text-align: left;">Funktion</th>
+<th style="text-align: left;">FRs</th>
+<th style="text-align: left;">UCs</th>
+<th style="text-align: left;">Skärmar</th>
+<th style="text-align: left;">Byggblock</th>
+<th style="text-align: left;">Data</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">FEAT-006</td>
+<td style="text-align: left;">Vattenstämpel med genomskinlighet,
+opacitet, storlek och placering</td>
+<td style="text-align: left;">FR-STA-001..012, FR-PLC-001..011,
+FR-FHV-006 (delvis), FR-SPA-008 (delvis)</td>
+<td style="text-align: left;">UC-003, UC-005</td>
+<td style="text-align: left;">SCR-APP-002, SCR-APP-001</td>
+<td style="text-align: left;">Paneler, Layoutmodell, Förhandsvisning,
+Export</td>
+<td style="text-align: left;">Vattenstämpel, Placering</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FEAT-007</td>
+<td style="text-align: left;">Textetikett med storlek, färg, bakgrund,
+typsnitt och stil</td>
+<td style="text-align: left;">FR-TXT-001..014, FR-PLC-012 (Could),
+FR-FHV-006 (delvis), FR-SPA-008 (delvis)</td>
+<td style="text-align: left;">UC-004, UC-005</td>
+<td style="text-align: left;">SCR-APP-003, SCR-APP-001</td>
+<td style="text-align: left;">Paneler, Layoutmodell, Förhandsvisning,
+Export, typsnitt</td>
+<td style="text-align: left;">Textetikett, Placering</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="e4-sparande-arkivformat-och-dold-information">E4 Sparande,
+arkivformat och dold information</h3>
+<p>Byggblock: Export, PDF/A-modul, Dold information (ADR-004,
+ADR-005).</p>
+<div class="tabell"><table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">ID</th>
+<th style="text-align: left;">Funktion</th>
+<th style="text-align: left;">FRs</th>
+<th style="text-align: left;">UCs</th>
+<th style="text-align: left;">Skärmar</th>
+<th style="text-align: left;">Byggblock</th>
+<th style="text-align: left;">Data</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">FEAT-008</td>
+<td style="text-align: left;">Granska och rensa dold information före
+sparandet</td>
+<td style="text-align: left;">FR-DOL-001..014, FR-DOL-015 (Could)</td>
+<td style="text-align: left;">UC-006, UC-007</td>
+<td style="text-align: left;">SCR-APP-004, SCR-APP-001</td>
+<td style="text-align: left;">Dold information, Paneler, Export</td>
+<td style="text-align: left;">Dokument (metadata, kommentarer, bilagor,
+formulär), Sparval</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FEAT-009</td>
+<td style="text-align: left;">Spara i arkivformat PDF/A-2b med
+förkontroll och varning</td>
+<td style="text-align: left;">FR-SPA-003 (Should), FR-SPA-004..006</td>
+<td style="text-align: left;">UC-007</td>
+<td style="text-align: left;">SCR-APP-005, SCR-APP-006</td>
+<td style="text-align: left;">PDF/A-modul, Export</td>
+<td style="text-align: left;">Sparval (format)</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="e5-hjälp-och-om-sida">E5 Hjälp och om-sida</h3>
+<p>Byggblock: Hjälp och om-sida, Skal.</p>
+<div class="tabell"><table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">ID</th>
+<th style="text-align: left;">Funktion</th>
+<th style="text-align: left;">FRs</th>
+<th style="text-align: left;">UCs</th>
+<th style="text-align: left;">Skärmar</th>
+<th style="text-align: left;">Byggblock</th>
+<th style="text-align: left;">Data</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">FEAT-010</td>
+<td style="text-align: left;">Startläge, hjälp och kortkommandon</td>
+<td style="text-align: left;">FR-ALM-005, FR-ALM-010 (Should),
+FR-DOK-001..003, FR-DOK-009</td>
+<td style="text-align: left;">UC-009</td>
+<td style="text-align: left;">SCR-APP-001, SCR-APP-008, SCR-APP-013</td>
+<td style="text-align: left;">Hjälp och om-sida, Skal</td>
+<td style="text-align: left;">–</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FEAT-011</td>
+<td style="text-align: left;">Om-sida med licenser, verifieringsrapport
+och tillgänglighetsredogörelse</td>
+<td style="text-align: left;">FR-DOK-004..008</td>
+<td style="text-align: left;">UC-009, UC-010</td>
+<td style="text-align: left;">SCR-APP-009, SCR-APP-010, SCR-APP-011</td>
+<td style="text-align: left;">Hjälp och om-sida, bygget (genererar
+licenser och rapport)</td>
+<td style="text-align: left;">–</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="4-byggordning">4. Byggordning</h2>
+<div class="tabell"><table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Ordning</th>
+<th style="text-align: left;">Delmål</th>
+<th style="text-align: left;">Funktion</th>
+<th style="text-align: left;">Varför här</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">M0 Skelett</td>
+<td style="text-align: left;">Gångbart skelett</td>
+<td style="text-align: left;">Prövar SharePoint, CSP, arbetstrådar och
+en-fil-bygget innan något annat byggs</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">M1 Ihopbakning</td>
+<td style="text-align: left;">FEAT-001</td>
+<td style="text-align: left;">Kärnan i DS-01; prövar att sidor kopieras
+orörda (BG-009, ADR-004)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">M1</td>
+<td style="text-align: left;">FEAT-003</td>
+<td style="text-align: left;">Förhandsvisningen behövs för att
+användaren ska förstå resultatet (MF-01) och för all märkning</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">M1</td>
+<td style="text-align: left;">FEAT-002</td>
+<td style="text-align: left;">Felbesked gör DS-04 begripligt innan fler
+testar</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">M1</td>
+<td style="text-align: left;">FEAT-005</td>
+<td style="text-align: left;">Ångra är billigt när tillståndslagret
+finns och skyddar testarnas arbete</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">M2 Arkivformat</td>
+<td style="text-align: left;">FEAT-009</td>
+<td style="text-align: left;">Största kvarvarande tekniska risk
+(ADR-005); hur många verkliga filer klarar PDF/A-2b?</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">6</td>
+<td style="text-align: left;">M3 Märkning</td>
+<td style="text-align: left;">FEAT-006</td>
+<td style="text-align: left;">Kärnan i DS-02; bygger layoutmodellen som
+etiketten återanvänder</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">7</td>
+<td style="text-align: left;">M3</td>
+<td style="text-align: left;">FEAT-007</td>
+<td style="text-align: left;">Återanvänder layoutmodell och paneler;
+typsnitt och tecken prövas</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">8</td>
+<td style="text-align: left;">M4 Dold information</td>
+<td style="text-align: left;">FEAT-008</td>
+<td style="text-align: left;">Bygger på exporten och PDF/A-rensningen;
+sista Must-steget i sparandet</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">9</td>
+<td style="text-align: left;">M5 Komplett 1.0</td>
+<td style="text-align: left;">FEAT-010</td>
+<td style="text-align: left;">Hjälp och startläge inför användartestet
+(NFR-USE-001)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">10</td>
+<td style="text-align: left;">M5</td>
+<td style="text-align: left;">FEAT-011</td>
+<td style="text-align: left;">Om-sida och verifieringsrapport krävs före
+release (NFR-SEC-005)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">11</td>
+<td style="text-align: left;">M5</td>
+<td style="text-align: left;">FEAT-004</td>
+<td style="text-align: left;">Should och Could; vridning behövs i DS-01
+men kan vänta tills Must är klart</td>
+</tr>
+</tbody>
+</table></div>
+<p>Vridning (FR-SID-010) är Should men förekommer i DS-01. Den kan
+flyttas fram direkt efter FEAT-003 om Ägaren vill pröva DS-01 fullt ut
+tidigt.</p>
+<div class="diagram"><pre class="mermaid">graph LR
+    sk[&quot;Skelett&quot;]
+    f1[&quot;FEAT-001 Baka ihop&quot;]
+    f2[&quot;FEAT-002 Felbesked&quot;]
+    f3[&quot;FEAT-003 Förhandsvisning&quot;]
+    f4[&quot;FEAT-004 Vrida, visa stort&quot;]
+    f5[&quot;FEAT-005 Ångra&quot;]
+    f6[&quot;FEAT-006 Vattenstämpel&quot;]
+    f7[&quot;FEAT-007 Textetikett&quot;]
+    f8[&quot;FEAT-008 Dold information&quot;]
+    f9[&quot;FEAT-009 Arkivformat&quot;]
+    f10[&quot;FEAT-010 Hjälp&quot;]
+    f11[&quot;FEAT-011 Om-sida&quot;]
+    sk --&gt; f1
+    f1 --&gt; f2
+    f1 --&gt; f3
+    f1 --&gt; f5
+    f1 --&gt; f9
+    f3 --&gt; f4
+    f3 --&gt; f6
+    f6 --&gt; f7
+    f9 --&gt; f8
+    sk --&gt; f10
+    sk --&gt; f11</pre></div>
+<h2 id="5-första-funktionen-feat-001-baka-ihop-sidor-ur-flera-filer">5.
+Första funktionen: FEAT-001 Baka ihop sidor ur flera filer</h2>
+<p><strong>Flöde och varför den är först.</strong> Kollegan läser in två
+PDF-filer, lägger till sidor ur båda i resultatet, ändrar ordningen, tar
+bort en sida och sparar en ny PDF (huvudscenariot i DS-01, UC-001,
+UC-002 och UC-007 utan dold information och arkivformat). Den ger det
+första riktiga värdet och prövar den viktigaste tekniska frågan efter
+SharePoint: att pdf-lib kopierar sidor från flera filer utan att ändra
+innehållet.</p>
+<p><strong>Acceptanskriterier</strong></p>
+<ol type="1">
+<li>Användaren kan läsa in flera PDF-filer på en gång, både med
+filväljaren och med dra och släpp; filerna läggs till och befintliga
+filer och val är oförändrade (FR-FIL-001..003).</li>
+<li>Varje fil visas med namn och antal sidor och kan tas bort, varvid
+dess sidor försvinner ur resultatet (FR-FIL-004, FR-FIL-005).</li>
+<li>Varje fil visar sina sidor som miniatyrer märkta med dokumentnamn
+och sidnummer (FR-SID-001).</li>
+<li>Klick, Enter eller Mellanslag på en miniatyr lägger sidan sist i
+resultatet; en vald sida kan tas bort igen; "Lägg till alla sidor" och
+"Ta bort ur resultatet" fungerar per dokument (FR-SID-002..005).</li>
+<li>Resultatraden visar sidorna i ordning, var och en märkt med dokument
+och sidnummer, och antal sidor visas (FR-SID-006, FR-SID-011).</li>
+<li>Sidor kan flyttas med dra och släpp och med knappar eller
+Alt+piltangent, och tas bort i resultatraden; varje ändring läses upp i
+statusytan (FR-SID-007..009, FR-SID-014).</li>
+<li>"Baka ihop och spara" är inaktiv med förklaring när resultatet är
+tomt (FR-SPA-010).</li>
+<li>Spara-dialogen tar emot ett filnamn och sparar med ändelsen .pdf;
+väntindikator visas medan filen skapas (FR-SPA-001, FR-SPA-002,
+FR-SPA-011).</li>
+<li>Den sparade filen har exakt de valda sidorna i vald ordning;
+sidornas innehållsflöden är byte för byte desamma som i källan (R8);
+filen är okrypterad (FR-SPA-007, FR-SPA-009).</li>
+<li>Om bygget misslyckas visas ett felmeddelande och arbetsytan är
+oförändrad; efter sparande finns arbetsytan kvar (FR-SPA-012,
+FR-SPA-013).</li>
+<li>Allt ovan går med bara tangentbord, och NVDA läser upp sidorna som
+"Sida N av M ur <dokument>" (NFR-ACC-002, FR-DOK-010).</li>
+<li>Noll nätverksanrop under hela flödet (NFR-SEC-002).</li>
+</ol>
+<p><strong>Till ui-design (skärmar):</strong> SCR-APP-001 Arbetsyta
+(kolumnerna 1 Filer och 2 Resultat: <code>slappyta</code>,
+<code>dokumentkort</code>, <code>miniatyr</code>,
+<code>resultatrad</code>, statusyta) och SCR-APP-005 Spara (bara
+filnamn, sparar, sparad, fel).</p>
+<p><strong>Till detailed-design (gränssnitt och data):</strong></p>
+<ul>
+<li>Domänmodellen Dokument och Resultatsida (architecture.md 8.2) som
+TypeScript-typer i tillståndslagret, inklusive löpnummer.</li>
+<li>Meddelanden mellan huvudtråd och läs-arbetstråd: öppna fil
+(ArrayBuffer, överförs), svar med sidantal och sidstorlekar eller
+feltyp; rita miniatyr (dokument, sida, bredd) → bild.</li>
+<li>Meddelanden mellan huvudtråd och bygg-arbetstråd: bygg (lista av
+dokument-bytes och resultatsidor) → PDF-bytes eller fel.</li>
+<li>Exportens kopiering med <code>copyPages</code> och testet R8 för
+oförändrade innehållsflöden.</li>
+<li>Testfiler i repot: två små PDF:er med text, en inskannad sida
+(bild), en med flera sidstorlekar.</li>
+</ul>
+<h2 id="6-grundarbete">6. Grundarbete</h2>
+<p>Sätts upp i skelettet och gäller alla funktioner.</p>
+<ul class="task-list">
+<li><label><input type="checkbox" /><strong>Repo och kod:</strong> Vite
++ TypeScript (strict) + Preact; mappar <code>src/ui</code>,
+<code>src/karna</code>, <code>src/las</code>, <code>src/bygg</code>,
+<code>src/resurser</code>, <code>tests/</code>,
+<code>tests/filer/</code>; ESLint med reglerna R1 (inga nätverks-API:er)
+och R3 (lagring bara i temamodulen) (architecture.md 8.8).</label></li>
+<li><label><input type="checkbox" /><strong>En fil och
+nätverksspärr:</strong> <code>vite-plugin-singlefile</code>; CSP-taggen;
+arbetstrådar från <code>blob:</code>; kontrollerna R2 och R7 på byggd
+fil.</label></li>
+<li><label><input type="checkbox" /><strong>CI (GitHub
+Actions):</strong> bygge, Vitest, Playwright (Chromium och WebKit),
+axe-core, nätverkstestet, licenskontroll mot vitlistan (R5), npm audit
+och OSV, filstorlek. veraPDF läggs till när FEAT-009 byggs.</label></li>
+<li><label><input type="checkbox" /><strong>Miljöer:</strong> lokalt;
+test = Ägarens test-mapp på SharePoint; produktion = den gemensamma
+SharePoint-sidan (architecture.md 7).</label></li>
+<li><label><input type="checkbox" /><strong>Designsystem:</strong>
+CSS-variabler genererade ur tokens.json; Carlito (4 snitt) inbakad;
+Lucide-ikoner som inbakade SVG; mörkt tema standard och ljust tema med
+val som sparas (FR-ALM-009).</label></li>
+<li><label><input type="checkbox" /><strong>Tvärgående
+krav:</strong></label>
+<ul>
+<li>FR-ALM-006 och FR-ALM-007: alla texter på svenska i en gemensam
+textkatalog med meddelanden som säger vad som hände och vad man
+gör.</li>
+<li>FR-ALM-008: ingen beständig lagring av dokumentdata (R3).</li>
+<li>FR-ALM-009: temaväxling i skalet.</li>
+<li>FR-DOK-010: tillgängliga namn för knappar, fält, miniatyrer och
+sidor; statusyta med <code>aria-live</code>.</li>
+</ul></li>
+<li><label><input type="checkbox" /><strong>Tester:</strong> testfiler i
+<code>tests/filer/</code>; varje Must-krav får minst ett automatiskt
+test och hänvisas från RTM:s Test ref (NFR-MAINT-004).</label></li>
+<li><label><input type="checkbox" /><strong>Förvaltning:</strong>
+versionsnummer och <code>CHANGELOG.md</code> (NFR-MAINT-003);
+förvaltningsinstruktion för publicering på SharePoint (NFR-MAINT-002,
+UC-010); mallar för verifieringsrapport (NFR-SEC-005) och
+tillgänglighetsredogörelse.</label></li>
+</ul>
+<h2 id="7-risker-och-antaganden">7. Risker och antaganden</h2>
+<div class="tabell"><table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Risk eller antagande</th>
+<th style="text-align: left;">Vad som händer om den slår in</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">SharePoint kör inte HTML-filen som sida,
+eller skickar en policy som stoppar arbetstrådarna.</td>
+<td style="text-align: left;">Skelettet stannar; vi väljer reservväg
+(t.ex. öppna filen från en synkad mapp) innan FEAT-001.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Många verkliga filer klarar inte
+PDF/A-2b.</td>
+<td style="text-align: left;">FEAT-009 kan behöva fler orsaker i
+förkontrollen; användarna sparar oftare som vanlig PDF. Prövas med
+Ägarens exempelfiler i M2.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">pdf-lib (Cantoo-forken) klarar inte vissa
+filer som pdf.js kan visa.</td>
+<td style="text-align: left;">Felbesked vid sparande (FR-SPA-012);
+filerna samlas som testfall; i värsta fall ett nytt ADR om
+bibliotek.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Tre kolumner ryms dåligt i 1 280 ×
+720.</td>
+<td style="text-align: left;">Märkning kan bli utfällbar; avgörs i
+ui-design av FEAT-006.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Antagande: Ägaren kan ta fram exempelfiler
+(beslut, inskannad sida, mottagen PDF) utan känsligt innehåll till
+testerna.</td>
+<td style="text-align: left;">Utan dem prövas bara egna testfiler, och
+PDF/A-risken blir svårare att bedöma.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Antagande: CI-minuter på GitHub räcker för
+två webbläsare och veraPDF.</td>
+<td style="text-align: left;">Annars körs WebKit och veraPDF bara på
+<code>main</code>.</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Täckning:</strong> alla 112 Must-krav finns i en funktion
+eller i grundarbetet; de 5 Won't-kraven (FR-FIL-014, FR-FHV-011,
+FR-STA-013, FR-TXT-015, FR-DOK-011) byggs inte. Alla 13 skärmar
+(SCR-APP-001..013) ingår i minst en funktion. Inga öppna luckor.</p>
+<p>Ordningen efter FEAT-003 är en levande ordning, inte ett åtagande.
+Den ses över vid varje grind G5.</p>
+
+</main>
