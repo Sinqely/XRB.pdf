@@ -10,12 +10,17 @@ export async function laggTillAlla(page: Page) {
   for (let i = 0; i < n; i++) await knappar.nth(i).click()
 }
 
-/** Öppnar spara-dialogen, behåller eller anger filnamn och väntar på nedladdningen. */
-export async function spara(page: Page, filnamn?: string) {
+/**
+ * Öppnar spara-dialogen, behåller eller anger filnamn, väljer format och väntar på nedladdningen.
+ * Standard är vanlig PDF, eftersom flera testfiler medvetet har ej inbäddade typsnitt; arkivformatet
+ * prövas i feat-009.spec.ts.
+ */
+export async function spara(page: Page, filnamn?: string, format: 'pdf' | 'pdfa' = 'pdf') {
   await page.getByRole('button', { name: 'Baka ihop och spara' }).click()
   const dialog = page.getByRole('dialog', { name: 'Baka ihop och spara' })
   await expect(dialog).toBeVisible()
   if (filnamn !== undefined) await dialog.getByLabel('Filnamn').fill(filnamn)
+  await dialog.getByRole('radio', { name: format === 'pdf' ? /^Vanlig PDF/ : /^Arkivformat PDF\/A/ }).check()
   const nedladdning = page.waitForEvent('download')
   await dialog.getByRole('button', { name: 'Spara' }).click()
   const d = await nedladdning

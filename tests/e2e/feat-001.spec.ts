@@ -99,6 +99,11 @@ test('DS-01 med bara tangentbord (AC-6, AC-9, AC-12, AC-15)', async ({ page }) =
   await tabbaTill(page, 'Baka ihop och spara')
   await page.keyboard.press('Enter')
   await expect(page.getByLabel('Filnamn')).toBeFocused()
+  // Formatet väljs med tangentbord; beslut.pdf har ej inbäddat typsnitt, så vanlig PDF (FEAT-009)
+  await page.keyboard.press('Tab')
+  await expect(page.getByRole('radio', { name: /^Arkivformat PDF\/A/ })).toBeFocused()
+  await page.keyboard.press('ArrowDown')
+  await expect(page.getByRole('radio', { name: /^Vanlig PDF/ })).toBeChecked()
   const nedladdning = page.waitForEvent('download')
   await page.keyboard.press('Enter')
   const d = await nedladdning

@@ -17,6 +17,15 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: maven
+          cache-dependency-path: verktyg/verapdf/pom.xml
+      - name: Hämta veraPDF för PDF/A-kontroll (ADR-005; testverktyg, bakas inte in)
+        run: mvn -q -B dependency:copy-dependencies -DoutputDirectory=lib -DincludeScope=runtime
+        working-directory: verktyg/verapdf
       - name: Lint och arkitekturregler (R1, R3, gränser)
         run: npm run lint
       - name: Enhetstester

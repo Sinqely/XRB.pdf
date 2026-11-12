@@ -92,6 +92,14 @@ p, h2, h3, ul, ol { margin: 0; }
 /* Meddelanden, väntindikator, statusyta */
 .meddelande { display: flex; gap: var(--space-2); align-items: flex-start; border-radius: var(--radie-panel); padding: var(--space-3); border: var(--storlek-kant-bredd) solid var(--ui-markering); }
 .meddelande p { flex: 1; }
+.meddelande > div { flex: 1; display: grid; gap: var(--space-1); }
+.valgrupp { display: grid; gap: var(--space-2); margin: 0; padding: 0; border: 0; min-width: 0; }
+.valgrupp legend { padding: 0; margin-bottom: var(--space-1); }
+.val { display: flex; gap: var(--space-2); align-items: flex-start; cursor: pointer; }
+.val input { width: 20px; height: 20px; margin: 2px 0 0; accent-color: var(--ui-valt); flex: none; }
+.blocktext { display: block; }
+.hinderlista { margin: 0; padding-left: var(--space-6); display: grid; gap: var(--space-2); max-height: 40vh; overflow-y: auto; }
+.hinderlista ul { margin: var(--space-1) 0 0; padding-left: var(--space-6); }
 .meddelande-fel { background: var(--ui-fel-yta); border-color: var(--ui-fel); }
 .vantindikator { display: flex; align-items: center; gap: var(--space-2); font: var(--text-liten); }
 .snurra { width: 20px; height: 20px; border-radius: 50%; border: var(--storlek-kant-bredd) solid var(--ui-avdelare); border-top-color: var(--ui-text); animation: snurra 0.8s linear infinite; }

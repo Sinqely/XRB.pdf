@@ -261,10 +261,17 @@ export function App() {
         <SparaDialog
           yta={yta}
           status={sattStatus}
-          stang={(sparatSom) => {
+          taBortSidor={(ids) => {
+            tillstand.andra(
+              (nu) => ({ ...nu, resultat: nu.resultat.filter((r) => !ids.includes(r.id)) }),
+              texter.hinderBorttagna(ids.length),
+            )
+            return tillstand.hamta()
+          }}
+          stang={(sparat) => {
             sattDialog(false)
-            if (sparatSom) {
-              tillstand.ersatt((nu) => ({ ...nu, sparval: { ...nu.sparval, filnamn: sparatSom } }))
+            if (sparat) {
+              tillstand.ersatt((nu) => ({ ...nu, sparval: { ...nu.sparval, filnamn: sparat.filnamn, format: sparat.format } }))
               sattSparad(tillstand.hamta())
             }
             bakaKnapp.current?.focus()

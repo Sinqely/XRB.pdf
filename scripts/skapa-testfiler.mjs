@@ -1,6 +1,7 @@
 // Skapar testfilerna i tests/filer/ (NFR-MAINT-004). Innehåller bara påhittad text.
-import { PDFDocument, StandardFonts, rgb } from '@cantoo/pdf-lib'
-import { writeFileSync, mkdirSync } from 'node:fs'
+import { PDFDocument, StandardFonts, rgb, cmyk } from '@cantoo/pdf-lib'
+import { writeFileSync, mkdirSync, readFileSync } from 'node:fs'
+import fontkit from '@pdf-lib/fontkit'
 
 mkdirSync(new URL('../tests/filer/', import.meta.url), { recursive: true })
 async function skapa(namn, sidor) {
@@ -24,6 +25,22 @@ await skapa('hundra-sidor.pdf', Array.from({ length: 100 }, () => ['Hundra sidor
   doc.addPage(A4).drawText('Hemlig sida', { x: 50, y: 760, size: 18, font })
   doc.encrypt({ userPassword: 'hemligt', ownerPassword: 'agare' })
   writeFileSync(new URL('../tests/filer/losenord.pdf', import.meta.url), await doc.save({ useObjectStreams: false }))
+}
+// Sidor med inbäddat typsnitt (Carlito, OFL) som kan bli PDF/A-2b, och en CMYK-sida som inte kan det.
+{
+  const doc = await PDFDocument.create()
+  doc.registerFontkit(fontkit)
+  const font = await doc.embedFont(readFileSync(new URL('../src/resurser/typsnitt/etikett/carlito-400-normal.ttf', import.meta.url)), { subset: false })
+  for (let i = 1; i <= 2; i++) doc.addPage(A4).drawText(`Arkivbar sida ${i} – åäö`, { x: 50, y: 760, size: 18, font, color: rgb(0, 0, 0) })
+  writeFileSync(new URL('../tests/filer/arkivbar.pdf', import.meta.url), await doc.save({ useObjectStreams: false }))
+}
+{
+  const doc = await PDFDocument.create()
+  doc.registerFontkit(fontkit)
+  const font = await doc.embedFont(readFileSync(new URL('../src/resurser/typsnitt/etikett/carlito-400-normal.ttf', import.meta.url)), { subset: false })
+  const s = doc.addPage(A4)
+  s.drawText('Tryckfärger (CMYK)', { x: 50, y: 760, size: 18, font, color: cmyk(0, 1, 1, 0) })
+  writeFileSync(new URL('../tests/filer/cmyk.pdf', import.meta.url), await doc.save({ useObjectStreams: false }))
 }
 writeFileSync(new URL('../tests/filer/skadad.pdf', import.meta.url), '%PDF-1.7\n1 0 obj << /Type /Catalog >> trasigt innehåll utan sidor\n')
 writeFileSync(new URL('../tests/filer/inte-pdf.pdf', import.meta.url), 'Det här är ingen PDF.\n')

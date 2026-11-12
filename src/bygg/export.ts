@@ -1,19 +1,35 @@
-// Export (ADR-004): kopierar sidobjekten oförändrade till en ny fil med pdf-lib.
-// Sidornas innehållsflöden skrivs aldrig om (BG-009, FR-SPA-007, regel R8).
-// Ren funktion utan DOM, så att den kan köras i bygg-arbetstråden och i enhetstester.
-import { PDFDocument } from '@cantoo/pdf-lib'
+// Export (ADR-004): kopierar sidobjekten oförändrade till en ny fil med pdf-lib, lägger på överlägg
+// och gör filen till PDF/A-2b när det är valt (ADR-005). Sidornas innehållsflöden skrivs aldrig om
+// (BG-009, FR-SPA-007, regel R8). Ren funktion utan DOM: körs i bygg-arbetstråden och i enhetstester.
+import { degrees, PDFDocument } from '@cantoo/pdf-lib'
+import { forkontroll, komplettera, sattDokumentinfo, sattFilId, type Hinder } from './pdfa'
+
+export interface Byggsida {
+  readonly dokumentId: string
+  readonly sidindex: number
+  /** Extra vridning medurs (FR-SID-010). */
+  readonly vridning?: number
+}
 
 export interface Byggbegaran {
   /** Källfilernas bytes, nyckel = dokument-id. */
   readonly dokument: Readonly<Record<string, Uint8Array>>
   /** Resultatets sidor i ordning. */
-  readonly sidor: readonly { readonly dokumentId: string; readonly sidindex: number }[]
+  readonly sidor: readonly Byggsida[]
+  /** Standard 'pdf'. Appen skickar 'pdfa' när användaren inte valt vanlig PDF (FR-SPA-004). */
+  readonly format?: 'pdfa' | 'pdf'
+  readonly uppgifter?: { readonly titel: string; readonly forfattare: string; readonly amne: string; readonly nyckelord: string }
+  /** Tidpunkt för filen (ms sedan 1970); anges av huvudtråden så att testerna blir förutsägbara. */
+  readonly datum?: number
 }
 
-export async function bakaIhop(begaran: Byggbegaran): Promise<Uint8Array> {
-  const ut = await PDFDocument.create()
+export const PROGRAM = 'PDF-bagaren'
+
+/** Kopierar resultatets sidor till ett nytt dokument. */
+export async function kopiera(begaran: Byggbegaran): Promise<PDFDocument> {
+  const ut = await PDFDocument.create({ updateMetadata: false })
   const oppnade = new Map<string, PDFDocument>()
-  for (const { dokumentId, sidindex } of begaran.sidor) {
+  for (const { dokumentId, sidindex, vridning = 0 } of begaran.sidor) {
     let kalla = oppnade.get(dokumentId)
     if (!kalla) {
       const bytes = begaran.dokument[dokumentId]
@@ -26,8 +42,30 @@ export async function bakaIhop(begaran: Byggbegaran): Promise<Uint8Array> {
       oppnade.set(dokumentId, kalla)
     }
     const [sida] = await ut.copyPages(kalla, [sidindex])
+    // Vridning sätts i sidans /Rotate; innehållet rörs inte.
+    if (vridning) sida.setRotation(degrees((sida.getRotation().angle + vridning) % 360))
     ut.addPage(sida)
   }
+  return ut
+}
+
+/** Förkontroll för PDF/A-2b (FR-SPA-005): listar sidor som hindrar arkivformatet. */
+export async function kontrollera(begaran: Byggbegaran): Promise<Hinder[]> {
+  return forkontroll(await kopiera(begaran))
+}
+
+export async function bakaIhop(begaran: Byggbegaran): Promise<Uint8Array> {
+  const ut = await kopiera(begaran)
+  const datum = new Date(begaran.datum ?? Date.now())
+  datum.setMilliseconds(0)
+  const u = { titel: '', forfattare: '', amne: '', nyckelord: '', ...begaran.uppgifter, datum, program: PROGRAM }
+  sattDokumentinfo(ut, u)
+  if (begaran.format === 'pdfa') {
+    const hinder = forkontroll(ut)
+    if (hinder.length) throw new Error(`pdfa: ${hinder.length} hinder`)
+    komplettera(ut, u)
+  }
+  sattFilId(ut, new TextEncoder().encode(`${datum.toISOString()}|${begaran.sidor.length}|${Object.keys(begaran.dokument).join(',')}`))
   // Okrypterad fil utan begränsningar (FR-SPA-009); inga objektströmmar för bästa läsbarhet i andra verktyg.
-  return ut.save({ useObjectStreams: false })
+  return ut.save({ useObjectStreams: false, updateFieldAppearances: false })
 }
