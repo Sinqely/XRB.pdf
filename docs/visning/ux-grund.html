@@ -1,0 +1,945 @@
+<title>UX-grund PDF-bagaren</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Läsdokument: smal textspalt, innehållsförteckning överst, diagram i egna ytor. GP MS, mörkt tema först. */
+:root { --bg:#484b43; --yta:#003d4c; --text:#eceae6; --dampad:#d4d5ce; --linje:#74776f; --accent:#ffdd00; --kod:#3c3f38;
+  --f-text: Calibri, Carlito, "Segoe UI", Arial, sans-serif; --f-mono: ui-monospace, Consolas, Menlo, monospace; color-scheme: dark; }
+@media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) { --bg:#eceae6; --yta:#d4d5ce; --text:#484b43; --dampad:#484b43; --linje:#74776f; --accent:#003d4c; --kod:#e2e1dc; color-scheme: light; } }
+:root[data-theme="light"] { --bg:#eceae6; --yta:#d4d5ce; --text:#484b43; --dampad:#484b43; --linje:#74776f; --accent:#003d4c; --kod:#e2e1dc; color-scheme: light; }
+body { background: var(--bg); color: var(--text); font: 16px/1.5 var(--f-text); }
+.wrap { max-width: 980px; margin: 0 auto; padding-block: 32px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 4px; }
+h1 { font-size: 2rem; line-height: 1.2; margin: 0 0 8px; text-wrap: balance; }
+h2 { font-size: 1.4rem; margin: 40px 0 8px; padding-top: 16px; border-top: 1px solid var(--linje); text-wrap: balance; }
+h3 { font-size: 1.15rem; margin: 28px 0 4px; }
+p, li { max-width: 72ch; }
+a { color: var(--accent); }
+blockquote { margin: 0; padding: 8px 16px; background: var(--yta); border-radius: 8px; color: var(--dampad); }
+blockquote p { margin: 4px 0; }
+code { font-family: var(--f-mono); font-size: 0.88em; background: var(--kod); padding: 1px 4px; border-radius: 3px; }
+pre:not(.mermaid) { background: var(--kod); padding: 12px; border-radius: 8px; overflow-x: auto; }
+.diagram { background: #ffffff; border-radius: 8px; padding: 16px; overflow-x: auto; margin: 8px 0 16px; }
+.diagram pre { margin: 0; background: transparent; color: #000; }
+.tabell { overflow-x: auto; margin: 8px 0 16px; }
+table { border-collapse: collapse; font-size: 0.92rem; min-width: 560px; }
+th, td { text-align: left; vertical-align: top; padding: 6px 10px; border-bottom: 1px solid var(--linje); }
+th { color: var(--dampad); font-weight: 700; }
+nav.toc { background: var(--yta); border-radius: 8px; padding: 12px 16px; margin: 8px 0; }
+nav.toc ol { margin: 4px 0 0; padding-left: 20px; columns: 2 220px; }
+nav.toc .rubrik { font-weight: 700; }
+a:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+</style>
+<main class="wrap">
+<h1 id="ux-grund-pdf-bagaren">UX-grund: PDF-bagaren</h1>
+<nav class="toc" aria-label="Innehåll"><div class="rubrik">Innehåll</div><ol><li><a href="#1-översikt">1. Översikt</a></li><li><a href="#del-b--gränssnitt">Del B – Gränssnitt</a></li><li><a href="#design--2-tokens">Design – 2. Tokens</a></li><li><a href="#design--3-layout">Design – 3. Layout</a></li><li><a href="#design--4-komponenter">Design – 4. Komponenter</a></li><li><a href="#design--6-röst-och-texter">Design – 6. Röst och texter</a></li><li><a href="#design--7-gör-och-gör-inte">Design – 7. Gör och gör inte</a></li></ol></nav>
+
+<blockquote>
+<p>Status: Draft · Senast uppdaterad: 2026-11-12 Underlag: <a
+href="srs.md">srs.md</a> v1.0 · <a
+href="architecture.md">architecture.md</a> v1.0 · <a
+href="use-cases.md">use-cases.md</a> v1.0 Designsystem: <strong><a
+href="design.md">design.md</a> + <a
+href="tokens.json">tokens.json</a></strong> (enda källan för färger,
+typsnitt, mått och komponenter; det här dokumentet hänvisar dit och
+upprepar inga värden)</p>
+</blockquote>
+<h2 id="1-översikt">1. Översikt</h2>
+<p>PDF-bagaren är en webbapp där kollegor sätter samman sidor ur flera
+PDF-filer, lägger på en vattenstämpel och en textetikett och sparar
+resultatet som arkivformat (PDF/A-2b) på sin dator. Allt sker i
+webbläsaren (architecture.md, ADR-001).</p>
+<p>Appen har <strong>ett gränssnitt</strong>: arbetsytan i en webbläsare
+på datorn, ytkod <code>APP</code>. Det finns ingen mobilvy, inget
+administrationsgränssnitt och ingen inloggning. Ägarens förvaltning sker
+i GitHub och SharePoint och har inget eget gränssnitt i appen.</p>
+<p>Designkälla: GP MS, inläst som designfil och kompletterad med det som
+saknas (design.md §9).</p>
+<hr />
+<h2
+id="del-a--gemensam-grund-sammanfattning-värdena-finns-i-designmd">Del A
+– Gemensam grund (sammanfattning; värdena finns i design.md)</h2>
+<h3 id="a1-visuell-riktning">A1. Visuell riktning</h3>
+<p>Mörkt och lugnt enligt GP MS: skiffer som grund, paneler i petrol,
+ljus text, en grön huvudknapp och gult bara för fokus och varningar.
+Dokumenten är huvudsaken och gränssnittet håller sig i bakgrunden. Ljust
+tema finns som val. Se design.md §1.</p>
+<h3 id="a2-röst-och-ton">A2. Röst och ton</h3>
+<p>Du-tilltal, klartext och korta meningar på svenska (FR-ALM-006,
+FR-ALM-007). Knappar säger vad som händer. Meddelanden säger vad som
+hände, vilken fil det gäller och vad man kan göra. Tekniska ord som
+PDF/A förklaras ("arkivformatet (PDF/A)"). Se design.md §6.</p>
+<h3 id="a3-designspråk">A3. Designspråk</h3>
+<p>Åtta GP MS-färger via rolltokens, Calibri med inbakad Carlito,
+brödtext 16 px och en tät men luftig layout med tre kolumner som
+motsvarar stegen. Tokens: design.md §2 och tokens.json. Komponenter och
+tillstånd: design.md §4.</p>
+<h3 id="a4-tillgänglighet">A4. Tillgänglighet</h3>
+<p>WCAG 2.1 AA enligt EN 301 549 [NFR-ACC-001]. DS-01 och DS-02 ska gå
+att genomföra helt med tangentbord och med NVDA i Edge och VoiceOver i
+Safari [NFR-ACC-002]. Varje dra-och-släpp har ett
+tangentbordsalternativ, utfall läses upp i en statusyta och information
+bärs aldrig bara av färg. Mekaniska regler: design.md §5.</p>
+<h3 id="a5-principer-för-hela-appen">A5. Principer för hela appen</h3>
+<ol type="1">
+<li><strong>Stegen syns alltid.</strong> Kolumnerna heter "1 Filer", "2
+Resultat" och "3 Märkning", och huvudknappen "Baka ihop och spara"
+ligger alltid på samma plats uppe till höger (FV-001, FR-DOK-002).</li>
+<li><strong>Det du ser är det du får.</strong> Förhandsvisningen visar
+alltid den aktuella sidan med stämpel och etikett exakt som de sparas
+(MF-02, ADR-006).</li>
+<li><strong>Ursprunget syns överallt.</strong> Varje sida i resultatet
+är märkt med dokument och sidnummer, både i resultatraden och under
+förhandsvisningen (BH-002, FR-SID-006, FR-FHV-007).</li>
+<li><strong>Allt kan ångras.</strong> Ångra och Gör om finns i
+sidhuvudet och med Ctrl+Z / Ctrl+Y (Cmd på Mac). Bara "Börja om" kräver
+bekräftelse, eftersom den tömmer allt (FR-ALM-001..003).</li>
+<li><strong>Fel stannar där de uppstår.</strong> Ett felmeddelande visas
+i det område det gäller, namnger filen och säger vad man kan göra, och
+inget annat ändras (BH-020).</li>
+<li><strong>Inget försvinner i smyg.</strong> Dold information som tas
+bort visas före sparandet med orsak (FR-DOL-010, FR-DOL-012).</li>
+<li><strong>Samma ord överallt:</strong> fil, sida, resultat,
+vattenstämpel, textetikett, arkivformat (PDF/A), dold information.</li>
+</ol>
+<hr />
+<h2 id="del-b--gränssnitt">Del B – Gränssnitt</h2>
+<h3 id="b1-arbetsytan--ytkod-app">B1. Arbetsytan – ytkod
+<code>APP</code></h3>
+<h4 id="användare-och-uppgifter">Användare och uppgifter</h4>
+<p>Användare är <strong>kollegorna</strong> (SRS §2.3, IN-02): utan
+särskild datorvana, använder appen då och då, ska klara uppgiften första
+gången utan instruktioner, kan använda tangentbord eller skärmläsare.
+<strong>Ägaren</strong> (IN-01) använder samma gränssnitt för att prova
+nya versioner och läser om-sidan och verifieringsrapporten.</p>
+<p>Uppgifter, i ordning efter hur ofta de görs:</p>
+<ol type="1">
+<li>Sätta ihop sidor ur två eller flera filer, till exempel ett beslut
+med en inskannad underskriven sida (DS-01; UC-001, UC-002, UC-007).</li>
+<li>Märka en PDF med logotyp eller text som "UTKAST" (DS-02; UC-003,
+UC-004, UC-005, UC-007).</li>
+<li>Kontrollera och rensa dold information före sparande (UC-006).</li>
+<li>Rätta ett misstag: ångra, ta bort en fil eller börja om
+(UC-008).</li>
+<li>Läsa hjälp, om-sida och verifieringsrapport (UC-009).</li>
+</ol>
+<p>Sammanhang: arbetsdator med Edge (eller Safari på Mac), fönster från
+1 280 × 720 px, mus och tangentbord.</p>
+<h4 id="informationsarkitektur-och-navigering">Informationsarkitektur
+och navigering</h4>
+<p>Allt arbete sker i <strong>en vy</strong> (SCR-APP-001). Det finns
+ingen meny med sidor; i stället ligger stegen som kolumner bredvid
+varandra, och allt annat öppnas som dialoger ovanpå arbetsytan. Det
+håller användaren kvar i en och samma bild och gör att inget arbete kan
+"försvinna" vid navigering. Sidhuvudet har verktyg (Ångra, Gör om, Börja
+om, Dold information, Hjälp, Om, Tema) och huvudknappen.</p>
+<div class="diagram"><pre class="mermaid">graph TD
+    root[&quot;Arbetsyta SCR-APP-001&quot;]
+    root --&gt; filer[&quot;1 Filer: släppyta och dokument&quot;]
+    root --&gt; res[&quot;2 Resultat: resultatrad och förhandsvisning&quot;]
+    root --&gt; mark[&quot;3 Märkning&quot;]
+    mark --&gt; sta[&quot;Vattenstämpel SCR-APP-002&quot;]
+    mark --&gt; txt[&quot;Textetikett SCR-APP-003&quot;]
+    res --&gt; stor[&quot;Stor visning SCR-APP-007&quot;]
+    root --&gt; spara[&quot;Baka ihop och spara&quot;]
+    spara --&gt; dold[&quot;Dold information SCR-APP-004&quot;]
+    dold --&gt; sp[&quot;Spara SCR-APP-005&quot;]
+    sp --&gt; pdfa[&quot;Arkivformat-varning SCR-APP-006&quot;]
+    root --&gt; verktyg[&quot;Sidhuvudets verktyg&quot;]
+    verktyg --&gt; borja[&quot;Bekräfta börja om SCR-APP-012&quot;]
+    verktyg --&gt; dold2[&quot;Dold information SCR-APP-004&quot;]
+    verktyg --&gt; hjalp[&quot;Hjälp SCR-APP-008&quot;]
+    verktyg --&gt; om[&quot;Om PDF-bagaren SCR-APP-009&quot;]
+    hjalp --&gt; kort[&quot;Kortkommandon SCR-APP-013&quot;]
+    om --&gt; ver[&quot;Verifieringsrapport SCR-APP-010&quot;]
+    om --&gt; tg[&quot;Tillgänglighetsredogörelse SCR-APP-011&quot;]</pre></div>
+<h4 id="viktiga-flöden">Viktiga flöden</h4>
+<p><strong>Beslut med inskannad namnteckning</strong> [DS-01; UC-001,
+UC-002, UC-007]</p>
+<div class="diagram"><pre class="mermaid">flowchart LR
+    start([&quot;Öppnar appen&quot;]) --&gt; in[&quot;Drar in original och inskannad fil&quot;]
+    in --&gt; ok{&quot;Båda inlästa?&quot;}
+    ok --&gt;|&quot;nej&quot;| fel[&quot;Meddelande om filen, försök igen&quot;]
+    fel --&gt; in
+    ok --&gt;|&quot;ja&quot;| alla[&quot;Original: Lägg till alla sidor&quot;]
+    alla --&gt; bort[&quot;Tar bort beslutssidan i resultatraden&quot;]
+    bort --&gt; skann[&quot;Klickar på den inskannade sidan&quot;]
+    skann --&gt; flytta[&quot;Flyttar den till rätt plats&quot;]
+    flytta --&gt; vrid[&quot;Vrider den 90 grader&quot;]
+    vrid --&gt; kolla[&quot;Bläddrar i förhandsvisningen&quot;]
+    kolla --&gt; spara[&quot;Baka ihop och spara&quot;]
+    spara --&gt; dold[&quot;Granskar dold information&quot;]
+    dold --&gt; sp[&quot;Bekräftar filnamn, sparar&quot;]
+    sp --&gt; klar([&quot;Fil på datorn&quot;])</pre></div>
+<p><strong>Märka en mottagen PDF</strong> [DS-02; UC-001, UC-003,
+UC-004, UC-005, UC-007]</p>
+<div class="diagram"><pre class="mermaid">flowchart LR
+    start([&quot;Fil inläst, alla sidor i resultatet&quot;]) --&gt; sta[&quot;Vattenstämpel: Välj bild&quot;]
+    sta --&gt; bild{&quot;PNG eller JPEG under 20 MB?&quot;}
+    bild --&gt;|&quot;nej&quot;| bfel[&quot;Meddelande, välj annan bild&quot;]
+    bfel --&gt; sta
+    bild --&gt;|&quot;ja&quot;| opa[&quot;Sänker opacitet, väljer storlek&quot;]
+    opa --&gt; plc[&quot;Väljer hörn eller flyttar i förhandsvisningen&quot;]
+    plc --&gt; txt[&quot;Textetikett: skriver UTKAST&quot;]
+    txt --&gt; stil[&quot;Röd text, vit bakgrund&quot;]
+    stil --&gt; sid[&quot;Avmarkerar Etikett på sida 1&quot;]
+    sid --&gt; blad[&quot;Bläddrar igenom sidorna&quot;]
+    blad --&gt; spara([&quot;Baka ihop och spara&quot;])</pre></div>
+<p><strong>Baka ihop och spara</strong> [UC-006, UC-007]</p>
+<div class="diagram"><pre class="mermaid">flowchart LR
+    knapp([&quot;Baka ihop och spara&quot;]) --&gt; tom{&quot;Finns sidor i resultatet?&quot;}
+    tom --&gt;|&quot;nej&quot;| inaktiv[&quot;Knappen inaktiv med förklaring&quot;]
+    tom --&gt;|&quot;ja&quot;| dold[&quot;Dold information: granska, ändra, ta bort&quot;]
+    dold --&gt; namn[&quot;Spara: filnamn och format&quot;]
+    namn --&gt; kontroll{&quot;Klarar alla sidor arkivformatet?&quot;}
+    kontroll --&gt;|&quot;ja&quot;| bygg[&quot;Bygger PDF/A-2b&quot;]
+    kontroll --&gt;|&quot;nej&quot;| varn[&quot;Arkivformat-varning: sidor och orsak&quot;]
+    varn --&gt;|&quot;ta bort sidorna&quot;| bygg
+    varn --&gt;|&quot;spara som vanlig PDF&quot;| byggv[&quot;Bygger vanlig PDF&quot;]
+    varn --&gt;|&quot;avbryt&quot;| tillbaka([&quot;Tillbaka till arbetsytan&quot;])
+    bygg --&gt; res{&quot;Lyckades?&quot;}
+    byggv --&gt; res
+    res --&gt;|&quot;ja&quot;| ner[&quot;Webbläsaren sparar filen&quot;]
+    res --&gt;|&quot;nej&quot;| fel[&quot;Felmeddelande, arbetsytan orörd&quot;]
+    ner --&gt; kvar([&quot;Arbetsytan finns kvar&quot;])</pre></div>
+<p><strong>Fil som inte kan läsas in</strong> [UC-001, undantagsflöden;
+BH-020]</p>
+<div class="diagram"><pre class="mermaid">flowchart LR
+    in([&quot;Väljer eller drar in fil&quot;]) --&gt; typ{&quot;PDF?&quot;}
+    typ --&gt;|&quot;nej&quot;| m1[&quot;Meddelande: bara PDF-filer&quot;]
+    typ --&gt;|&quot;ja&quot;| stor{&quot;Under 100 MB och 500 sidor totalt?&quot;}
+    stor --&gt;|&quot;nej&quot;| m2[&quot;Meddelande med gränsen&quot;]
+    stor --&gt;|&quot;ja&quot;| las{&quot;Går att läsa?&quot;}
+    las --&gt;|&quot;lösenord&quot;| m3[&quot;Meddelande: lösenordsskyddad&quot;]
+    las --&gt;|&quot;skadad&quot;| m4[&quot;Meddelande: skadad fil&quot;]
+    las --&gt;|&quot;ja&quot;| ok([&quot;Dokument på arbetsytan, uppläst&quot;])
+    m1 --&gt; kvar([&quot;Övriga filer och val oförändrade&quot;])
+    m2 --&gt; kvar
+    m3 --&gt; kvar
+    m4 --&gt; kvar</pre></div>
+<h4 id="skärmar">Skärmar</h4>
+<p>ID:na är stabila. Nya skärmar får nästa lediga nummer; borttagna
+markeras <code>Removed</code> och numreras aldrig om.</p>
+<div class="tabell"><table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">ID</th>
+<th style="text-align: left;">Skärm</th>
+<th style="text-align: left;">Syfte</th>
+<th style="text-align: left;">Viktiga tillstånd</th>
+<th style="text-align: left;">Krav (urval)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">SCR-APP-001</td>
+<td style="text-align: left;">Arbetsyta</td>
+<td style="text-align: left;">Huvudvyn med sidhuvud, 1 Filer, 2 Resultat
+med förhandsvisning, 3 Märkning och statusyta</td>
+<td style="text-align: left;">startläge (inga filer, tre steg visas),
+läser in, med filer utan resultat, med resultat, fel i område, osparat
+arbete vid stängning</td>
+<td style="text-align: left;">FR-FIL-<em>, FR-SID-</em>, FR-FHV-<em>,
+FR-PLC-</em>, FR-ALM-001..010, FR-DOK-001, FR-DOK-002, FR-DOK-010,
+FR-SPA-010</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">SCR-APP-002</td>
+<td style="text-align: left;">Vattenstämpel (panel)</td>
+<td style="text-align: left;">Välja bild, opacitet, storlek, placering
+och sidor för stämpeln</td>
+<td style="text-align: left;">ingen bild, bild vald, bild avvisad, nära
+kant (varning)</td>
+<td style="text-align: left;">FR-STA-001..012, FR-PLC-001..011</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">SCR-APP-003</td>
+<td style="text-align: left;">Textetikett (panel)</td>
+<td style="text-align: left;">Skriva text och välja storlek, färg,
+bakgrund, typsnitt, stil, placering och sidor</td>
+<td style="text-align: left;">tom (ingen etikett), med text, teckengräns
+nådd, tecken saknas i typsnitt (varning), nära kant (varning)</td>
+<td style="text-align: left;">FR-TXT-001..014, FR-PLC-001..011</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">SCR-APP-004</td>
+<td style="text-align: left;">Dold information (dialog)</td>
+<td style="text-align: left;">Visa och ändra metadata, kommentarer,
+bilagor, formulärfält och skript i berörda dokument</td>
+<td style="text-align: left;">ingen dold information, med innehåll,
+objekt som tas bort med orsak</td>
+<td style="text-align: left;">FR-DOL-001..014</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">SCR-APP-005</td>
+<td style="text-align: left;">Spara (dialog)</td>
+<td style="text-align: left;">Filnamn och format, starta bygget, visa
+utfall</td>
+<td style="text-align: left;">redo, kontrollerar, sparar
+(väntindikator), sparad, fel</td>
+<td style="text-align: left;">FR-SPA-001..004, FR-SPA-011..013</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">SCR-APP-006</td>
+<td style="text-align: left;">Arkivformat-varning (dialog)</td>
+<td style="text-align: left;">Lista sidor som hindrar PDF/A-2b med orsak
+och låta användaren ta bort dem, avbryta eller spara som vanlig PDF</td>
+<td style="text-align: left;">en eller flera sidor</td>
+<td style="text-align: left;">FR-SPA-005, FR-SPA-006</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">SCR-APP-007</td>
+<td style="text-align: left;">Stor visning av sida (dialog)</td>
+<td style="text-align: left;">Visa en sida i stort format</td>
+<td style="text-align: left;">–</td>
+<td style="text-align: left;">FR-SID-012 (Should)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">SCR-APP-008</td>
+<td style="text-align: left;">Hjälp (dialog, stor)</td>
+<td style="text-align: left;">Stegen, steg-för-steg för DS-01 och DS-02,
+kortkommandon</td>
+<td style="text-align: left;">–</td>
+<td style="text-align: left;">FR-DOK-001, FR-DOK-003, FR-DOK-009</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">SCR-APP-009</td>
+<td style="text-align: left;">Om PDF-bagaren (dialog, stor)</td>
+<td style="text-align: left;">Namn, version och datum, att inget lämnar
+datorn, licensförteckning, länkar till rapport och redogörelse</td>
+<td style="text-align: left;">–</td>
+<td style="text-align: left;">FR-DOK-004..006</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">SCR-APP-010</td>
+<td style="text-align: left;">Verifieringsrapport (dialog, stor)</td>
+<td style="text-align: left;">Visa verifieringsrapporten för
+informationssäkerhet för den här versionen</td>
+<td style="text-align: left;">–</td>
+<td style="text-align: left;">FR-DOK-007, NFR-SEC-005</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">SCR-APP-011</td>
+<td style="text-align: left;">Tillgänglighetsredogörelse (dialog,
+stor)</td>
+<td style="text-align: left;">Visa redogörelsen enligt DOS-lagen</td>
+<td style="text-align: left;">–</td>
+<td style="text-align: left;">FR-DOK-008</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">SCR-APP-012</td>
+<td style="text-align: left;">Bekräfta börja om (dialog)</td>
+<td style="text-align: left;">Bekräfta att arbetsytan töms helt</td>
+<td style="text-align: left;">–</td>
+<td style="text-align: left;">FR-ALM-003</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">SCR-APP-013</td>
+<td style="text-align: left;">Kortkommandon (dialog)</td>
+<td style="text-align: left;">Lista alla kortkommandon; öppnas med ?
+eller från hjälpen</td>
+<td style="text-align: left;">–</td>
+<td style="text-align: left;">FR-ALM-010 (Should), FR-DOK-009</td>
+</tr>
+</tbody>
+</table></div>
+<h4 id="komponenter-för-den-här-ytan">Komponenter för den här ytan</h4>
+<p>Eftersom appen har en enda yta finns alla komponenter i design.md §4.
+De som är särskilda för PDF-bagaren är <code>slappyta</code>,
+<code>dokumentkort</code>, <code>miniatyr</code>,
+<code>resultatrad</code>, <code>forhandsvisning</code>,
+<code>placeringsvaljare</code> och <code>fargval</code>.</p>
+<h4 id="tokenavvikelser">Tokenavvikelser</h4>
+<p>Inga. Ytan använder grundens tokens.</p>
+<hr />
+<h2 id="del-d--öppna-frågor-och-risker">Del D – Öppna frågor och
+risker</h2>
+<div class="tabell"><table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Fråga eller risk</th>
+<th style="text-align: left;">Hur den hanteras</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Räcker 1 280 × 720 för tre kolumner,
+resultatrad och en läsbar förhandsvisning?</td>
+<td style="text-align: left;">Prövas med det första bygget; om
+förhandsvisningen blir för liten kan Märkning bli en utfällbar
+panel.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Förstår en ny användare att man klickar på
+en miniatyr för att lägga till sidan?</td>
+<td style="text-align: left;">Det är den viktigaste osäkerheten för
+FV-001. Hjälptext i resultatraden när den är tom, och användartestet
+(NFR-USE-001) avgör.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Ska dold information granskas i en egen
+dialog före sparandet, eller räcker en sammanfattning?</td>
+<td style="text-align: left;">Egen dialog enligt FR-DOL-001; om
+användartestet visar att det bromsar kan dialogen visa "Ingen dold
+information hittades" och gå direkt vidare.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Lucide som ikonuppsättning är inte en del
+av GP MS.</td>
+<td style="text-align: left;">Ägaren kan byta när organisationen har
+egna ikoner; ikonerna kompletterar alltid text.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Ljust tema har lägre marginal för
+felikonens kontrast (3,2:1).</td>
+<td style="text-align: left;">Felmeddelanden bärs av text och ikon; mäts
+igen i tillgänglighetsgranskningen.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Skärmläsarupplevelsen för resultatraden
+(flytta sidor med knappar och kortkommandon) är inte prövad.</td>
+<td style="text-align: left;">Prövas tidigt med NVDA i ui-design av
+första funktionen.</td>
+</tr>
+</tbody>
+</table></div>
+<h1 id="bilaga-designsystem">Bilaga: Designsystem</h1>
+<blockquote>
+<p>Sanningskälla för allt gränssnitt, tillsammans med <a
+href="tokens.json">tokens.json</a>. Framtaget av ux-foundations · Källa:
+GP MS (designfil) · Senast uppdaterad: 2026-11-12 Gäller appens
+gränssnitt. Textetiketter och vattenstämplar i resultatet styrs av
+användaren, inte av GP MS.</p>
+</blockquote>
+<h2 id="design--1-känsla-och-uttryck">Design – 1. Känsla och
+uttryck</h2>
+<p>Lugnt, sakligt och tryggt. Mörk skiffergrund med paneler i petrol,
+ljus text och en enda grön knapp som visar vägen framåt. Gult används
+bara för fokus och för det som kräver uppmärksamhet. Gränssnittet ska
+kännas som ett arbetsbord där dokumenten är huvudsaken: få kontroller
+synliga åt gången, tydliga steg (1 Filer, 2 Resultat, 3 Märkning, Spara)
+och inga dekorationer. Förtroendet byggs genom att appen alltid säger
+vad den gör och att inget lämnar datorn.</p>
+<h2 id="design--2-tokens">Design – 2. Tokens</h2>
+<p>Alla värden kommer från tokens.json. Mörkt tema är standard; ljust
+tema sätts med <code>data-theme="ljus"</code> på
+<code>&lt;html&gt;</code> (FR-ALM-009).</p>
+<h3 id="färger-roller">Färger (roller)</h3>
+<div class="tabell"><table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Roll</th>
+<th style="text-align: left;">CSS-variabel</th>
+<th style="text-align: left;">Mörkt</th>
+<th style="text-align: left;">Ljust</th>
+<th style="text-align: left;">Användning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Bakgrund</td>
+<td style="text-align: left;"><code>--ui-bakgrund</code></td>
+<td style="text-align: left;">#484b43 skiffer</td>
+<td style="text-align: left;">#eceae6 sten-ljus</td>
+<td style="text-align: left;">Sidbakgrund, sidhuvud</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Yta</td>
+<td style="text-align: left;"><code>--ui-yta</code></td>
+<td style="text-align: left;">#003d4c petrol</td>
+<td style="text-align: left;">#d4d5ce sten</td>
+<td style="text-align: left;">Kolumner, paneler, dialoger, släppyta</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Text</td>
+<td style="text-align: left;"><code>--ui-text</code></td>
+<td style="text-align: left;">#eceae6</td>
+<td style="text-align: left;">#484b43</td>
+<td style="text-align: left;">All text</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Dämpad text</td>
+<td style="text-align: left;"><code>--ui-text-dampad</code></td>
+<td style="text-align: left;">#d4d5ce</td>
+<td style="text-align: left;">#484b43</td>
+<td style="text-align: left;">Hjälptext, sidantal, filstorlek</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Kant</td>
+<td style="text-align: left;"><code>--ui-kant</code></td>
+<td style="text-align: left;">#d4d5ce</td>
+<td style="text-align: left;">#74776f</td>
+<td style="text-align: left;">Fält, sekundära knappar, miniatyrram</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Avdelare</td>
+<td style="text-align: left;"><code>--ui-avdelare</code></td>
+<td style="text-align: left;">#74776f</td>
+<td style="text-align: left;">#d4d5ce</td>
+<td style="text-align: left;">Dekorativa linjer, bär aldrig
+betydelse</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Primär</td>
+<td style="text-align: left;"><code>--ui-primar</code></td>
+<td style="text-align: left;">#007167 gron</td>
+<td style="text-align: left;">#007167</td>
+<td style="text-align: left;">"Baka ihop och spara" och dialogernas
+huvudknapp</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Text på primär</td>
+<td style="text-align: left;"><code>--ui-primar-text</code></td>
+<td style="text-align: left;">#ffffff</td>
+<td style="text-align: left;">#ffffff</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Fokus</td>
+<td style="text-align: left;"><code>--ui-fokus</code></td>
+<td style="text-align: left;">#ffdd00 gul</td>
+<td style="text-align: left;">#003d4c petrol</td>
+<td style="text-align: left;">Fokusring</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Markering</td>
+<td style="text-align: left;"><code>--ui-markering</code></td>
+<td style="text-align: left;">#ffdd00</td>
+<td style="text-align: left;">#df5411 orange</td>
+<td style="text-align: left;">Varningsikon, "ny"-märke; alltid med
+text</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Text på markering</td>
+<td style="text-align: left;"><code>--ui-markering-text</code></td>
+<td style="text-align: left;">#484b43</td>
+<td style="text-align: left;">#ffffff</td>
+<td style="text-align: left;">När markering är en yta (mörkt 6,6:1;
+ljust bara fet text ≥19 px)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Fel</td>
+<td style="text-align: left;"><code>--ui-fel</code></td>
+<td style="text-align: left;">#df5411 orange</td>
+<td style="text-align: left;">#df5411</td>
+<td style="text-align: left;">Ikon och ram i felmeddelanden, bara
+grafik</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Felyta</td>
+<td style="text-align: left;"><code>--ui-fel-yta</code></td>
+<td style="text-align: left;">#003d4c</td>
+<td style="text-align: left;">#eceae6</td>
+<td style="text-align: left;">Bakgrund i felmeddelanden</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Vald</td>
+<td style="text-align: left;"><code>--ui-valt</code></td>
+<td style="text-align: left;">#007167</td>
+<td style="text-align: left;">#007167</td>
+<td style="text-align: left;">Märket "Vald" på miniatyrer, aktiv flik
+(med vit text)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Sidyta</td>
+<td style="text-align: left;"><code>--ui-sidyta</code></td>
+<td style="text-align: left;">#74776f</td>
+<td style="text-align: left;">#74776f</td>
+<td style="text-align: left;">Bakgrund runt förhandsvisad sida</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Marginal a/b</td>
+<td style="text-align: left;"><code>--ui-marginal-a</code>,
+<code>--ui-marginal-b</code></td>
+<td style="text-align: left;">#003d4c / #ffdd00</td>
+<td style="text-align: left;">samma</td>
+<td style="text-align: left;">Säkerhetsmarginalen, streckad i två
+färger</td>
+</tr>
+</tbody>
+</table></div>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode css"><code class="sourceCode css"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="in">:root</span> {</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="va">--ui-bakgrund</span>: <span class="cn">#484b43</span><span class="op">;</span> <span class="va">--ui-yta</span>: <span class="cn">#003d4c</span><span class="op">;</span> <span class="va">--ui-text</span>: <span class="cn">#eceae6</span><span class="op">;</span> <span class="va">--ui-text-dampad</span>: <span class="cn">#d4d5ce</span><span class="op">;</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="va">--ui-kant</span>: <span class="cn">#d4d5ce</span><span class="op">;</span> <span class="va">--ui-avdelare</span>: <span class="cn">#74776f</span><span class="op">;</span> <span class="va">--ui-primar</span>: <span class="cn">#007167</span><span class="op">;</span> <span class="va">--ui-primar-text</span>: <span class="cn">#ffffff</span><span class="op">;</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="va">--ui-fokus</span>: <span class="cn">#ffdd00</span><span class="op">;</span> <span class="va">--ui-markering</span>: <span class="cn">#ffdd00</span><span class="op">;</span> <span class="va">--ui-markering-text</span>: <span class="cn">#484b43</span><span class="op">;</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="va">--ui-fel</span>: <span class="cn">#df5411</span><span class="op">;</span> <span class="va">--ui-fel-yta</span>: <span class="cn">#003d4c</span><span class="op">;</span> <span class="va">--ui-valt</span>: <span class="cn">#007167</span><span class="op">;</span> <span class="va">--ui-sidyta</span>: <span class="cn">#74776f</span><span class="op">;</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="va">--ui-marginal-a</span>: <span class="cn">#003d4c</span><span class="op">;</span> <span class="va">--ui-marginal-b</span>: <span class="cn">#ffdd00</span><span class="op">;</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="kw">color-scheme</span>: dark<span class="op">;</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="in">:root</span><span class="ex">[data-theme</span><span class="op">=</span><span class="st">&quot;ljus&quot;</span><span class="ex">]</span> {</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="va">--ui-bakgrund</span>: <span class="cn">#eceae6</span><span class="op">;</span> <span class="va">--ui-yta</span>: <span class="cn">#d4d5ce</span><span class="op">;</span> <span class="va">--ui-text</span>: <span class="cn">#484b43</span><span class="op">;</span> <span class="va">--ui-text-dampad</span>: <span class="cn">#484b43</span><span class="op">;</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  <span class="va">--ui-kant</span>: <span class="cn">#74776f</span><span class="op">;</span> <span class="va">--ui-avdelare</span>: <span class="cn">#d4d5ce</span><span class="op">;</span> <span class="va">--ui-fokus</span>: <span class="cn">#003d4c</span><span class="op">;</span> <span class="va">--ui-markering</span>: <span class="cn">#df5411</span><span class="op">;</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>  <span class="va">--ui-markering-text</span>: <span class="cn">#ffffff</span><span class="op">;</span> <span class="va">--ui-fel-yta</span>: <span class="cn">#eceae6</span><span class="op">;</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  <span class="kw">color-scheme</span>: <span class="dv">light</span><span class="op">;</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p><strong>Kontrast</strong> (WCAG 2.1, uträknat): text på bakgrund
+7,4:1 (båda teman), text på yta 9,9:1 mörkt / 6,0:1 ljust, dämpad text
+på yta 8,0:1 mörkt, kant mot bakgrund 6,0:1 mörkt / 3,8:1 ljust, kant
+mot yta 8,0:1 mörkt / 3,1:1 ljust, vit på primär 5,9:1, fokus mot
+bakgrund 6,6:1 mörkt / 9,9:1 ljust, fokus mot yta 8,8:1 mörkt / 8,0:1
+ljust, felikon (orange) på felyta 3,1:1 mörkt / 3,2:1 ljust (grafik,
+kräver 3:1). Primär knapp mot yta är bara 2,0:1, därför bärs knappen av
+sin text och har alltid en text, aldrig bara ikon.</p>
+<h3 id="typografi">Typografi</h3>
+<p>Stack för hela gränssnittet:
+<code>Calibri, Carlito, "Segoe UI", Arial, sans-serif</code>. Carlito är
+inbakad i fyra snitt (WOFF2, OFL 1.1). Calibri bäddas aldrig in.</p>
+<div class="tabell"><table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Stil</th>
+<th style="text-align: left;">Storlek / radhöjd</th>
+<th style="text-align: left;">Vikt</th>
+<th style="text-align: left;">Användning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>rubrik</code></td>
+<td style="text-align: left;">32 / 38 px</td>
+<td style="text-align: left;">700</td>
+<td style="text-align: left;">Hjälp och om-sida. Arbetsytan har ingen
+stor rubrik.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>mellanrubrik</code></td>
+<td style="text-align: left;">22 / 28 px</td>
+<td style="text-align: left;">700</td>
+<td style="text-align: left;">Dialogrubriker</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>kolumnrubrik</code></td>
+<td style="text-align: left;">18 / 24 px</td>
+<td style="text-align: left;">700</td>
+<td style="text-align: left;">"1 Filer", "2 Resultat", "3 Märkning",
+panelrubriker</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>ingress</code></td>
+<td style="text-align: left;">18 / 26 px</td>
+<td style="text-align: left;">700 kursiv</td>
+<td style="text-align: left;">Startytans budskap</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>ingress-latt</code></td>
+<td style="text-align: left;">18 / 26 px</td>
+<td style="text-align: left;">400 kursiv</td>
+<td style="text-align: left;">Instruktion i släppytan</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>brodtext</code></td>
+<td style="text-align: left;">16 / 24 px</td>
+<td style="text-align: left;">400</td>
+<td style="text-align: left;">All text, knappar, fältetiketter</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>liten</code></td>
+<td style="text-align: left;">14 / 20 px</td>
+<td style="text-align: left;">400</td>
+<td style="text-align: left;">Miniatyrernas namn och sidnummer,
+metadata. Lägsta storlek.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Etikettypsnitten (Carlito, Liberation Serif, Liberation Mono) används
+bara i etikettpanelens typsnittsval och i förhandsvisningen, aldrig i
+gränssnittstext.</p>
+<h3 id="avstånd-radier-storlekar">Avstånd, radier, storlekar</h3>
+<ul>
+<li><strong>Avstånd:</strong> 4, 8, 12, 16, 24, 32, 48 px
+(<code>--space-1</code> … <code>--space-12</code>). Inom en kontroll
+8–12 px, mellan kontroller i en panel 16 px, mellan paneler och kolumner
+16 px, dialogens inre marginal 24 px.</li>
+<li><strong>Radier:</strong> 2 px miniatyrer, 4 px kontroller och
+märken, 8 px kolumner, dialoger och meddelanden.</li>
+<li><strong>Storlekar:</strong> kontrollhöjd 40 px, minsta klickyta 32 ×
+32 px, ikon 20 px (streck 2 px), kantbredd 2 px, fokusring 3 px med 2 px
+avstånd.</li>
+<li><strong>Skuggor:</strong> inga, utom dialoger:
+<code>0 8px 32px rgba(0,0,0,.4)</code> och en halvgenomskinlig bakgrund
+<code>rgba(0,0,0,.6)</code>.</li>
+<li><strong>Rörelse:</strong> 150 ms ease-out för hover och flikbyte; 0
+ms vid <code>prefers-reduced-motion: reduce</code>.</li>
+</ul>
+<h2 id="design--3-layout">Design – 3. Layout</h2>
+<p>Ett enda fönster, byggt för datorskärm från 1 280 × 720 px
+(NFR-COMP-003). Ingen mobil- eller surfplattelayout.</p>
+<pre><code>┌ Sidhuvud 56 px ─────────────────────────────────────────────────────────────┐
+│ PDF-bagaren  Ångra  Gör om  Börja om   Dold information  Hjälp  Om  Tema  [Baka ihop och spara] │
+├───────────────┬───────────────────────────────────────────┬─────────────────┤
+│ 1 Filer       │ 2 Resultat  (resultatrad, 152 px)          │ 3 Märkning      │
+│ 300 px        ├───────────────────────────────────────────┤ 340 px          │
+│ släppyta      │ Förhandsvisning (resten av höjden)        │ flikar:         │
+│ dokument med  │ ‹ Sida 3 av 7 ›  ur Beslut.pdf, sida 2    │ Vattenstämpel   │
+│ miniatyrer    │                                           │ Textetikett     │
+└───────────────┴───────────────────────────────────────────┴─────────────────┘
+│ Statusyta (aria-live, en rad, 32 px)                                          │
+└──────────────────────────────────────────────────────────────────────────────┘</code></pre>
+<ul>
+<li>Kolumnerna 1 och 3 rullar var för sig. Mittkolumnen fyller resten.
+Vid fönsterbredd under 1 280 px får sidan rulla horisontellt hellre än
+att kolumner försvinner.</li>
+<li>Ordning i DOM och tabbordning: sidhuvud, Filer, Resultat,
+Förhandsvisning, Märkning, statusyta. Varje område är ett
+<code>&lt;section&gt;</code> med rubrik och landmärke
+(<code>&lt;header&gt;</code>, <code>&lt;main&gt;</code>,
+<code>aria-label</code>).</li>
+<li>Startläge (inga filer): Filer-kolumnen är en stor släppyta och
+förhandsvisningen visar de tre stegen (FR-ALM-005, FR-DOK-002,
+FR-FHV-010). Märkning är synlig men inaktiv med förklaring.</li>
+</ul>
+<h2 id="design--4-komponenter">Design – 4. Komponenter</h2>
+<p>Gemensamma tillståndsregler för alla interaktiva komponenter:</p>
+<ul>
+<li><strong>Fokus:</strong>
+<code>outline: 3px solid var(--ui-fokus); outline-offset: 2px</code>,
+alltid synlig vid tangentbordsfokus (<code>:focus-visible</code>).</li>
+<li><strong>Hover:</strong> aldrig enda signalen; ändrar kant eller
+bakgrund enligt komponenten.</li>
+<li><strong>Inaktiv:</strong> <code>opacity: .5</code>,
+<code>cursor: not-allowed</code>, <code>aria-disabled="true"</code> och
+en synlig eller uppläst förklaring varför (FR-SPA-010).</li>
+<li><strong>Upptagen:</strong> väntindikator med text ("Läser in
+Beslut.pdf …"), <code>aria-busy="true"</code> på området.</li>
+</ul>
+<p><strong><code>knapp-primar</code></strong> — bakgrund
+<code>--ui-primar</code>, text <code>--ui-primar-text</code> 16 px fet,
+höjd 40 px, padding 0 16 px, radie 4 px, ingen kant. Hover: inre ring
+<code>box-shadow: inset 0 0 0 2px var(--ui-primar-text)</code>. Aktiv:
+inre ring 3 px. En per vy.</p>
+<p><strong><code>knapp-sekundar</code></strong> — transparent bakgrund,
+kant 2 px <code>--ui-kant</code>, text <code>--ui-text</code>, höjd 40
+px, radie 4 px. Hover: bakgrund <code>--ui-yta</code> (på bakgrund)
+eller <code>--ui-bakgrund</code> (på yta). Används för Avbryt, Lägg till
+alla sidor, Välj bild.</p>
+<p><strong><code>knapp-text</code></strong> — som sekundär men utan
+kant; understruken text vid hover. Sidhuvudets Ångra, Gör om, Hjälp,
+Om.</p>
+<p><strong><code>ikonknapp</code></strong> — 32 × 32 px, ikon 20 px,
+kant 2 px <code>--ui-kant</code>, radie 4 px; alltid
+<code>aria-label</code> och verktygstips med samma text. Används för
+Flytta vänster/höger, Vrid, Ta bort, Föregående/Nästa sida.</p>
+<p><strong><code>farlig-atgard</code></strong> — som sekundär, med text
+som säger vad som försvinner ("Töm arbetsytan"). Kräver
+bekräftelsedialog (FR-ALM-003). Ingen röd färg; GP MS saknar röd, och
+betydelsen bärs av text.</p>
+<p><strong><code>slappyta</code></strong> — yta <code>--ui-yta</code>,
+streckad kant 2 px <code>--ui-kant</code>, radie 8 px, ingress-latt "Dra
+in PDF-filer här" och <code>knapp-sekundar</code> "Välj filer". Under
+drag över: heldragen kant 3 px <code>--ui-fokus</code> och texten "Släpp
+för att läsa in". Hela ytan är också en knapp som öppnar
+filväljaren.</p>
+<p><strong><code>dokumentkort</code></strong> — i Filer-kolumnen: rubrik
+med filnamn (och löpnummer vid dubblett, "Beslut.pdf (2)"), metadata "7
+sidor · 1,2 MB" i dämpad text, knappar "Lägg till alla sidor", "Ta bort
+ur resultatet", ikonknapp "Ta bort fil". Under: miniatyrrutnät, 2 per
+rad.</p>
+<p><strong><code>miniatyr</code></strong> — bredd 88 px, sidans bild med
+ram 2 px <code>--ui-kant</code>, radie 2 px, under bilden "Sida 3" i
+stil <code>liten</code>. Tillstånd: <em>ej vald</em>; <em>vald</em> =
+märke "Vald" (bakgrund <code>--ui-valt</code>, vit text, liten fet) i
+övre hörnet och ram 2 px <code>--ui-text</code>; <em>ritas</em> = grå
+platta <code>--ui-avdelare</code> med texten "Ritar …". Klick eller
+Enter/Mellanslag lägger till sidan sist i resultatet; namnet "Sida 3 av
+7 ur Beslut.pdf, vald" (FR-DOK-010).</p>
+<p><strong><code>resultatrad</code></strong> — horisontell lista
+(<code>role="listbox"</code> med
+<code>aria-orientation="horizontal"</code> eller <code>&lt;ol&gt;</code>
+med knappar) av resultatsidor i ordning, med etikett över varje: "1 ·
+Beslut.pdf s. 2". Varje sida har ikonknappar Flytta vänster, Flytta
+höger, Vrid, Ta bort, och kryssrutor "Stämpel" och "Etikett"
+(FR-STA-008, FR-TXT-010). Den aktiva sidan (den som förhandsvisas) har
+ram 3 px <code>--ui-text</code>. Dra och släpp flyttar; tangentbord:
+Alt+Vänster/Höger flyttar, Delete tar bort. Antal sidor visas i
+rubriken: "2 Resultat · 7 sidor" (FR-SID-011).</p>
+<p><strong><code>forhandsvisning</code></strong> — sidan centrerad på
+<code>--ui-sidyta</code> med 24 px marginal; överlägget ritar
+säkerhetsmarginalen 5 mm streckad (4 px streck i
+<code>--ui-marginal-a</code>, 4 px i <code>--ui-marginal-b</code>),
+stämpel och etikett som de blir i filen. Valt objekt får en dubbel ram
+(2 px <code>--ui-marginal-b</code> utanför 2 px
+<code>--ui-marginal-a</code>) och kan flyttas med mus eller pilar (1 mm,
+Skift 10 mm). Under sidan: "Sida 3 av 7 · ur Beslut.pdf, sida 2" och
+Föregående/Nästa (FR-FHV-003, FR-FHV-007, FR-FHV-009). Skala: Anpassa /
+100 % (FR-FHV-008).</p>
+<p><strong><code>flikar</code></strong> — Märkning-kolumnens två flikar
+Vattenstämpel och Textetikett (<code>role="tablist"</code>). Aktiv flik:
+bakgrund <code>--ui-valt</code>, vit fet text; inaktiv: text
+<code>--ui-text</code> och kant nertill 2 px <code>--ui-avdelare</code>.
+Piltangenter byter flik.</p>
+<p><strong><code>placeringsvaljare</code></strong> — sex knappar i ett
+rutnät 3 × 2 som en miniatyrsida (Övre vänster, Sidhuvud mitten, Övre
+höger, Nedre vänster, Sidfot mitten, Nedre höger),
+<code>role="radiogroup"</code>; vald har bakgrund <code>--ui-valt</code>
+och <code>aria-checked</code>. Under: fält "Avstånd till kant (mm)" 0–50
+med steg 1. Visar "Egen placering" när objektet flyttats fritt
+(FR-PLC-002..007).</p>
+<p><strong><code>skjutreglage</code></strong> — för opacitet och
+storlek: <code>&lt;input type="range"&gt;</code> med synligt värde och
+ett bredvidliggande nummerfält ("Opacitet 70 %"), spår 4 px
+<code>--ui-kant</code>, tumme 20 px <code>--ui-text</code> med ring vid
+fokus.</p>
+<p><strong><code>textfalt</code></strong> — höjd 40 px, bakgrund
+<code>--ui-bakgrund</code> (på yta), kant 2 px <code>--ui-kant</code>,
+radie 4 px, text <code>--ui-text</code>. Etikett ovanför, hjälptext
+under i dämpad text. Fel: kant 2 px <code>--ui-fel</code>, felikon och
+feltext under fältet, <code>aria-invalid="true"</code> och
+<code>aria-describedby</code>. Etikettfältet visar teckenräknare "37 av
+200" (FR-TXT-002).</p>
+<p><strong><code>fargval</code></strong> — åtta förvalda färgrutor
+(tokens.json <code>color.etikett.*</code>) som radiogrupp, var och en
+med namn ("Svart", "Röd"), plus "Egen färg"
+(<code>&lt;input type="color"&gt;</code>) och för bakgrund "Ingen". Vald
+ruta: ram 3 px <code>--ui-text</code> och bock.</p>
+<p><strong><code>dialog</code></strong> — <code>&lt;dialog&gt;</code>
+modal, bredd 560 px (stor: 880 px), yta <code>--ui-yta</code>, radie 8
+px, inre marginal 24 px, mellanrubrik, innehåll, knapprad nertill höger
+(sekundär före primär). Esc stänger; fokus flyttas in vid öppning och
+tillbaka vid stängning.</p>
+<p><strong><code>meddelande</code></strong> — inline i området det
+gäller: bakgrund <code>--ui-fel-yta</code> (fel) eller
+<code>--ui-yta</code> (info/varning), kant 2 px <code>--ui-fel</code>
+(fel) eller <code>--ui-markering</code> (varning), radie 8 px, ikon 20
+px först, fet första mening ("Beslut.pdf kunde inte läsas in."), sedan
+vad man kan göra. Stängknapp. Fel ligger kvar tills de stängs; info
+försvinner inte av sig själv.</p>
+<p><strong><code>statusyta</code></strong> — en rad längst ner,
+<code>role="status"</code> / <code>aria-live="polite"</code>, text i
+<code>liten</code>. Upprepar korta utfall ("Beslut.pdf inläst, 7 sidor",
+"Sida flyttad till plats 2"). Fel skickas också med
+<code>aria-live="assertive"</code>.</p>
+<p><strong><code>vantindikator</code></strong> — 20 px roterande ring i
+<code>--ui-text</code> (stillastående vid reducerad rörelse) med text.
+Används vid inläsning (FR-FIL-011) och sparande (FR-SPA-011).</p>
+<p><strong>Tomt, upptaget och fel för områden:</strong> Filer tom =
+släppyta; Resultat tom = "Inga sidor ännu. Klicka på en miniatyr för att
+lägga till den."; Förhandsvisning tom = de tre stegen; upptaget =
+väntindikator i området; fel = <code>meddelande</code> överst i
+området.</p>
+<h2 id="design--5-tillgänglighetsregler">Design – 5.
+Tillgänglighetsregler</h2>
+<p>Mål: WCAG 2.1 AA enligt EN 301 549 [NFR-ACC-001]; hela DS-01 och
+DS-02 med tangentbord och med NVDA i Edge och VoiceOver i Safari
+[NFR-ACC-002].</p>
+<ul>
+<li>Kontrast enligt tabellen i §2; nya färgpar kräver minst 4,5:1 för
+text och 3:1 för kanter, ikoner och fokus.</li>
+<li>Fokus alltid synlig (3 px <code>--ui-fokus</code>), aldrig
+<code>outline: none</code> utan ersättning.</li>
+<li>Allt som går med mus går med tangentbord: dra och släpp har knappar
+och kortkommandon (FR-SID-008, FR-PLC-003).</li>
+<li>Varje kontroll har ett synligt namn och ett tillgängligt namn; sidor
+heter "Sida N av M ur <dokument>" (FR-DOK-010).</li>
+<li>Utfall meddelas i statusytan (FR-FIL-013, FR-SID-014).</li>
+<li>Information bärs aldrig bara av färg: vald sida har märket "Vald",
+fel har ikon och text.</li>
+<li>Minsta textstorlek 14 px; zoom till 200 % utan att innehåll
+försvinner (sidan får då rulla).</li>
+<li>Språket <code>lang="sv"</code> på dokumentet.</li>
+<li><code>prefers-reduced-motion</code> stänger av animationer.</li>
+</ul>
+<h2 id="design--6-röst-och-texter">Design – 6. Röst och texter</h2>
+<p>Du-tilltal, klartext, korta meningar. Knappar säger vad som händer
+("Lägg till alla sidor", "Baka ihop och spara"). Meddelanden säger vad
+som hände, vilken fil det gäller och vad man kan göra (FR-ALM-006). Inga
+ursäkter, inga tekniska ord utan förklaring.</p>
+<div class="tabell"><table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Gör</th>
+<th style="text-align: left;">Gör inte</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">"Beslut.pdf är lösenordsskyddad och kan
+inte läsas in. Spara en kopia utan lösenord och försök igen."</td>
+<td style="text-align: left;">"Fel: krypterat dokument (kod 3)."</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">"Sidan 4 kan inte sparas i arkivformatet
+(PDF/A) eftersom ett typsnitt saknas i filen. Du kan ta bort sidan eller
+spara som vanlig PDF."</td>
+<td style="text-align: left;">"PDF/A-2b-validering misslyckades: font
+not embedded."</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">"Sparad som Beslut-ihopbakad.pdf."</td>
+<td style="text-align: left;">"Klart!"</td>
+</tr>
+</tbody>
+</table></div>
+<p>Ordlista i gränssnittet: <em>fil</em> (det som läses in),
+<em>sida</em>, <em>resultat</em> (den nya filen),
+<em>vattenstämpel</em>, <em>textetikett</em>, <em>arkivformat
+(PDF/A)</em>, <em>dold information</em>.</p>
+<h2 id="design--7-gör-och-gör-inte">Design – 7. Gör och gör inte</h2>
+<ul>
+<li><strong>Gör</strong> använd tokens för varje färg, avstånd och
+radie, aldrig råa värden.</li>
+<li><strong>Gör</strong> välj avstånd bara ur skalan 4–48 px.</li>
+<li><strong>Gör</strong> ha högst en primär knapp per vy.</li>
+<li><strong>Gör</strong> skriv alla texter på svenska.</li>
+<li><strong>Gör inte</strong> lägg orange text eller tunna orange linjer
+direkt på skiffer (2,3:1).</li>
+<li><strong>Gör inte</strong> använd grön som enda skiljetecken mot
+petrol eller skiffer.</li>
+<li><strong>Gör inte</strong> hitta på nya färger, varianter eller
+ikoner utanför Lucide.</li>
+<li><strong>Gör inte</strong> ladda något utifrån: typsnitt, ikoner och
+bilder är inbakade.</li>
+</ul>
+<h2 id="design--8-snabbreferens-för-agenter">Design – 8. Snabbreferens
+för agenter</h2>
+<ul>
+<li>Sidbakgrund <code>--ui-bakgrund</code>, kolumner och dialoger
+<code>--ui-yta</code>, text <code>--ui-text</code>.</li>
+<li>Huvudhandling → <code>knapp-primar</code> ("Baka ihop och spara");
+övrigt → <code>knapp-sekundar</code>; sidhuvudets verktyg →
+<code>knapp-text</code>.</li>
+<li>Fokus → 3 px <code>--ui-fokus</code>, 2 px avstånd.</li>
+<li>Fel → <code>meddelande</code> med <code>--ui-fel</code> och text som
+namnger filen.</li>
+<li>Text 16/24, metadata 14/20, kolumnrubrik 18/24 fet.</li>
+<li>Avstånd 16 px mellan kontroller, 24 px i dialoger; radie 4 px
+kontroller, 8 px ytor.</li>
+<li>Ikoner: Lucide, 20 px, streck 2 px, alltid med text eller
+<code>aria-label</code>.</li>
+<li>Layout: sidhuvud 56 px, Filer 300 px | Resultat + Förhandsvisning |
+Märkning 340 px, statusyta 32 px.</li>
+</ul>
+<h2 id="design--9-ursprung-och-kända-luckor">Design – 9. Ursprung och
+kända luckor</h2>
+<p><strong>Ursprung.</strong> Färger, teman, kontrastberäkningar och
+typsnitt kommer ur GP MS (claude.ai-artefakten "Grafisk profil
+materielsystem", version 2026-11-12), som Ägaren valde som designkälla
+2026-11-12. GP MS anger inte avstånd, radier, ikoner, rörelse eller
+komponenter; de har lagts till här för appen och är markerade som
+tillägg i tokens.json. Tillägg som behövdes för att klara WCAG:
+felmeddelanden står på <code>--ui-fel-yta</code> eftersom orange inte
+når 3:1 mot skiffer, och den ljusa temats markering (orange) används
+bara som grafik. Tokens <code>ui-avdelare</code>, <code>ui-fel</code>,
+<code>ui-fel-yta</code>, <code>ui-valt</code>, <code>ui-sidyta</code>
+och <code>ui-marginal-a/b</code> är nya roller som pekar på GP
+MS-färger; inga nya färger har lagts till i gränssnittet. Etikettens
+förvalda färger (<code>color.etikett.*</code>) är inte GP MS, eftersom
+profilen inte gäller etiketter; röd (#c00000) är ett tillägg.</p>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span> <span class="dt">&quot;design_provenance&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;mode&quot;</span><span class="fu">:</span> <span class="st">&quot;design-file&quot;</span><span class="fu">,</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;fidelity&quot;</span><span class="fu">:</span> <span class="st">&quot;mapped&quot;</span><span class="fu">,</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;source&quot;</span><span class="fu">:</span> <span class="kw">null</span><span class="fu">,</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;generated&quot;</span><span class="fu">:</span> <span class="st">&quot;2026-11-12&quot;</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span> <span class="fu">}</span></span></code></pre></div>
+<p><strong>Kända luckor.</strong></p>
+<ul>
+<li>Ikonuppsättning: Lucide (ISC-licens) är vald här, inte i GP MS.
+Ingen logotyp finns; appens namn skrivs med text.</li>
+<li>Hover- och aktivtillstånd för primär knapp använder en inre ring i
+stället för en egen färg, eftersom GP MS saknar nyanser.</li>
+<li>Kontrasten för ljust tema i felmeddelanden (orange 3,2:1) klarar
+gränsen för grafik med liten marginal.</li>
+<li>Skärmbilder och exakta mått för varje skärm tas fram per funktion i
+ui-design.</li>
+</ul>
+
+</main>

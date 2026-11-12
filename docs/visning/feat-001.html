@@ -1,0 +1,950 @@
+<title>FEAT-001 Baka ihop</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Läsdokument: smal textspalt, innehållsförteckning överst, diagram i egna ytor. GP MS, mörkt tema först. */
+:root { --bg:#484b43; --yta:#003d4c; --text:#eceae6; --dampad:#d4d5ce; --linje:#74776f; --accent:#ffdd00; --kod:#3c3f38;
+  --f-text: Calibri, Carlito, "Segoe UI", Arial, sans-serif; --f-mono: ui-monospace, Consolas, Menlo, monospace; color-scheme: dark; }
+@media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) { --bg:#eceae6; --yta:#d4d5ce; --text:#484b43; --dampad:#484b43; --linje:#74776f; --accent:#003d4c; --kod:#e2e1dc; color-scheme: light; } }
+:root[data-theme="light"] { --bg:#eceae6; --yta:#d4d5ce; --text:#484b43; --dampad:#484b43; --linje:#74776f; --accent:#003d4c; --kod:#e2e1dc; color-scheme: light; }
+body { background: var(--bg); color: var(--text); font: 16px/1.5 var(--f-text); }
+.wrap { max-width: 980px; margin: 0 auto; padding-block: 32px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 4px; }
+h1 { font-size: 2rem; line-height: 1.2; margin: 0 0 8px; text-wrap: balance; }
+h2 { font-size: 1.4rem; margin: 40px 0 8px; padding-top: 16px; border-top: 1px solid var(--linje); text-wrap: balance; }
+h3 { font-size: 1.15rem; margin: 28px 0 4px; }
+p, li { max-width: 72ch; }
+a { color: var(--accent); }
+blockquote { margin: 0; padding: 8px 16px; background: var(--yta); border-radius: 8px; color: var(--dampad); }
+blockquote p { margin: 4px 0; }
+code { font-family: var(--f-mono); font-size: 0.88em; background: var(--kod); padding: 1px 4px; border-radius: 3px; }
+pre:not(.mermaid) { background: var(--kod); padding: 12px; border-radius: 8px; overflow-x: auto; }
+.diagram { background: #ffffff; border-radius: 8px; padding: 16px; overflow-x: auto; margin: 8px 0 16px; }
+.diagram pre { margin: 0; background: transparent; color: #000; }
+.tabell { overflow-x: auto; margin: 8px 0 16px; }
+table { border-collapse: collapse; font-size: 0.92rem; min-width: 560px; }
+th, td { text-align: left; vertical-align: top; padding: 6px 10px; border-bottom: 1px solid var(--linje); }
+th { color: var(--dampad); font-weight: 700; }
+nav.toc { background: var(--yta); border-radius: 8px; padding: 12px 16px; margin: 8px 0; }
+nav.toc ol { margin: 4px 0 0; padding-left: 20px; columns: 2 220px; }
+nav.toc .rubrik { font-weight: 700; }
+a:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+</style>
+<main class="wrap">
+<h1 id="teknisk-design-feat-001--baka-ihop-sidor-ur-flera-filer">Teknisk
+design: FEAT-001 – Baka ihop sidor ur flera filer</h1>
+<nav class="toc" aria-label="Innehåll"><div class="rubrik">Innehåll</div><ol><li><a href="#1-syfte">1. Syfte</a></li><li><a href="#2-kodläge">2. Kodläge</a></li><li><a href="#3-gränssnitt-mellan-delarna">3. Gränssnitt mellan delarna</a></li><li><a href="#4-dataändringar">4. Dataändringar</a></li><li><a href="#5-komponenter">5. Komponenter</a></li><li><a href="#6-acceptanskriterier">6. Acceptanskriterier</a></li><li><a href="#7-beslut">7. Beslut</a></li></ol></nav>
+
+<blockquote>
+<p>Funktion ur: docs/implementation-plan.md · Epik: E1 Arbetsyta och
+ihopbakning Implementerar: FR-FIL-001..005, FR-SID-001..009, FR-SID-011,
+FR-SID-014, FR-SPA-001, FR-SPA-002, FR-SPA-007, FR-SPA-009..013 ·
+Tvärgående: FR-ALM-006..008, FR-DOK-010 Realiserar: UC-001, UC-002,
+UC-007 (utan dold information och arkivformat) · Skärmar: SCR-APP-001,
+SCR-APP-005 (delvis), designas i ui-design.md Status: Draft · Datum:
+2026-11-12</p>
+</blockquote>
+<h2 id="1-syfte">1. Syfte</h2>
+<p>Kollegan läser in flera PDF-filer, väljer sidor ur dem, ordnar
+sidorna och sparar en ny PDF där sidorna är kopierade orörda. Det är
+kärnan i DS-01 och första riktiga värdet. Funktionen kommer först efter
+skelettet eftersom den prövar den viktigaste tekniska frågan: att sidor
+från flera filer kopieras utan att innehållet ändras (BG-009,
+ADR-004).</p>
+<h2 id="2-kodläge">2. Kodläge</h2>
+<p>Designen bygger på skelettet version 0.1.1 (commit 68e9937):</p>
+<ul>
+<li><strong>Tillstånd</strong> (<code>src/karna/tillstand.ts</code>):
+oföränderliga versioner av <code>Arbetsyta</code> med historik och
+lyssnare. Funktionerna <code>laggTillDokument</code>,
+<code>uniktNamn</code>, <code>uppdateraDokument</code>.</li>
+<li><strong>Typer</strong> (<code>src/karna/typer.ts</code>):
+<code>Dokument { id, namn, bytes, sidantal, forstaMiniatyr }</code>,
+<code>Resultatsida { dokumentId, sidindex }</code>,
+<code>Arbetsyta { dokument, resultat }</code>.</li>
+<li><strong>pdf.js-adapter</strong>
+(<code>src/las/pdfjs-adapter.ts</code>): <code>oppnaPdf(bytes)</code>
+och <code>ritaMiniatyr(pdf, sidindex, bredd)</code>. pdf.js tolkar i sin
+egen arbetstråd (klassisk, inbakad som blob).</li>
+<li><strong>Export</strong> (<code>src/bygg/export.ts</code>):
+<code>bakaIhop({ dokument, sidor })</code> med <code>copyPages</code>,
+<code>save({ useObjectStreams: false })</code>. R8-testet finns i
+<code>tests/enhet/export.test.ts</code>.</li>
+<li><strong>Bygg-klient</strong> (<code>src/bygg/bygg-klient.ts</code>):
+en arbetstråd, ett meddelande i taget, <code>onmessage</code> skrivs
+över per anrop.</li>
+<li><strong>Gränssnitt</strong> (<code>src/ui/App.tsx</code>): en
+komponent med all logik. Texter i <code>src/karna/texter.ts</code>,
+värden via tokens.</li>
+<li><strong>Gränser</strong> (ESLint): karna ↛ ui/las/bygg, las ↛
+ui/bygg, bygg ↛ ui/las.</li>
+<li><strong>Testfiler:</strong> <code>beslut.pdf</code> (3 sidor),
+<code>underskrift.pdf</code> (1), <code>blandade-format.pdf</code> (3,
+olika storlekar), <code>inte-pdf.pdf</code>.</li>
+</ul>
+<p><strong>Avvikelser mellan dokument och kod (koden
+gäller):</strong></p>
+<ol type="1">
+<li>Arkitekturen ritar en egen "läs-arbetstråd" med pdf.js-adaptern. I
+koden ligger adaptern i huvudtråden och pdf.js gör tolkningen i sin egen
+arbetstråd. Effekten är densamma (tolkning utanför huvudtråden). Ingen
+ändring.</li>
+<li>Skelettet lägger automatiskt alla sidor i resultatet vid inläsning.
+Det stämmer inte med FR-SID-002 och FR-FIL-003 och tas bort (beslut
+B1).</li>
+<li>FR-SID-008 säger "flytta upp/ner", men resultatraden är horisontell
+(design.md, <code>resultatrad</code>). "Flytta vänster" och "Flytta
+höger" är samma funktion. Ingen kravändring.</li>
+</ol>
+<h2 id="3-gränssnitt-mellan-delarna">3. Gränssnitt mellan delarna</h2>
+<p>Appen har inga nätverksgränssnitt (NFR-SEC-002). Gränssnitten här är
+modulernas funktioner och meddelandena till arbetstrådarna. Alla följer
+skelettets namngivning (svenska, camelCase, utan å/ä/ö i
+identifierare).</p>
+<h3 id="31-arbetsyteoperationer-srckarnaarbetsytats-nytt">3.1
+Arbetsyteoperationer (<code>src/karna/arbetsyta.ts</code>, nytt)</h3>
+<p>Rena funktioner. Varje operation tar nuvarande <code>Arbetsyta</code>
+och returnerar <code>Andring</code>:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode ts"><code class="sourceCode typescript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="kw">interface</span> Andring {</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">readonly</span> yta<span class="op">:</span> Arbetsyta        <span class="co">// samma objekt om inget ändrades</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">readonly</span> meddelande<span class="op">:</span> <span class="dt">string</span>    <span class="co">// till statusytan (FR-SID-014); tom sträng om inget ändrades</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="tabell"><table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Funktion</th>
+<th style="text-align: left;">Gör</th>
+<th style="text-align: left;">Krav</th>
+<th style="text-align: left;">Meddelande (exempel)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td
+style="text-align: left;"><code>laggTillDokument(yta, dok)</code></td>
+<td style="text-align: left;">Lägger dokumentet sist i listan.
+Resultatet ändras inte.</td>
+<td style="text-align: left;">FR-FIL-001, FR-FIL-003</td>
+<td style="text-align: left;">"Beslut.pdf inläst, 3 sidor."</td>
+</tr>
+<tr class="even">
+<td
+style="text-align: left;"><code>taBortDokument(yta, dokId)</code></td>
+<td style="text-align: left;">Tar bort dokumentet och alla dess
+resultatsidor.</td>
+<td style="text-align: left;">FR-FIL-005</td>
+<td style="text-align: left;">"Beslut.pdf borttagen. 2 sidor togs bort
+ur resultatet."</td>
+</tr>
+<tr class="odd">
+<td
+style="text-align: left;"><code>laggTillSida(yta, dokId, sidindex)</code></td>
+<td style="text-align: left;">Lägger sidan sist i resultatet.</td>
+<td style="text-align: left;">FR-SID-002</td>
+<td style="text-align: left;">"Sida 2 ur Beslut.pdf tillagd på plats
+4."</td>
+</tr>
+<tr class="even">
+<td
+style="text-align: left;"><code>valjBortSida(yta, dokId, sidindex)</code></td>
+<td style="text-align: left;">Tar bort sidans förekomster ur
+resultatet.</td>
+<td style="text-align: left;">FR-SID-003</td>
+<td style="text-align: left;">"Sida 2 ur Beslut.pdf borttagen ur
+resultatet."</td>
+</tr>
+<tr class="odd">
+<td
+style="text-align: left;"><code>vaxlaSida(yta, dokId, sidindex)</code></td>
+<td style="text-align: left;">Lägger till om sidan inte finns i
+resultatet, annars väljer bort. Används av miniatyren.</td>
+<td style="text-align: left;">FR-SID-002, FR-SID-003</td>
+<td style="text-align: left;">som ovan</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>laggTillAlla(yta, dokId)</code></td>
+<td style="text-align: left;">Lägger dokumentets ännu inte valda sidor
+sist, i dokumentets ordning.</td>
+<td style="text-align: left;">FR-SID-004</td>
+<td style="text-align: left;">"3 sidor ur Beslut.pdf tillagda.
+Resultatet har 4 sidor."</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>taBortAlla(yta, dokId)</code></td>
+<td style="text-align: left;">Tar bort dokumentets alla sidor ur
+resultatet.</td>
+<td style="text-align: left;">FR-SID-005</td>
+<td style="text-align: left;">"Alla sidor ur Beslut.pdf borttagna ur
+resultatet."</td>
+</tr>
+<tr class="even">
+<td
+style="text-align: left;"><code>flyttaSida(yta, resultatId, tillPlats)</code></td>
+<td style="text-align: left;">Flyttar sidan till plats
+<code>tillPlats</code> (från 0, begränsas till listans längd).</td>
+<td style="text-align: left;">FR-SID-007</td>
+<td style="text-align: left;">"Sida 1 ur Underskrift.pdf flyttad till
+plats 2."</td>
+</tr>
+<tr class="odd">
+<td
+style="text-align: left;"><code>flyttaSteg(yta, resultatId, riktning)</code></td>
+<td style="text-align: left;">Flyttar ett steg, <code>riktning</code> =
+-1 eller +1. Vid kanten: ingen ändring, meddelandet "Sidan är redan
+först/sist."</td>
+<td style="text-align: left;">FR-SID-008</td>
+<td style="text-align: left;">som ovan</td>
+</tr>
+<tr class="even">
+<td
+style="text-align: left;"><code>taBortResultatsida(yta, resultatId)</code></td>
+<td style="text-align: left;">Tar bort just den förekomsten.</td>
+<td style="text-align: left;">FR-SID-009</td>
+<td style="text-align: left;">"Sida 2 ur Beslut.pdf borttagen ur
+resultatet."</td>
+</tr>
+</tbody>
+</table></div>
+<p>Okänt <code>dokId</code> eller <code>resultatId</code> ger ingen
+ändring och tomt meddelande (kan hända om användaren klickar medan något
+tas bort). Platser i meddelanden räknas från 1. Alla meddelandetexter
+ligger i <code>texter.ts</code> (FR-ALM-006).</p>
+<p><code>tillstand.ts</code> behåller <code>skapaTillstand</code> och
+<code>uniktNamn</code>; den gamla <code>laggTillDokument</code> flyttar
+till <code>arbetsyta.ts</code> utan att lägga till sidor, och
+<code>uppdateraDokument</code> tas bort (miniatyrerna ligger inte längre
+i tillståndet, beslut B2).</p>
+<h3 id="32-pdfjs-adaptern-srclas">3.2 pdf.js-adaptern
+(<code>src/las/</code>)</h3>
+<p>Befintligt <code>oppnaPdf(bytes)</code> och
+<code>ritaMiniatyr(pdf, sidindex, bredd)</code> behålls. Nytt:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode ts"><code class="sourceCode typescript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">// src/las/pdfjs-adapter.ts</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="kw">function</span> <span class="fu">stangPdf</span>(pdf<span class="op">:</span> PDFDocumentProxy)<span class="op">:</span> <span class="bu">Promise</span><span class="op">&lt;</span><span class="dt">void</span><span class="op">&gt;</span>   <span class="co">// pdf.destroy(), frigör minne i pdf.js-tråden</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">// src/las/miniatyrer.ts (nytt)</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="kw">interface</span> Miniatyrko {</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">/** Ritar dokumentets alla sidor i ordning, en i taget; anropar klar(sidindex, url) för varje. */</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ritaAlla</span>(dokId<span class="op">:</span> <span class="dt">string</span><span class="op">,</span> pdf<span class="op">:</span> PDFDocumentProxy<span class="op">,</span> sidantal<span class="op">:</span> <span class="dt">number</span><span class="op">,</span> klar<span class="op">:</span> (sidindex<span class="op">:</span> <span class="dt">number</span><span class="op">,</span> url<span class="op">:</span> <span class="dt">string</span>) <span class="kw">=&gt;</span> <span class="dt">void</span>)<span class="op">:</span> <span class="dt">void</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="co">/** Avbryter väntande ritningar för dokumentet och frigör dess blob-adresser. */</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slapp</span>(dokId<span class="op">:</span> <span class="dt">string</span>)<span class="op">:</span> <span class="dt">void</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="kw">function</span> <span class="fu">skapaMiniatyrko</span>(bredd<span class="op">:</span> <span class="dt">number</span>)<span class="op">:</span> Miniatyrko</span></code></pre></div>
+<ul>
+<li>Miniatyrer ritas i 88 px bredd gånger <code>devicePixelRatio</code>,
+en sida åt gången så att gränssnittet svarar (architecture.md 8.5).
+Synliga sidor först är en senare optimering; mätningen i T3 avgör om den
+behövs (NFR-PERF-002).</li>
+<li>En sida som inte går att rita får en ersättningsruta med texten
+"Sidan kunde inte visas" och kan fortfarande väljas; felet stoppar inte
+resten.</li>
+<li><code>slapp</code> anropar <code>URL.revokeObjectURL</code> för alla
+dokumentets bilder.</li>
+</ul>
+<h3 id="33-bygg-arbetstråden-srcbygg">3.3 Bygg-arbetstråden
+(<code>src/bygg/</code>)</h3>
+<p><code>Byggbegaran</code> är oförändrad. Protokollet får ett löpnummer
+så att svar inte blandas ihop:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode ts"><code class="sourceCode typescript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">// huvudtråd → arbetstråd</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>{ nr<span class="op">:</span> <span class="dt">number</span><span class="op">,</span> begaran<span class="op">:</span> Byggbegaran }</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">// arbetstråd → huvudtråd</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>{ nr<span class="op">:</span> <span class="dt">number</span><span class="op">,</span> ok<span class="op">:</span> <span class="kw">true</span><span class="op">,</span> bytes<span class="op">:</span> <span class="bu">Uint8Array</span> }      <span class="co">// bytes överförs (transfer)</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>{ nr<span class="op">:</span> <span class="dt">number</span><span class="op">,</span> ok<span class="op">:</span> <span class="kw">false</span><span class="op">,</span> fel<span class="op">:</span> <span class="st">&#39;kalla&#39;</span> <span class="op">|</span> <span class="st">&#39;okant&#39;</span><span class="op">,</span> detalj<span class="op">:</span> <span class="dt">string</span> }</span></code></pre></div>
+<ul>
+<li><code>kalla</code>: ett källdokument gick inte att öppna eller
+kopiera med pdf-lib (till exempel en fil som pdf.js klarade men inte
+pdf-lib).</li>
+<li><code>okant</code>: allt annat, även slut på minne.</li>
+<li><code>bygg(begaran)</code> i <code>bygg-klient.ts</code> returnerar
+<code>Promise&lt;Uint8Array&gt;</code> eller avvisar med
+<code>Byggfel { kod, detalj }</code>. Arbetstråden startas vid första
+sparandet (NFR-PERF-004). Om arbetstråden själv kraschar
+(<code>onerror</code>) avvisas alla väntande anrop med
+<code>okant</code> och tråden startas om nästa gång.</li>
+<li>Begäran skickas med strukturerad kloning, alltså kopior; arbetsytans
+bytes ändras aldrig (FR-SPA-012).</li>
+<li><code>bakaIhop</code> ändras inte i sak: sidobjekten kopieras med
+<code>copyPages</code>, inga innehållsflöden skrivs om (FR-SPA-007, R8),
+ingen kryptering (FR-SPA-009).</li>
+</ul>
+<h3 id="34-sparande-srcuisparats-nytt">3.4 Sparande
+(<code>src/ui/spara.ts</code>, nytt)</h3>
+<p>Logiken bakom SCR-APP-005, skild från komponenterna så att den kan
+enhetstestas:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode ts"><code class="sourceCode typescript"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="kw">function</span> <span class="fu">foreslaFilnamn</span>(yta<span class="op">:</span> Arbetsyta)<span class="op">:</span> <span class="dt">string</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co">// &quot;&lt;första dokumentet i resultatet, utan .pdf och löpnummer&gt;-ihopbakad.pdf&quot;; det sparade namnet om användaren redan sparat en gång</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="kw">function</span> <span class="fu">stadaFilnamn</span>(inmatat<span class="op">:</span> <span class="dt">string</span><span class="op">,</span> forslag<span class="op">:</span> <span class="dt">string</span>)<span class="op">:</span> <span class="dt">string</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">// tar bort \ / : * ? &quot; &lt; &gt; | och styrtecken, trimmar, lägger till .pdf om ändelsen saknas (oavsett skiftläge),</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">// tomt eller bara &quot;.pdf&quot; → forslag; högst 200 tecken före ändelsen (FR-SPA-002)</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="im">export type</span> Sparutfall <span class="op">=</span> { ok<span class="op">:</span> <span class="kw">true</span><span class="op">;</span> filnamn<span class="op">:</span> <span class="dt">string</span> } <span class="op">|</span> { ok<span class="op">:</span> <span class="kw">false</span><span class="op">;</span> meddelande<span class="op">:</span> <span class="dt">string</span> }</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="kw">async</span> <span class="kw">function</span> <span class="fu">sparaResultat</span>(</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  yta<span class="op">:</span> Arbetsyta<span class="op">,</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  filnamn<span class="op">:</span> <span class="dt">string</span><span class="op">,</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  beroenden<span class="op">:</span> { bygg<span class="op">:</span> (b<span class="op">:</span> Byggbegaran) <span class="kw">=&gt;</span> <span class="bu">Promise</span><span class="op">&lt;</span><span class="bu">Uint8Array</span><span class="op">&gt;;</span> ladda<span class="op">:</span> (bytes<span class="op">:</span> <span class="bu">Uint8Array</span><span class="op">,</span> filnamn<span class="op">:</span> <span class="dt">string</span>) <span class="kw">=&gt;</span> <span class="dt">void</span> }<span class="op">,</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>)<span class="op">:</span> <span class="bu">Promise</span><span class="op">&lt;</span>Sparutfall<span class="op">&gt;</span></span></code></pre></div>
+<ul>
+<li><code>sparaResultat</code> bygger begäran av
+<code>yta.resultat</code> och bara de dokument som ingår, anropar
+<code>bygg</code> och sedan <code>ladda</code>. Den ändrar aldrig
+<code>yta</code>; vid fel ger den <code>texter.sparFel</code>
+(FR-SPA-012).</li>
+<li><code>ladda</code> är skelettets befintliga Blob +
+<code>&lt;a download&gt;</code> (FR-SPA-001), flyttad till en egen
+funktion. Blob-adressen frigörs efter 10 sekunder.</li>
+<li>Medan bygget pågår är "Baka ihop och spara" och dialogens
+spara-knapp markerade upptagna (<code>aria-busy</code>,
+<code>aria-disabled</code>) och en väntindikator visas (FR-SPA-011). Ett
+andra klick gör ingenting.</li>
+<li>Efter lyckat sparande sparas filnamnet i
+<code>sparval.filnamn</code> och statusytan säger "Sparad som X."
+Arbetsytan finns kvar (FR-SPA-013).</li>
+<li>Panelen för dold information före sparandet (FR-DOL-001) kommer med
+FEAT-008. Tills dess går "Baka ihop och spara" direkt till
+spara-dialogen.</li>
+</ul>
+<h3 id="35-inläsning-srcuiinlasningts-nytt">3.5 Inläsning
+(<code>src/ui/inlasning.ts</code>, nytt)</h3>
+<p>Flyttar skelettets <code>lasIn</code> ur <code>App.tsx</code>:</p>
+<ul>
+<li>Tar emot en <code>FileList</code> eller <code>File[]</code> från
+filväljaren och från släpp på arbetsytan (FR-FIL-001, FR-FIL-002). Filer
+läses in en i taget i den ordning de valts.</li>
+<li>Per fil: <code>oppnaPdf</code> → <code>laggTillDokument</code> med
+<code>uniktNamn</code> → miniatyrkön startas. Fel stannar vid den filen
+(architecture.md 8.3); meddelandet är skelettets
+<code>kundeInteLasas</code>. De noggranna felbeskeden (typ, storlek,
+lösenord, sidgräns) kommer i FEAT-002.</li>
+<li>Ett släpp av något som inte är filer (text, länk) ignoreras. Släpp
+utanför släppytan men inom fönstret räknas också, så att webbläsaren
+inte öppnar PDF:en själv (<code>preventDefault</code> på
+<code>dragover</code> och <code>drop</code> för hela dokumentet).</li>
+</ul>
+<h2 id="4-dataändringar">4. Dataändringar</h2>
+<p>Ingen databas och ingen migrering; tillståndet finns bara i minnet
+(ADR-008, FR-ALM-008). Ändringarna ligger inom entiteterna i
+architecture.md 8.2:</p>
+<div class="tabell"><table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Entitet</th>
+<th style="text-align: left;">Ändring</th>
+<th style="text-align: left;">Varför</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>Dokument</code></td>
+<td style="text-align: left;">Ta bort <code>forstaMiniatyr</code>. Lägg
+till <code>storlekByte: number</code>.</td>
+<td style="text-align: left;">Miniatyrer ligger utanför tillståndet
+(B2). Storleken visas i dokumentkortet ("3 sidor · 1,2 MB").</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>Resultatsida</code></td>
+<td style="text-align: left;">Lägg till <code>id: string</code>
+(löpnummer, <code>rs-1</code>, <code>rs-2</code> …).</td>
+<td style="text-align: left;">En förekomst måste kunna flyttas och tas
+bort för sig, och Preact behöver stabila nycklar vid dra och släpp.
+Förbereder FR-SID-013.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>Arbetsyta</code></td>
+<td style="text-align: left;">Lägg till
+<code>sparval: { filnamn: string | null }</code>.</td>
+<td style="text-align: left;">Det namn användaren valt används nästa
+gång (FR-SPA-013). Övriga fält i <code>Sparval</code> kommer med
+FEAT-008 och FEAT-009.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Id:n skapas med en räknare per sida och flik, inte med
+<code>crypto.randomUUID</code>, som kräver säker kontext och därför är
+osäker när filen öppnas från disken.</p>
+<h2 id="5-komponenter">5. Komponenter</h2>
+<div class="diagram"><pre class="mermaid">graph LR
+    subgraph ui[&quot;src/ui&quot;]
+        app[&quot;App.tsx (skal)&quot;]
+        filer[&quot;Filkolumn: släppyta, dokumentkort, miniatyrrutnät&quot;]
+        res[&quot;Resultatrad&quot;]
+        dlg[&quot;Spara-dialog&quot;]
+        inl[&quot;inlasning.ts&quot;]
+        spa[&quot;spara.ts&quot;]
+        reg[&quot;dokumentregister.ts&quot;]
+    end
+    subgraph karna[&quot;src/karna&quot;]
+        ay[&quot;arbetsyta.ts&quot;]
+        till[&quot;tillstand.ts&quot;]
+        txt[&quot;texter.ts&quot;]
+    end
+    subgraph las[&quot;src/las&quot;]
+        adp[&quot;pdfjs-adapter.ts&quot;]
+        mko[&quot;miniatyrer.ts&quot;]
+    end
+    subgraph bygg[&quot;src/bygg&quot;]
+        bk[&quot;bygg-klient.ts&quot;]
+        exp[&quot;export.ts (arbetstråd)&quot;]
+    end
+    filer --&gt; ay
+    res --&gt; ay
+    ay --&gt; till
+    inl --&gt; adp
+    inl --&gt; reg
+    reg --&gt; mko
+    dlg --&gt; spa
+    spa --&gt; bk
+    bk --&gt; exp</pre></div>
+<ul>
+<li><strong><code>dokumentregister.ts</code></strong> (ui): håller det
+som inte hör hemma i tillståndet, per dokument-id: pdf.js-dokumentet och
+miniatyrernas blob-adresser, med en enkel lyssnare så att miniatyrerna
+ritas om när de blir klara. När ett dokument tas bort anropas
+<code>stangPdf</code> och <code>slapp</code>.</li>
+<li><strong><code>App.tsx</code></strong> blir ett skal som kopplar ihop
+kolumnerna, statusytan och dialogen. Komponenternas utseende och
+uppbyggnad bestäms i <code>ui-design.md</code>.</li>
+<li><strong>Statusytan:</strong> varje <code>Andring.meddelande</code>
+som inte är tomt skrivs dit (<code>role="status"</code>,
+<code>aria-live="polite"</code>). Samma meddelande två gånger i rad
+läses ändå upp (texten töms först).</li>
+<li><strong>Dra och släpp i resultatraden:</strong> HTML-dra och släpp
+på listans element; vid släpp räknas målplatsen ut och
+<code>flyttaSida</code> anropas. Tangentbord: Alt+Vänster/Höger (även
+Alt+Upp/Ner) anropar <code>flyttaSteg</code>, Delete och Backsteg
+anropar <code>taBortResultatsida</code>. Fokus följer med den flyttade
+sidan (NFR-ACC-002).</li>
+<li><strong>Tillgängliga namn</strong> (FR-DOK-010): miniatyr "Sida N av
+M ur <dokument>" och ", vald" när den finns i resultatet
+(<code>aria-pressed</code>); resultatsida "Sida N av M ur <dokument>,
+plats P av T".</li>
+</ul>
+<p>Skelettets stubbar som ersätts: auto-tillägg av alla sidor
+(<code>laggTillDokument</code>), bara första miniatyren
+(<code>forstaMiniatyr</code>), spara direkt utan dialog med fast
+filnamn.</p>
+<h2 id="6-acceptanskriterier">6. Acceptanskriterier</h2>
+<div class="tabell"><table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">AC</th>
+<th style="text-align: left;">Kriterium</th>
+<th style="text-align: left;">Krav</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">AC-1</td>
+<td style="text-align: left;">Givet tom arbetsyta, när användaren väljer
+beslut.pdf och underskrift.pdf i filväljaren, så visas båda med namn och
+antal sidor och resultatet är tomt.</td>
+<td style="text-align: left;">FR-FIL-001, FR-FIL-004, UC-001</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AC-2</td>
+<td style="text-align: left;">När användaren släpper en PDF-fil på
+arbetsytan läses den in; webbläsaren öppnar inte filen själv.</td>
+<td style="text-align: left;">FR-FIL-002</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">AC-3</td>
+<td style="text-align: left;">Givet ett resultat med sidor, när
+ytterligare en fil läses in, så är befintliga dokument och resultatet
+oförändrade.</td>
+<td style="text-align: left;">FR-FIL-003, UC-001 2a</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AC-4</td>
+<td style="text-align: left;">När användaren tar bort ett dokument
+försvinner det och alla dess sidor ur resultatet; övriga sidor behåller
+ordningen.</td>
+<td style="text-align: left;">FR-FIL-005, UC-001 4a</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">AC-5</td>
+<td style="text-align: left;">Varje inläst dokument visar alla sina
+sidor som miniatyrer med namnet "Sida N av M ur <dokument>".</td>
+<td style="text-align: left;">FR-SID-001, FR-DOK-010</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AC-6</td>
+<td style="text-align: left;">Klick, Enter eller Mellanslag på en ej
+vald miniatyr lägger sidan sist i resultatet och miniatyren visas som
+vald; samma åtgärd på en vald miniatyr tar bort sidan ur
+resultatet.</td>
+<td style="text-align: left;">FR-SID-002, FR-SID-003</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">AC-7</td>
+<td style="text-align: left;">"Lägg till alla sidor" lägger dokumentets
+ej valda sidor sist i dokumentets ordning; "Ta bort ur resultatet" tar
+bort dokumentets alla sidor.</td>
+<td style="text-align: left;">FR-SID-004, FR-SID-005, UC-002 1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AC-8</td>
+<td style="text-align: left;">Resultatraden visar sidorna i ordning, var
+och en märkt med dokument och sidnummer, och rubriken visar antalet
+sidor.</td>
+<td style="text-align: left;">FR-SID-006, FR-SID-011</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">AC-9</td>
+<td style="text-align: left;">En sida kan flyttas till ny plats med dra
+och släpp, med knapparna Flytta vänster/höger och med Alt+piltangent; en
+sida kan tas bort med knapp och med Delete.</td>
+<td style="text-align: left;">FR-SID-007..009, UC-002 5, 5a</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AC-10</td>
+<td style="text-align: left;">Varje tillägg, borttagning och flytt ger
+ett meddelande i statusytan som anger sida, dokument och plats.</td>
+<td style="text-align: left;">FR-SID-014</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">AC-11</td>
+<td style="text-align: left;">Med tomt resultat är "Baka ihop och spara"
+inaktiv och har en förklaring kopplad med
+<code>aria-describedby</code>.</td>
+<td style="text-align: left;">FR-SPA-010, UC-007 1a</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AC-12</td>
+<td style="text-align: left;">Spara-dialogen föreslår "&lt;första
+dokumentet&gt;-ihopbakad.pdf"; ett ändrat namn används med ändelsen
+.pdf; otillåtna tecken tas bort; väntindikator visas under bygget.</td>
+<td style="text-align: left;">FR-SPA-001, FR-SPA-002, FR-SPA-011, UC-007
+3–5</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">AC-13</td>
+<td style="text-align: left;">Den sparade filen har exakt resultatets
+sidor i resultatets ordning; varje sidas innehållsflöde är byte för byte
+detsamma som i källan; filen är okrypterad och har inga
+behörighetsbegränsningar.</td>
+<td style="text-align: left;">FR-SPA-007, FR-SPA-009, R8</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AC-14</td>
+<td style="text-align: left;">Om bygget misslyckas visas ett
+felmeddelande som säger vad som hände och vad man kan göra, och
+arbetsytan är oförändrad. Efter lyckat sparande finns arbetsytan kvar
+och kan sparas igen.</td>
+<td style="text-align: left;">FR-SPA-012, FR-SPA-013, UC-007 4b, 6a</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">AC-15</td>
+<td style="text-align: left;">Hela flödet DS-01 utan stämpel (läsa in
+två filer, välja alla, ta bort en sida, lägga till underskriften, flytta
+den, spara) går med bara tangentbord; axe-core hittar inga WCAG 2.1
+AA-fel i tillstånden tom, med resultat och spara-dialog.</td>
+<td style="text-align: left;">NFR-ACC-001, NFR-ACC-002</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AC-16</td>
+<td style="text-align: left;">Noll nätverksanrop under hela flödet, även
+från <code>file://</code>.</td>
+<td style="text-align: left;">NFR-SEC-002</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">AC-17</td>
+<td style="text-align: left;">En PDF med 100 sidor är inläst och alla
+miniatyrer visas inom 5 sekunder (mätt i Chromium i CI).</td>
+<td style="text-align: left;">NFR-PERF-002</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AC-18</td>
+<td style="text-align: left;">Alla nya texter finns i
+<code>texter.ts</code>, och inga dokumentdata hamnar i
+<code>localStorage</code>, <code>sessionStorage</code> eller
+IndexedDB.</td>
+<td style="text-align: left;">FR-ALM-006..008</td>
+</tr>
+</tbody>
+</table></div>
+<p>Skärmläsartestet med NVDA i Edge och VoiceOver i Safari är en manuell
+kontroll före release (architecture.md 8.7).</p>
+<h2 id="7-beslut">7. Beslut</h2>
+<p><strong>B1. Nya filer läggs inte automatiskt i resultatet.</strong>
+Drivare: FR-SID-002 (användaren väljer sidor) och FR-FIL-003 (val
+oförändrade vid ny fil). Alternativ: lägga till alla sidor vid
+inläsning, som skelettet gör. Det sparar ett klick när man bara slår
+ihop hela filer, men i DS-01 måste användaren då ta bort sidor i
+stället, och FR-FIL-003 bryts. Följd: skelettets e2e-test ändras så att
+det väljer "Lägg till alla sidor" först. Det är ingen försvagning;
+testet följer det nya beteendet och prövar samma sak.</p>
+<p><strong>B2. Miniatyrer och pdf.js-dokument ligger utanför
+tillståndet.</strong> Drivare: tillståndet är oföränderligt och blir
+grund för ångra (FR-ALM-001, FEAT-005). Om varje färdig miniatyr vore en
+ny version skulle ångra-historiken fyllas av ritningar. Alternativ:
+flagga vissa ändringar som "utan historik". Följd:
+<code>dokumentregister.ts</code> i ui håller dem per dokument-id och
+frigör dem när dokumentet tas bort. Inget av det sparas beständigt
+(FR-ALM-008).</p>
+<p><strong>B3. Miniatyren växlar mellan vald och ej vald.</strong>
+Drivare: FR-SID-002 och FR-SID-003 samt design.md (<code>miniatyr</code>
+med tillståndet vald). Att välja bort en vald miniatyr tar bort alla
+sidans förekomster. När FR-SID-013 (samma sida flera gånger, Could)
+byggs i FEAT-004 läggs en separat åtgärd "Lägg till igen" till;
+växlingen ändras inte.</p>
+<p><strong>B4. Löpnummer i byggprotokollet.</strong> Drivare: skelettets
+klient skriver över <code>onmessage</code> per anrop, vilket blandar
+ihop svar om två byggen skulle överlappa. Spara-knappen hindrar
+överlapp, men protokollet ska inte bero på det.</p>
+<p><strong>B5. Spara-logiken är skild från komponenterna.</strong>
+Drivare: FR-SPA-012 kräver att ett misslyckat bygge prövas, och det går
+inte att framkalla med riktiga filer i e2e utan att lägga in testkrokar
+i appen. Med <code>bygg</code> som beroende prövar ett enhetstest
+felvägen med en falsk byggfunktion.</p>
+<h2 id="8-eskaleringar-och-öppna-punkter">8. Eskaleringar och öppna
+punkter</h2>
+<ul>
+<li><strong>Ingen arkitekturändring.</strong> Alla dataändringar ligger
+inom Dokument, Resultatsida och Sparval.</li>
+<li><strong>FR-DOL-001</strong> (panelen för dold information före
+sparandet) ingår inte; den byggs i FEAT-008. Fram till dess sparar appen
+utan granskning av dold information. Det ska framgå av CHANGELOG för de
+versioner som delas för test.</li>
+<li><strong>Edge och SharePoint är inte prövade av Ägaren.</strong>
+Chromium prövas i CI och från <code>file://</code>. Ägarens prov i Edge
+och i SharePoint-testmappen står kvar som öppen risk
+(implementation-plan.md, skelettets klart-villkor).</li>
+<li><strong>Prestanda:</strong> AC-17 mäts med en ny testfil på 100
+sidor. Om kravet inte nås ritas synliga miniatyrer först
+(IntersectionObserver); det är då en ändring inom T3.</li>
+<li><strong>Ångra</strong> (FEAT-005) bygger på att varje
+<code>Andring</code> med ny <code>yta</code> blir en version i
+historiken. Inget mer behövs här.</li>
+</ul>
+<h2
+id="skärmdesign-feat-001--baka-ihop-sidor-ur-flera-filer">Skärmdesign:
+FEAT-001 – Baka ihop sidor ur flera filer</h2>
+<blockquote>
+<p>Funktion ur: docs/implementation-plan.md · Hör ihop med:
+technical-design.md Skärmar: SCR-APP-001 (kolumnerna 1 Filer och 2
+Resultat), SCR-APP-005 (delvis) · Läge: per funktion · Status: Draft ·
+Datum: 2026-11-12</p>
+</blockquote>
+<p>Ingen ankarskärm har tagits fram och manifestet var tomt, så detta är
+designsystemets första riktiga prov. Skärmarna har därför granskats mot
+design.md med ankarnoggrannhet: allt utom en liten sak gick att bygga av
+befintliga komponenter (se Eskaleringar).</p>
+<h3 id="scr-app-001--arbetsyta">SCR-APP-001 — Arbetsyta</h3>
+<ul>
+<li><strong>Strategi och källa:</strong> kodnära spec (det här avsnittet
+är designen). Inget designverktyg är kopplat.</li>
+<li><strong>Sammansättning:</strong> layouten i design.md §3. Sidhuvud
+56 px (<code>size.sidhuvud</code>) med appnamn, Tema och
+<code>knapp-primar</code> "Baka ihop och spara". Kolumn 1 Filer 300 px
+(<code>size.kolumn-filer</code>, rullar för sig). Mittkolumnen: rubrik
+"2 Resultat · N sidor", <code>resultatrad</code> 152 px
+(<code>size.resultatrad</code>), under den förhandsvisningsytan. Kolumn
+3 Märkning 340 px, synlig men med texten att märkning kommer senare.
+Statusyta 32 px längst ner. Ångra, Gör om, Börja om, Dold information,
+Hjälp och Om visas inte förrän deras funktioner byggs (FEAT-005,
+FEAT-008, FEAT-010, FEAT-011); att visa döda knappar vore
+förvirrande.</li>
+<li><strong>Innehåll och data</strong> (technical-design.md §3, §4):
+<ul>
+<li>Dokumentkort ← <code>Arbetsyta.dokument[]</code>: rubrik
+<code>namn</code>; metadata <code>texter.sidor(sidantal)</code> + " · "
++ storlek i MB med en decimal och decimalkomma ("1,2 MB", under 0,1 MB
+visas "under 0,1 MB") ← <code>storlekByte</code>.</li>
+<li>Miniatyrer ← dokumentregistret (blob-adress per sida eller "ritas");
+vald = sidan finns i <code>Arbetsyta.resultat</code>.</li>
+<li>Resultatrad ← <code>Arbetsyta.resultat[]</code> i ordning; etikett
+"P · <dokumentnamn> s. N" (P = plats från 1, N =
+<code>sidindex + 1</code>).</li>
+<li>Rubrikens antal ← <code>resultat.length</code> (FR-SID-011).</li>
+<li>Statusyta ← <code>Andring.meddelande</code> och sparutfallet.</li>
+</ul></li>
+<li><strong>Överensstämmelse:</strong> godkänd. Bara tokens och
+komponenter ur design.md; en kompletterande detalj (släppmarkering i
+resultatraden) föreslås som tillägg, se Eskaleringar.</li>
+</ul>
+<h3 id="default">default</h3>
+<p><strong>Kolumn 1 Filer</strong>, uppifrån:</p>
+<ol type="1">
+<li><code>slappyta</code>, i kompakt form när det finns dokument (höjd
+96 px: ingress-latt "Dra in fler PDF-filer här" och
+<code>knapp-sekundar</code> "Välj filer"). Hela ytan är en knapp som
+öppnar filväljaren. Släpp fungerar i hela fönstret; när en fil dras över
+fönstret får släppytan sitt drag-över-läge (heldragen kant 3 px
+<code>--ui-fokus</code>, texten "Släpp för att läsa in").</li>
+<li>Ett <code>dokumentkort</code> per dokument, i inläsningsordning,
+avstånd 16 px (<code>space.4</code>):
+<ul>
+<li>Rad 1: dokumentnamnet (mellanrubrik, bryts vid behov, aldrig
+avkortat utan <code>title</code>) och <code>ikonknapp</code> "Ta bort
+fil" (Lucide <code>trash-2</code>, <code>aria-label</code> "Ta bort
+Beslut.pdf").</li>
+<li>Rad 2: metadata "3 sidor · 1,2 MB" i dämpad text, stil
+<code>liten</code>.</li>
+<li>Rad 3: <code>knapp-sekundar</code> "Lägg till alla sidor" och "Ta
+bort ur resultatet", i rad med 8 px mellanrum; bryts till två rader om
+de inte får plats. "Lägg till alla sidor" är inaktiv med förklaringen
+"Alla sidor finns redan i resultatet." när så är fallet; "Ta bort ur
+resultatet" är inaktiv med "Inga sidor ur dokumentet finns i
+resultatet." när inga finns.</li>
+<li>Under: miniatyrrutnät, 2 per rad (88 px + 16 px mellanrum + 88 px;
+ryms i 300 px med 24 px inre marginal).</li>
+</ul></li>
+<li><code>miniatyr</code>: <code>&lt;button aria-pressed&gt;</code> med
+bilden (88 px bred, höjd efter sidans proportion), ram 2 px
+<code>--ui-kant</code>, radie 2 px, och under bilden "Sida 3" i stil
+<code>liten</code>. Tillgängligt namn "Sida 3 av 7 ur Beslut.pdf" och,
+när vald, ", vald" (FR-DOK-010). Vald: märket "Vald" i övre högra hörnet
+(bakgrund <code>--ui-valt</code>, vit liten fet text, radie 4 px) och
+ram 2 px <code>--ui-text</code>. Klick, Enter eller Mellanslag växlar
+(B3). Hover: ram <code>--ui-text</code>.</li>
+</ol>
+<p><strong>Kolumn 2 Resultat:</strong></p>
+<ol type="1">
+<li>Rubrik (kolumnrubrik) "2 Resultat · 4 sidor".</li>
+<li><code>resultatrad</code>: <code>&lt;ol&gt;</code> med
+<code>aria-label</code> "Resultatets sidor", horisontell, rullar vågrätt
+om sidorna inte får plats (rullningslisten syns). Varje
+<code>&lt;li&gt;</code> är 104 px brett med 8 px mellanrum:
+<ul>
+<li>Etikett överst "1 · Beslut.pdf s. 2" i <code>liten</code>, avkortad
+med ellips och fullständig text som <code>title</code>.</li>
+<li>Sidans bild, höjd högst 80 px, bredd efter proportion (samma
+blob-bild som miniatyren).</li>
+<li>Ikonknappar under bilden: Flytta vänster
+(<code>chevron-left</code>), Flytta höger (<code>chevron-right</code>),
+Ta bort (<code>x</code>), 32 × 32 px med 4 px mellanrum.
+<code>aria-label</code> "Flytta sida 1 ur Beslut.pdf till vänster" och
+så vidare. Flytta vänster är inaktiv på första platsen och Flytta höger
+på sista, med förklaringen "Sidan är redan först/sist."</li>
+<li>Elementet självt är fokuserbart (<code>tabindex="0"</code>) med
+namnet "Sida 2 av 3 ur Beslut.pdf, plats 1 av 4". Alt+Vänster/Höger
+(även Alt+Upp/Ner) flyttar, Delete och Backsteg tar bort. Fokus följer
+den flyttade sidan; efter borttagning flyttas fokus till sidan som tog
+dess plats, eller till föregående, eller till rubriken om raden blev
+tom.</li>
+<li>Dra och släpp: elementet är <code>draggable</code>. Under dragning
+visas en lodrät släppmarkering 3 px <code>--ui-fokus</code> mellan
+sidorna där sidan hamnar; den dragna sidan får <code>opacity .5</code>.
+Släpp utanför raden avbryter.</li>
+<li>Vrid och kryssrutorna Stämpel och Etikett ur design.md hör till
+FEAT-004, FEAT-006 och FEAT-007 och visas inte nu.</li>
+</ul></li>
+<li>Förhandsvisningsytan under raden (<code>--ui-sidyta</code> behövs
+inte än): texten "Förhandsvisningen kommer i nästa version." i dämpad
+text. Byggs i FEAT-003.</li>
+</ol>
+<p><strong>Sidhuvudet:</strong> "Baka ihop och spara" öppnar
+spara-dialogen (SCR-APP-005).</p>
+<p><strong>Statusytan:</strong> varje meddelande ur technical-design.md
+§3.1 skrivs dit.</p>
+<h3 id="startläge">startläge</h3>
+<p>Inga dokument. Kolumn 1 är en stor <code>slappyta</code> som fyller
+kolumnens höjd: ingress-latt "Dra in PDF-filer här",
+<code>knapp-sekundar</code> "Välj filer", och under den "Allt sker i din
+webbläsare. Inga filer skickas någonstans." i dämpad text. Resultatraden
+visar design.md:s tomtext. "Baka ihop och spara" är inaktiv (se tomt
+resultat). Startlägets tre steg i förhandsvisningen kommer med
+FEAT-010.</p>
+<h3 id="läser-in">läser in</h3>
+<p>Per fil som läses in visas ett kort med filnamnet och
+<code>vantindikator</code> "Läser in Beslut.pdf …" i stället för
+metadata och knappar, och kolumnen har <code>aria-busy="true"</code>
+tills alla valda filer är klara. Statusytan säger samma sak. Miniatyrer
+som ännu inte ritats visas som <em>ritas</em>-plattor
+(<code>--ui-avdelare</code>, "Ritar …") i sidans proportion när den är
+känd, annars 88 × 124 px.</p>
+<h3 id="med-filer-utan-resultat">med filer utan resultat</h3>
+<p>Som default, men resultatraden visar design.md:s tomtext: "Inga sidor
+ännu. Klicka på en miniatyr för att lägga till den." Knappen "Baka ihop
+och spara" är inaktiv.</p>
+<h3 id="med-resultat">med resultat</h3>
+<p>Default.</p>
+<h3 id="tomt-resultat-knappen-inaktiv">tomt resultat (knappen
+inaktiv)</h3>
+<p>"Baka ihop och spara" har <code>aria-disabled="true"</code>,
+<code>opacity .5</code> och <code>aria-describedby</code> till en synlig
+text under knappen i sidhuvudet: "Välj minst en sida först."
+(FR-SPA-010). Klick gör ingenting. Texten ersätter skelettets "Läs in
+minst en PDF-fil först." när det finns filer men inga valda sidor; utan
+filer gäller skelettets text.</p>
+<h3 id="fel-i-område">fel i område</h3>
+<p>En fil som inte går att läsa in ger ett <code>meddelande</code> (fel)
+överst i kolumn 1 med <code>role="alert"</code>, fet första mening med
+filnamnet och sedan vad man kan göra
+(<code>texter.kundeInteLasas</code>). Flera fel visas som flera
+meddelanden, vart och ett med stängknapp. Övriga dokument påverkas
+inte.</p>
+<h3 id="ritfel-för-en-sida">ritfel för en sida</h3>
+<p>Miniatyren visar en platta <code>--ui-avdelare</code> med texten
+"Sidan kunde inte visas". Den kan ändå väljas och sparas; sidan kopieras
+orörd.</p>
+<ul>
+<li><strong>Bredd:</strong> design.md §3 gäller (från 1 280 px; smalare
+fönster rullar vågrätt). Ingen särskild anpassning.</li>
+<li><strong>Beslut:</strong>
+<ul>
+<li><em>Dolda verktyg i sidhuvudet.</em> Drivare: knappar som inte gör
+något strider mot FV-001 (begripligt för ovana). Avvisat: visa dem
+inaktiva med "kommer senare".</li>
+<li><em>Resultatradens bilder 80 px höga.</em> Drivare: 152 px rad =
+etikett 20 + bild 80 + knappar 32 + mellanrum 20. Avvisat: miniatyrens
+88 px bredd, som ger för höga sidor för raden.</li>
+</ul></li>
+</ul>
+<h3 id="scr-app-005--spara-dialog">SCR-APP-005 — Spara (dialog)</h3>
+<ul>
+<li><strong>Strategi och källa:</strong> kodnära spec (det här avsnittet
+är designen).</li>
+<li><strong>Sammansättning:</strong> <code>dialog</code> 560 px.
+Mellanrubrik "Baka ihop och spara". Text: "Resultatet har 4 sidor ur 2
+filer." <code>textfalt</code> "Filnamn" med hjälptexten "Filen sparas
+där webbläsaren sparar nedladdningar. Ändelsen .pdf läggs till om den
+saknas." Knapprad nertill höger: <code>knapp-sekundar</code> "Avbryt",
+<code>knapp-primar</code> "Spara".</li>
+<li><strong>Innehåll och data:</strong> filnamnsfältet ←
+<code>foreslaFilnamn(yta)</code>; vid Spara: <code>stadaFilnamn</code> →
+<code>sparaResultat</code> (technical-design.md §3.4). Antal sidor och
+filer ← <code>resultat.length</code> och antalet olika
+<code>dokumentId</code>.</li>
+<li><strong>Överensstämmelse:</strong> godkänd.</li>
+</ul>
+<h3 id="redo">redo</h3>
+<p>Dialogen öppnas med fokus i filnamnsfältet och namnet markerat utom
+".pdf". Enter i fältet = Spara. Esc och Avbryt stänger utan att något
+händer, och fokus går tillbaka till "Baka ihop och spara".</p>
+<h3 id="sparar">sparar</h3>
+<p>Fältet och båda knapparna är <code>aria-disabled</code>, dialogens
+innehåll har <code>aria-busy="true"</code>, och en
+<code>vantindikator</code> "Skapar filen …" visas ovanför knappraden
+(FR-SPA-011). Esc gör ingenting medan filen skapas. Statusytan säger
+"Skapar filen …".</p>
+<h3 id="sparad">sparad</h3>
+<p>Dialogen stängs, webbläsaren tar emot filen, statusytan säger "Sparad
+som beslut-ihopbakad.pdf." och fokus går tillbaka till "Baka ihop och
+spara". Arbetsytan är oförändrad (FR-SPA-013). Nästa gång dialogen
+öppnas föreslås samma namn.</p>
+<h3 id="fel">fel</h3>
+<p>Dialogen stannar öppen. Ett <code>meddelande</code> (fel,
+<code>role="alert"</code>) visas överst i dialogen med
+<code>texter.sparFel</code>. Fältet och knapparna blir aktiva igen så
+att användaren kan försöka igen eller avbryta. Arbetsytan är oförändrad
+(FR-SPA-012).</p>
+<h3 id="filnamn-ändrat-till-ogiltigt">filnamn ändrat till ogiltigt</h3>
+<p>Det finns inget ogiltigt läge: otillåtna tecken tas bort och tomt
+namn ersätts med förslaget när användaren sparar. Det sparade namnet
+står i statusytan, så användaren ser vad det blev.</p>
+<ul>
+<li><strong>Beslut:</strong>
+<ul>
+<li><em>Felet visas i dialogen, inte på arbetsytan.</em> Drivare:
+användaren är kvar i sparflödet och kan försöka igen direkt (UC-007 4b).
+Avvisat: stänga dialogen och visa felet i sidhuvudet.</li>
+<li><em>Läget "kontrollerar" och valet av format</em> ur
+skärmförteckningen hör till FEAT-009 (PDF/A-förkontroll) och finns inte
+än.</li>
+</ul></li>
+</ul>
+<h3 id="gemensamma-beslut">Gemensamma beslut</h3>
+<ul>
+<li><strong>Ikoner:</strong> Lucide (<code>trash-2</code>,
+<code>chevron-left</code>, <code>chevron-right</code>, <code>x</code>)
+som inbakade SVG med <code>currentColor</code>, 20 px,
+<code>aria-hidden="true"</code>; namnet sitter på knappen. Lucide har
+ISC-licens, som finns på vitlistan. Ikonerna kopieras in som SVG-filer i
+<code>src/resurser/ikoner/</code> med licensfil, inget nytt
+npm-beroende.</li>
+<li><strong>Meddelanden:</strong> alla texter i
+<code>src/karna/texter.ts</code>. Nya texter: "Dra in fler PDF-filer
+här", "Släpp för att läsa in", "Lägg till alla sidor", "Ta bort ur
+resultatet", "Ta bort <fil>", "Välj minst en sida först.", "Alla sidor
+finns redan i resultatet.", "Inga sidor ur dokumentet finns i
+resultatet.", "Sidan kunde inte visas", "Förhandsvisningen kommer i
+nästa version.", dialogtexterna ovan och meddelandena i
+technical-design.md §3.1.</li>
+<li><strong>Tangentbord i hela flödet:</strong> Tab-ordning sidhuvud →
+släppyta → per dokument (Ta bort fil, Lägg till alla, Ta bort ur
+resultatet, miniatyrerna i ordning) → resultatraden (sidorna, och inom
+varje sida dess knappar) → statusyta.</li>
+</ul>
+<h3 id="eskaleringar-och-öppna-punkter">Eskaleringar och öppna
+punkter</h3>
+<ul>
+<li><strong>Förslag till tillägg i design.md (inte
+blockerande):</strong> <code>resultatrad</code> beskriver inte hur
+platsen markeras under dra och släpp. Förslag: "Under dragning visas en
+lodrät släppmarkering 3 px <code>--ui-fokus</code> mellan sidorna; den
+dragna sidan får <code>opacity .5</code>." Samma färg och tjocklek som
+släppytans drag-över-läge, alltså inga nya värden. Förs in i design.md
+när ux-foundations ändras nästa gång; skärmen ovan använder redan
+formuleringen.</li>
+<li><strong>Verktyg i sidhuvudet</strong> (Ångra, Gör om, Börja om, Dold
+information, Hjälp, Om) kommer med sina funktioner.</li>
+<li><strong>Startlägets tre steg</strong> och förhandsvisningen kommer
+med FEAT-010 och FEAT-003.</li>
+</ul>
+<h2 id="uppgifter-feat-001--baka-ihop-sidor-ur-flera-filer">Uppgifter:
+FEAT-001 – Baka ihop sidor ur flera filer</h2>
+<blockquote>
+<p>Genomför: docs/features/FEAT-001-baka-ihop/technical-design.md (och
+ui-design.md för skärmarna) Status per uppgift: ej påbörjad / pågår /
+klar · Senast uppdaterad: 2026-11-12</p>
+</blockquote>
+<ul class="task-list">
+<li><label><input type="checkbox" />T1 – Typer och tillstånd:
+<code>Resultatsida.id</code>, <code>Dokument.storlekByte</code>,
+<code>Arbetsyta.sparval</code>; ta bort <code>forstaMiniatyr</code> och
+<code>uppdateraDokument</code> (design §4; B1, B2) Klart när:
+<code>npm run typkontroll</code> och befintliga enhetstester går igenom;
+<code>tests/enhet/tillstand.test.ts</code> prövar att id:n är unika och
+att <code>uniktNamn</code> ger löpnummer.</label></li>
+<li><label><input type="checkbox" />T2 – Arbetsyteoperationer i
+<code>src/karna/arbetsyta.ts</code> med meddelanden i
+<code>texter.ts</code> (design §3.1; FR-FIL-003, FR-FIL-005,
+FR-SID-002..009, FR-SID-014) Klart när: enhetstester för AC-3, AC-4,
+AC-6, AC-7, AC-9 (flytt och borttagning, även vid kanterna och med okänt
+id) och AC-10 (meddelandenas innehåll) går igenom.</label></li>
+<li><label><input type="checkbox" />T3 – Miniatyrkö och
+<code>stangPdf</code> i <code>src/las/</code>,
+<code>dokumentregister.ts</code> i <code>src/ui/</code>; ny testfil med
+100 sidor i <code>scripts/skapa-testfiler.mjs</code> (design §3.2, §5;
+FR-SID-001, NFR-PERF-002) Klart när: ett e2e-test läser in
+100-sidorsfilen och ser alla miniatyrer inom 5 sekunder i Chromium
+(AC-17), och borttaget dokument frigör sina blob-adresser (kontrolleras
+i samma test via antalet <code>img</code> med
+<code>blob:</code>).</label></li>
+<li><label><input type="checkbox" />T4 – Byggprotokoll med löpnummer och
+<code>Byggfel</code> i
+<code>bygg-klient.ts</code>/<code>bygg-arbetstrad.ts</code>;
+<code>src/ui/spara.ts</code> med <code>foreslaFilnamn</code>,
+<code>stadaFilnamn</code>, <code>sparaResultat</code> (design §3.3,
+§3.4; FR-SPA-001, FR-SPA-002, FR-SPA-012, FR-SPA-013; B4, B5) Klart när:
+enhetstester för AC-12 (förslag, städning, ändelse, tomt namn, löpnummer
+bort) och AC-14 (falsk <code>bygg</code> som kastar: utfallet är fel och
+arbetsytan samma objekt) går igenom; <code>export.test.ts</code> (AC-13,
+R8) går fortfarande igenom.</label></li>
+<li><label><input type="checkbox" />T5 – Inläsning i
+<code>src/ui/inlasning.ts</code> med filväljare och släpp i hela
+fönstret (design §3.5; FR-FIL-001, FR-FIL-002) Klart när: inläsningen
+fungerar från filväljaren och från ett släpp i e2e (AC-1, AC-2), och ett
+fel i en fil lämnar övriga orörda.</label></li>
+<li><label><input type="checkbox" />T6 – Gränssnittet enligt
+ui-design.md: släppyta, dokumentkort med knappar, miniatyrrutnät,
+resultatrad med dra och släpp, knappar och kortkommandon, spara-dialog,
+statusyta (design §5; SCR-APP-001, SCR-APP-005) Klart när: skärmarna
+visas enligt ui-design.md i mörkt och ljust tema, och all logik går
+genom <code>arbetsyta.ts</code> och <code>spara.ts</code> (inga
+tillståndsändringar direkt i komponenterna).</label></li>
+<li><label><input type="checkbox" />T7 – E2E för DS-01 utan stämpel
+(UC-001, UC-002, UC-007): ett test med mus och dra och släpp, ett med
+bara tangentbord; skelettets test anpassas till B1 (design §6) Klart
+när: testen prövar AC-1..AC-16 i Chromium lokalt och i Chromium och
+WebKit i CI; den sparade filens sidor jämförs med källsidorna byte för
+byte och i rätt ordning; axe-core utan fel i tillstånden tom, med
+resultat och spara-dialog; noll nätverksanrop, även från
+<code>file://</code>.</label></li>
+<li><label><input type="checkbox" />T8 – Verifiering: alla
+acceptanskriterier i design §6 visade; <code>npm test</code> grönt (lint
+med gränser och R1/R3, enhet, bygge med R2/R7, licenser, sårbarheter,
+e2e); CI grönt; CHANGELOG och version 0.2.0 Klart när: allt ovan är
+grönt och acceptansrapporten kan skrivas (grind G5).</label></li>
+</ul>
+
+</main>

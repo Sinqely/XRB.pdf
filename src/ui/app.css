@@ -1,0 +1,245 @@
+/* Gränssnittet för PDF-bagaren. Alla värden via tokens (docs/design.md §2), genererade i tokens.css. */
+@font-face { font-family: Carlito; font-weight: 400; font-style: normal; src: url('../resurser/typsnitt/Carlito-400-normal.woff2') format('woff2'); }
+@font-face { font-family: Carlito; font-weight: 400; font-style: italic; src: url('../resurser/typsnitt/Carlito-400-italic.woff2') format('woff2'); }
+@font-face { font-family: Carlito; font-weight: 700; font-style: normal; src: url('../resurser/typsnitt/Carlito-700-normal.woff2') format('woff2'); }
+@font-face { font-family: Carlito; font-weight: 700; font-style: italic; src: url('../resurser/typsnitt/Carlito-700-italic.woff2') format('woff2'); }
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body { background: var(--ui-bakgrund); color: var(--ui-text); font: var(--text-brodtext); }
+p, h2, h3, ul, ol { margin: 0; }
+#app { height: 100%; }
+.app { display: grid; grid-template-rows: var(--storlek-sidhuvud-hojd) 1fr 32px; height: 100%; min-width: 1280px; }
+
+.ikon { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+.dampad { color: var(--ui-text-dampad); }
+.liten { font: var(--text-liten); }
+.ingress { font: var(--text-ingress); }
+.ingress-latt { font: var(--text-ingress-latt); }
+.mellanrubrik { font: var(--text-mellanrubrik); }
+.dold-for-oga { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* Sidhuvud */
+.sidhuvud { display: flex; align-items: center; justify-content: space-between; padding: 0 var(--space-6); }
+.appnamn { display: flex; align-items: center; gap: var(--space-3); font: var(--text-kolumnrubrik); }
+.logga { width: 28px; height: 28px; border-radius: var(--radie-kontroll); background: var(--ui-primar); color: var(--ui-primar-text); display: grid; place-items: center; }
+.verktyg { display: flex; align-items: center; gap: var(--space-4); }
+
+/* Kolumner */
+.kolumner { display: grid; grid-template-columns: var(--storlek-kolumn-filer) 1fr var(--storlek-kolumn-markning); gap: var(--space-4); padding: 0 var(--space-4) var(--space-4); min-height: 0; }
+.kolumn { background: var(--ui-yta); border-radius: var(--radie-panel); padding: var(--space-6) var(--space-4); overflow-y: auto; display: flex; flex-direction: column; gap: var(--space-4); min-width: 0; }
+.kolumn-mitt { overflow: hidden; }
+.kolumnrubrik { font: var(--text-kolumnrubrik); display: flex; align-items: center; gap: var(--space-3); }
+.kolumnrubrik:focus-visible { outline-offset: var(--space-1); }
+.steg { width: 26px; height: 26px; border-radius: 50%; background: var(--ui-text); color: var(--ui-yta); display: grid; place-items: center; font: var(--text-liten); font-weight: 700; flex: none; }
+.rubrikantal { margin-left: auto; font: var(--text-liten); color: var(--ui-text-dampad); }
+
+/* Knappar (design.md §4) */
+.knapp-primar, .knapp-sekundar, .knapp-text { font: var(--text-brodtext); min-height: var(--storlek-kontroll-hojd); padding: 0 var(--space-4); border-radius: var(--radie-kontroll); cursor: pointer; display: inline-flex; align-items: center; gap: var(--space-2); transition: box-shadow var(--tid-snabb), background var(--tid-snabb); }
+.knapp-primar { background: var(--ui-primar); color: var(--ui-primar-text); border: 0; font-weight: 700; }
+.knapp-primar:hover { box-shadow: inset 0 0 0 2px var(--ui-primar-text); }
+.knapp-sekundar { background: transparent; color: var(--ui-text); border: var(--storlek-kant-bredd) solid var(--ui-kant); }
+.knapp-sekundar:hover { background: var(--ui-bakgrund); }
+.knapp-liten { min-height: var(--storlek-kontroll-min); padding: 0 var(--space-3); font: var(--text-liten); }
+.knapp-text { background: transparent; color: var(--ui-text); border: 0; }
+.knapp-text:hover { text-decoration: underline; }
+.ikonknapp { width: var(--storlek-kontroll-min); height: var(--storlek-kontroll-min); padding: 0; flex: none; display: grid; place-items: center; background: transparent; color: var(--ui-text); border: var(--storlek-kant-bredd) solid var(--ui-kant); border-radius: var(--radie-kontroll); cursor: pointer; }
+.ikonknapp:hover { background: var(--ui-bakgrund); }
+.ikonknapp-liten { width: 28px; height: 28px; }
+[aria-disabled="true"] { opacity: .5; cursor: not-allowed; box-shadow: none !important; }
+:focus-visible { outline: var(--storlek-fokus-bredd) solid var(--ui-fokus); outline-offset: var(--storlek-fokus-avstand); }
+
+/* Släppyta */
+.slappyta { display: flex; align-items: center; gap: var(--space-3); width: 100%; text-align: left; padding: var(--space-4); border: var(--storlek-kant-bredd) dashed var(--ui-kant); border-radius: var(--radie-panel); background: transparent; color: var(--ui-text); font: var(--text-liten); cursor: pointer; }
+.slappyta > span { display: grid; }
+.slappyta strong { font: var(--text-brodtext); font-weight: 700; }
+.slappyta .ikon { color: var(--ui-text-dampad); }
+.slappyta:hover { background: var(--ui-bakgrund); }
+.slappyta-stor { flex-direction: column; justify-content: center; text-align: center; min-height: 240px; }
+.slappyta-stor > span { justify-items: center; }
+.slappyta-drag { border: var(--storlek-fokus-bredd) solid var(--ui-fokus); }
+
+/* Dokumentkort och miniatyrer */
+.dokumentlista { list-style: none; padding: 0; display: flex; flex-direction: column; gap: var(--space-4); }
+.dokumentkort { border-top: 1px solid var(--ui-avdelare); padding-top: var(--space-4); display: grid; gap: var(--space-3); }
+.dokumenthuvud { display: flex; align-items: flex-start; gap: var(--space-2); }
+.dokumenthuvud > div { flex: 1; min-width: 0; }
+.dokumentnamn { font: var(--text-brodtext); font-weight: 700; overflow-wrap: anywhere; }
+.knapprad { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.miniatyrnat { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(2, var(--storlek-miniatyr-bredd)); gap: var(--space-3) var(--space-4); }
+.miniatyr { position: relative; display: grid; gap: var(--space-1); width: var(--storlek-miniatyr-bredd); padding: 0; background: none; border: 0; color: var(--ui-text-dampad); font: var(--text-liten); text-align: left; cursor: pointer; }
+.miniatyr .sidbild { width: 100%; border: var(--storlek-kant-bredd) solid var(--ui-kant); border-radius: var(--radie-liten); }
+.miniatyr:hover .sidbild { border-color: var(--ui-text); }
+.miniatyr.vald .sidbild { border-color: var(--ui-text); outline: var(--storlek-kant-bredd) solid var(--ui-text); }
+.valdmarke { position: absolute; top: calc(-1 * var(--space-2)); right: calc(-1 * var(--space-2)); display: flex; align-items: center; gap: 2px; padding: 2px var(--space-2); background: var(--ui-valt); color: var(--ui-primar-text); border: var(--storlek-kant-bredd) solid var(--ui-yta); border-radius: var(--radie-kontroll); font: var(--text-liten); font-weight: 700; }
+.sidbild { display: block; }
+.sidbild-platta { display: grid; place-items: center; aspect-ratio: 210 / 297; background: var(--ui-avdelare); color: var(--ui-text); font: var(--text-liten); text-align: center; padding: var(--space-1); }
+
+/* Resultatrad */
+.resultat { display: grid; gap: var(--space-3); }
+.resultattom { min-height: 80px; display: grid; align-items: center; }
+.resultatrad { list-style: none; padding: var(--space-1) var(--space-1) var(--space-2); display: flex; gap: var(--space-2); overflow-x: auto; min-height: var(--storlek-resultatrad-hojd); align-items: stretch; }
+.resultatsida { flex: none; width: 104px; display: grid; justify-items: center; align-content: start; gap: var(--space-1); padding: var(--space-1); border-radius: var(--radie-panel); font: var(--text-liten); cursor: grab; }
+.resultatsida.dras { opacity: .5; }
+.resultatsida .sidbild { height: 80px; width: auto; max-width: 100%; border: var(--storlek-kant-bredd) solid var(--ui-kant); border-radius: var(--radie-liten); }
+.resultatsida .sidbild-platta { width: 57px; }
+.resultatetikett { width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; color: var(--ui-text-dampad); }
+.resultatetikett strong { color: var(--ui-text); }
+.ikonrad { display: flex; gap: var(--space-1); }
+.slappmarkor { flex: none; width: var(--storlek-fokus-bredd); background: var(--ui-fokus); border-radius: var(--radie-liten); }
+.forhandsvisning-plats { flex: 1; display: grid; place-items: center; text-align: center; padding: var(--space-6); border-radius: var(--radie-panel); background: var(--ui-bakgrund); color: var(--ui-text-dampad); font: var(--text-ingress-latt); }
+
+/* Meddelanden, väntindikator, statusyta */
+.meddelande { display: flex; gap: var(--space-2); align-items: flex-start; border-radius: var(--radie-panel); padding: var(--space-3); border: var(--storlek-kant-bredd) solid var(--ui-markering); }
+.meddelande p { flex: 1; }
+.meddelande > div { flex: 1; display: grid; gap: var(--space-1); }
+.valgrupp { display: grid; gap: var(--space-2); margin: 0; padding: 0; border: 0; min-width: 0; }
+.valgrupp legend { padding: 0; margin-bottom: var(--space-1); }
+.val { display: flex; gap: var(--space-2); align-items: flex-start; cursor: pointer; }
+.val input { width: 20px; height: 20px; margin: 2px 0 0; accent-color: var(--ui-valt); flex: none; }
+.blocktext { display: block; }
+.hinderlista { margin: 0; padding-left: var(--space-6); display: grid; gap: var(--space-2); max-height: 40vh; overflow-y: auto; }
+.hinderlista ul { margin: var(--space-1) 0 0; padding-left: var(--space-6); }
+.meddelande-fel { background: var(--ui-fel-yta); border-color: var(--ui-fel); }
+.vantindikator { display: flex; align-items: center; gap: var(--space-2); font: var(--text-liten); }
+.snurra { width: 20px; height: 20px; border-radius: 50%; border: var(--storlek-kant-bredd) solid var(--ui-avdelare); border-top-color: var(--ui-text); animation: snurra 0.8s linear infinite; }
+@keyframes snurra { to { transform: rotate(360deg); } }
+.statusyta { display: flex; align-items: center; gap: var(--space-2); font: var(--text-liten); color: var(--ui-text-dampad); padding: 0 var(--space-6); }
+
+/* Dialog */
+.dialog { width: 560px; max-width: calc(100vw - 32px); padding: var(--space-6); border: 0; border-radius: var(--radie-panel); background: var(--ui-yta); color: var(--ui-text); box-shadow: 0 8px 32px rgba(0, 0, 0, .4); }
+.dialog::backdrop { background: rgba(0, 0, 0, .6); }
+.dialog form { display: grid; gap: var(--space-4); }
+.falt { display: grid; gap: var(--space-1); }
+.faltetikett { font-weight: 700; }
+.textfalt { height: var(--storlek-kontroll-hojd); padding: 0 var(--space-3); font: var(--text-brodtext); color: var(--ui-text); background: var(--ui-bakgrund); border: var(--storlek-kant-bredd) solid var(--ui-kant); border-radius: var(--radie-kontroll); }
+.dialogknappar { display: flex; justify-content: flex-end; gap: var(--space-2); }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+/* Förhandsvisning (FEAT-003) */
+.forhandsvisning { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: var(--space-2); }
+.forhandsvisning-yta { flex: 1; min-height: 0; overflow: auto; display: grid; place-items: center; padding: var(--space-6); border-radius: var(--radie-panel); background: var(--ui-sidyta); }
+.sidram { position: relative; box-shadow: 0 2px 12px rgba(0, 0, 0, .35); }
+.sidram canvas { display: block; }
+.forhandsvisning-fot { display: flex; align-items: center; gap: var(--space-2); font: var(--text-liten); }
+.sidinfo { flex: 1; text-align: center; }
+.skalval { display: flex; align-items: center; gap: var(--space-2); }
+.forhandsvisning-tom { justify-content: center; padding: var(--space-6); border-radius: var(--radie-panel); background: var(--ui-bakgrund); }
+.tre-steg { display: grid; gap: var(--space-4); max-width: 520px; margin: 0 auto; padding-left: 0; list-style: none; font: var(--text-ingress-latt); }
+.tre-steg strong { font-style: normal; display: block; }
+.resultatsida { cursor: pointer; }
+.resultatsida.aktiv { outline: var(--storlek-fokus-bredd) solid var(--ui-text); outline-offset: 0; }
+.resultatsida.aktiv:focus-visible { outline-color: var(--ui-fokus); }
+.verktygsgrupp { display: flex; gap: var(--space-1); margin-right: var(--space-4); }
+.dialoginnehall { display: grid; gap: var(--space-4); }
+
+/* FEAT-006 Märkning: flikar, paneler, placeringsväljare och överlägg (docs/design.md §4) */
+.flikar { display: flex; }
+.flik { flex: 1; height: var(--storlek-kontroll-hojd); font: var(--text-brodtext); color: var(--ui-text); background: transparent; border: 0; border-bottom: var(--storlek-kant-bredd) solid var(--ui-avdelare); cursor: pointer; }
+.flik[aria-selected='true'] { background: var(--ui-valt); color: var(--ui-primar-text); font-weight: 700; border-radius: var(--radie-kontroll) var(--radie-kontroll) 0 0; }
+.flikpanel { display: grid; gap: var(--space-4); }
+.markningspanel { display: grid; gap: var(--space-4); border-radius: var(--radie-panel); }
+.markningspanel.drag-over { outline: var(--storlek-fokus-bredd) solid var(--ui-fokus); outline-offset: var(--storlek-fokus-avstand); }
+.bildval { display: grid; gap: var(--space-2); justify-items: start; padding: var(--space-4); border: var(--storlek-kant-bredd) dashed var(--ui-kant); border-radius: var(--radie-panel); }
+.stampelbild { display: flex; gap: var(--space-3); align-items: center; }
+.stampelbild img { width: 64px; height: 64px; object-fit: contain; flex: none; border: var(--storlek-kant-bredd) solid var(--ui-avdelare); border-radius: var(--radie-liten); background: repeating-conic-gradient(var(--ui-avdelare) 0 25%, transparent 0 50%) 0 0 / 12px 12px; }
+.brytbar { overflow-wrap: anywhere; }
+.reglage { display: flex; gap: var(--space-2); align-items: center; }
+.reglage input[type='range'] { flex: 1; accent-color: var(--ui-text); min-width: 0; }
+.sifferfalt { width: 88px; }
+.placering { display: grid; gap: var(--space-2); }
+.placeringsvaljare { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-1); width: 150px; padding: var(--space-1); border: var(--storlek-kant-bredd) solid var(--ui-kant); border-radius: var(--radie-liten); background: var(--ui-bakgrund); }
+.placeringsknapp { height: var(--storlek-kontroll-min); display: grid; padding: var(--space-1); background: transparent; border: var(--storlek-kant-bredd) solid var(--ui-avdelare); border-radius: var(--radie-liten); cursor: pointer; }
+.placeringsknapp span { width: 12px; height: 8px; background: var(--ui-text); border-radius: 1px; }
+.placering-ovre-vanster span, .placering-nedre-vanster span { justify-self: start; }
+.placering-sidhuvud span, .placering-sidfot span { justify-self: center; }
+.placering-ovre-hoger span, .placering-nedre-hoger span { justify-self: end; }
+.placering-ovre-vanster span, .placering-sidhuvud span, .placering-ovre-hoger span { align-self: start; }
+.placering-nedre-vanster span, .placering-sidfot span, .placering-nedre-hoger span { align-self: end; }
+.placeringsknapp[aria-checked='true'] { background: var(--ui-valt); border-color: var(--ui-text); }
+.placeringsknapp[aria-checked='true'] span { background: var(--ui-primar-text); }
+.kryssrad { display: flex; gap: var(--space-2); }
+.kryss { display: inline-flex; gap: 2px; align-items: center; cursor: pointer; }
+.kryss input { margin: 0; accent-color: var(--ui-valt); }
+.overlagg { position: absolute; inset: 0; }
+.marginal { position: absolute; inset: 0; pointer-events: none; }
+.marginal rect { fill: none; stroke-width: 1; }
+.marginal-b { stroke: var(--ui-marginal-b); }
+.marginal-a { stroke: var(--ui-marginal-a); stroke-dasharray: 4 4; }
+.overlaggsobjekt { position: absolute; cursor: move; touch-action: none; user-select: none; }
+.overlaggsobjekt img { display: block; width: 100%; height: 100%; pointer-events: none; }
+.overlaggsobjekt:hover { outline: var(--storlek-kant-bredd) solid var(--ui-marginal-b); }
+.overlaggsobjekt:focus-visible, .overlaggsobjekt:focus { outline: var(--storlek-kant-bredd) solid var(--ui-marginal-b); box-shadow: 0 0 0 4px var(--ui-marginal-a); }
+.handtag { position: absolute; width: 12px; height: 12px; background: var(--ui-marginal-b); border: var(--storlek-kant-bredd) solid var(--ui-marginal-a); display: none; }
+.overlaggsobjekt:hover .handtag, .overlaggsobjekt:focus .handtag { display: block; }
+.handtag-nw { left: -6px; top: -6px; cursor: nwse-resize; }
+.handtag-se { right: -6px; bottom: -6px; cursor: nwse-resize; }
+.handtag-ne { right: -6px; top: -6px; cursor: nesw-resize; }
+.handtag-sw { left: -6px; bottom: -6px; cursor: nesw-resize; }
+
+/* FEAT-007 Textetikett */
+.etikett-objekt svg { display: block; overflow: visible; pointer-events: none; }
+.etikett-text { white-space: pre; font-kerning: none; font-variant-ligatures: none; font-feature-settings: 'kern' 0, 'liga' 0, 'clig' 0, 'calt' 0; text-rendering: geometricPrecision; }
+.faltrad { display: flex; justify-content: space-between; gap: var(--space-2); }
+.valgrupp-rad { grid-auto-flow: column; justify-content: start; gap: var(--space-4); }
+.fargval { display: grid; gap: var(--space-2); }
+.fargrutor { display: flex; flex-wrap: wrap; gap: var(--space-1); }
+.fargruta { width: var(--storlek-kontroll-min); height: var(--storlek-kontroll-min); display: grid; place-items: center; padding: 0; border: var(--storlek-kant-bredd) solid var(--ui-kant); border-radius: var(--radie-kontroll); cursor: pointer; color: var(--ui-primar-text); }
+.fargruta .ikon { filter: drop-shadow(0 0 1px #000) drop-shadow(0 0 1px #000); }
+.fargruta[aria-checked='true'] { border-width: var(--storlek-fokus-bredd); border-color: var(--ui-text); }
+.fargruta-ingen { background: linear-gradient(to top right, transparent calc(50% - 1px), var(--ui-fel) calc(50% - 1px), var(--ui-fel) calc(50% + 1px), transparent calc(50% + 1px)), var(--ui-bakgrund); }
+.egenfarg { display: inline-flex; gap: var(--space-2); align-items: center; cursor: pointer; }
+.egenfarg input { width: 40px; height: var(--storlek-kontroll-min); padding: 0; border: var(--storlek-kant-bredd) solid var(--ui-kant); border-radius: var(--radie-kontroll); background: transparent; }
+.egenfarg.vald input { border-width: var(--storlek-fokus-bredd); border-color: var(--ui-text); }
+
+/* Dold information SCR-APP-004 (FEAT-008) */
+.dialog-stor { width: 880px; }
+.dold-innehall { display: grid; gap: var(--space-6); max-height: min(60vh, 640px); overflow-y: auto; padding-right: var(--space-2); }
+.dold-del { display: grid; gap: var(--space-3); padding-top: var(--space-4); border-top: var(--storlek-kant-bredd) solid var(--ui-kant); }
+.dold-del:first-child { padding-top: 0; border-top: 0; }
+.underrubrik { font: var(--text-kolumnrubrik); margin: 0; }
+.dold-uppgifter { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4); }
+.dold-info { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--space-2) var(--space-4); margin: 0; }
+.dold-info dt { font: var(--text-liten); color: var(--ui-text-dampad); }
+.dold-info dd { margin: 0; }
+.dold-lista { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-3); }
+.dold-lista li { display: grid; gap: var(--space-1); }
+.dold-lista li.borttagen .textyta { text-decoration: line-through; }
+.dold-skript { margin: var(--space-1) 0 0; padding-left: var(--space-6); }
+.textyta { height: auto; min-height: calc(var(--storlek-kontroll-hojd) * 1.5); padding: var(--space-2) var(--space-3); resize: vertical; }
+
+/* Hjälp SCR-APP-008 och kortkommandon SCR-APP-013 (FEAT-010) */
+.visuellt-dold { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.kolumnhuvud { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); }
+.hjalp-innehall { display: grid; gap: var(--space-4); max-height: min(60vh, 640px); overflow-y: auto; padding-right: var(--space-2); }
+.hjalp-innehall section { display: grid; gap: var(--space-2); }
+.hjalp-innehall p { margin: 0; }
+.hjalp-steg { margin: 0; padding-left: var(--space-6); display: grid; gap: var(--space-1); }
+.kortkommandon { display: grid; gap: var(--space-4); }
+.kortkommandotabell { border-collapse: collapse; width: 100%; }
+.kortkommandotabell caption { text-align: left; padding-bottom: var(--space-1); }
+.kortkommandotabell th, .kortkommandotabell td { text-align: left; padding: var(--space-1) var(--space-2) var(--space-1) 0; vertical-align: top; border-top: var(--storlek-kant-bredd) solid var(--ui-kant); font-weight: 400; }
+.kortkommandotabell th { width: 45%; }
+kbd { font: inherit; font-weight: 700; }
+
+/* Om PDF-bagaren SCR-APP-009..011 (FEAT-011) */
+.om-version { font: var(--text-ingress-latt); }
+.licenstabell, .dokumenttext table { border-collapse: collapse; width: 100%; }
+.licenstabell th, .licenstabell td, .dokumenttext th, .dokumenttext td { text-align: left; vertical-align: top; padding: var(--space-2) var(--space-2) var(--space-2) 0; border-top: var(--storlek-kant-bredd) solid var(--ui-kant); }
+.licenstabell tbody th, .dokumenttext tbody th { font-weight: 400; }
+.licenstabell summary { cursor: pointer; font-weight: 700; }
+.licenstext { white-space: pre-wrap; font: var(--text-liten); max-height: 240px; overflow-y: auto; margin: var(--space-2) 0 0; }
+.dokumenttext { display: grid; gap: var(--space-3); }
+.dokumenttext h3 { font: var(--text-kolumnrubrik); margin: var(--space-2) 0 0; }
+.dokumenttext p, .dokumenttext ul { margin: 0; }
+.dokumenttext ul { padding-left: var(--space-6); }
+.tabellyta { overflow-x: auto; }
+
+/* Vrida och stor visning SCR-APP-007 (FEAT-004) */
+.storvisning-yta { display: grid; place-items: center; overflow: auto; max-height: 80vh; }
+.storvisning-yta canvas { box-shadow: 0 0 0 var(--storlek-kant-bredd) var(--ui-kant); }
+.sidatgarder { display: flex; gap: var(--space-1); align-items: center; }
+.miniatyrnat li { position: relative; }
+.forstora { position: absolute; top: var(--space-1); right: var(--space-1); width: 28px; height: 28px; min-width: 0; background: var(--ui-yta); }
+.resultatsida .sidbild-vriden { transition: transform .15s; }

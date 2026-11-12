@@ -1,0 +1,57 @@
+# Bygger och testar PDF-bagaren vid varje ändring (ADR-009). Inget publiceras härifrån;
+# Ägaren laddar själv upp dist/index.html till SharePoint (ADR-010).
+name: CI
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  bygg-och-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: maven
+          cache-dependency-path: verktyg/verapdf/pom.xml
+      - name: Hämta veraPDF för PDF/A-kontroll (ADR-005; testverktyg, bakas inte in)
+        run: mvn -q -B dependency:copy-dependencies -DoutputDirectory=lib -DincludeScope=runtime
+        working-directory: verktyg/verapdf
+      - name: Lint och arkitekturregler (R1, R3, gränser)
+        run: npm run lint
+      - name: Enhetstester
+        run: npm run test:enhet
+      - name: Bygg en HTML-fil med CSP (R2, R7, filstorlek)
+        run: npm run build
+      - name: Licenser (NFR-LEG-001, R5)
+        run: npm run licenser
+      - name: Sårbarheter i inbakade bibliotek (NFR-SEC-004)
+        run: npm run sarbarheter
+      - name: Installera webbläsare
+        run: npx playwright install --with-deps chromium webkit
+      - name: End-to-end i Chromium och WebKit
+        run: npm run test:e2e
+        env:
+          CI: 'true'
+      - name: Spara den byggda filen
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdf-bagaren-html
+          path: dist/index.html
+          retention-days: 30
+      - name: Spara testrapport
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-rapport
+          path: playwright-report
+          retention-days: 7
