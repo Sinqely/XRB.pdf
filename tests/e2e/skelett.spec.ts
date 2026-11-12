@@ -44,7 +44,7 @@ test('fungerar med nätverket avstängt efter laddning (BG-007)', async ({ page,
 test('visar ett begripligt fel för en fil som inte är PDF (BH-020)', async ({ page }) => {
   await page.goto('/')
   await page.locator('#filval').setInputFiles(fil('inte-pdf.pdf'))
-  await expect(page.getByRole('alert')).toContainText('inte-pdf.pdf kunde inte läsas in')
+  await expect(page.getByRole('alert')).toContainText('inte-pdf.pdf är ingen PDF-fil')
 })
 
 test('har inga automatiskt upptäckta WCAG 2.1 AA-fel i startläget och med fil (NFR-ACC-001)', async ({ page }) => {

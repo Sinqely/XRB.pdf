@@ -3,7 +3,8 @@
 import { laggTillDokument } from '../karna/arbetsyta'
 import { nyttId, uniktNamn, type Tillstand } from '../karna/tillstand'
 import { texter } from '../karna/texter'
-import { oppnaPdf } from '../las/pdfjs-adapter'
+import { oppnaPdf, stangPdf } from '../las/pdfjs-adapter'
+import { felmeddelande, forkontroll, sidgrans, type Filfel } from '../karna/validering'
 import { registrera } from './dokumentregister'
 
 export interface Inlasningsvy {
@@ -16,9 +17,33 @@ export async function lasInFiler(filer: Iterable<File>, tillstand: Tillstand, vy
   for (const fil of filer) {
     vy.lasesIn(fil.name)
     vy.status(texter.lasesIn(fil.name))
+    const avvisa = (f: Filfel, redan = 0) => {
+      const m = felmeddelande(f, fil.name, redan)
+      vy.fel(m)
+      vy.status(m)
+    }
     try {
+      const forfel = forkontroll(fil.size, new Uint8Array(await fil.slice(0, 1024).arrayBuffer()))
+      if (forfel) {
+        avvisa(forfel)
+        continue
+      }
       const bytes = new Uint8Array(await fil.arrayBuffer())
-      const { sidantal, pdf } = await oppnaPdf(bytes)
+      let oppnat
+      try {
+        oppnat = await oppnaPdf(bytes)
+      } catch (e) {
+        avvisa((e as Error).message === 'losenord' ? 'losenord' : 'skadad')
+        continue
+      }
+      const { sidantal, pdf } = oppnat
+      const redan = tillstand.hamta().dokument.reduce((s, d) => s + d.sidantal, 0)
+      const gransfel = sidgrans(redan, sidantal)
+      if (gransfel) {
+        void stangPdf(pdf)
+        avvisa(gransfel, redan)
+        continue
+      }
       const id = nyttId('dok')
       const namn = uniktNamn(fil.name, tillstand.hamta().dokument)
       let meddelande = ''
@@ -30,8 +55,8 @@ export async function lasInFiler(filer: Iterable<File>, tillstand: Tillstand, vy
       registrera(id, pdf, sidantal)
       vy.status(meddelande)
     } catch {
-      vy.fel(texter.kundeInteLasas(fil.name))
-      vy.status(texter.kundeInteLasas(fil.name))
+      // Oväntat fel, t.ex. slut på minne (architecture.md 8.3).
+      avvisa('skadad')
     }
   }
   vy.lasesIn(null)

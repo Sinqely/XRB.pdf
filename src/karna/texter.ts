@@ -40,8 +40,12 @@ export const texter = {
   resultatEtikettKort: (plats: number, namn: string, n: number) => `${plats} · ${namn} s. ${n}`,
   lasesIn: (namn: string) => `Läser in ${namn} …`,
   inlast: (namn: string, n: number) => `${namn} inläst, ${sidor(n)}.`,
-  kundeInteLasas: (namn: string) =>
-    `${namn} kunde inte läsas in. Kontrollera att det är en PDF-fil som går att öppna och försök igen.`,
+  felIntePdf: (namn: string) => `${namn} är ingen PDF-fil och kan inte läsas in. Bara PDF-filer kan läsas in; spara filen som PDF och försök igen.`,
+  felForStor: (namn: string) => `${namn} är större än 100 MB och kan inte läsas in. Dela upp filen eller minska den och försök igen.`,
+  felLosenord: (namn: string) => `${namn} är lösenordsskyddad och kan inte läsas in. Spara en kopia utan lösenord och försök igen.`,
+  felSkadad: (namn: string) => `${namn} är skadad eller går inte att läsa och har inte lästs in. Öppna den i en PDF-läsare och spara en ny kopia, och försök igen.`,
+  felForMangaSidor: (namn: string, redan: number) => `${namn} har inte lästs in, eftersom arbetsytan då skulle få fler än 500 sidor. Arbetsytan har redan ${sidor(redan)}. Ta bort en fil först eller välj en mindre fil.`,
+  avvisad: (namn: string) => `${namn} avvisades.`,
   stang: 'Stäng meddelandet',
   dokumentBorttaget: (namn: string, n: number) =>
     n === 0 ? `${namn} borttagen.` : `${namn} borttagen. ${sidor(n)} togs bort ur resultatet.`,
