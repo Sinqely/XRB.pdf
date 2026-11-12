@@ -123,6 +123,24 @@ Kraven skrivs i EARS: *När* (händelse), *Medan* (tillstånd), *Där* (valbar f
 | FR-FHV-010 | Medan resultatet saknar sidor ska appen i förhandsvisningens yta visa en kort förklaring av hur man läser in filer och väljer sidor. | Must | Active | Källa: FV-001. |
 | FR-FHV-011 | Där visning av flera sidor samtidigt ingår ska appen visa flera resultatsidor i förhandsvisningen samtidigt. | Won't | Active | Källa: BH-003 ("en sida i taget går bra"). Inte i version 1. |
 
+#### 3.1.4 STA – Vattenstämpel
+
+| ID | Requirement | Priority | Status | Notes / rules |
+| :-- | :---------- | :------- | :----- | :------------ |
+| FR-STA-001 | När användaren väljer en bildfil i formatet PNG eller JPEG som vattenstämpel ska appen lägga bilden som vattenstämpel på de sidor som är valda för stämpeln. | Must | Active | Källa: BH-004. Filväljare och dra och släpp. |
+| FR-STA-002 | Appen ska återge genomskinliga delar av en PNG-bild som genomskinliga i vattenstämpeln, både i förhandsvisningen och i den sparade filen. | Must | Active | Källa: BH-007. |
+| FR-STA-003 | När en vattenstämpel läggs till ska appen sätta stämpelns opacitet till 100 %. | Must | Active | Källa: BH-008. Förval 100 % (helt synlig), ägaren 2026-11-12. |
+| FR-STA-004 | När användaren ändrar opaciteten med reglaget eller sifferfältet ska appen sätta stämpelns opacitet till det valda värdet mellan 0 och 100 %. | Must | Active | Källa: BH-008. Reglaget och fältet visar samma värde. |
+| FR-STA-005 | När användaren drar i ett hörn av vattenstämpeln i förhandsvisningen ska appen ändra stämpelns storlek med bibehållna proportioner. | Must | Active | Källa: BH-015. Förvald storlek bestäms i UX-designen. |
+| FR-STA-006 | När användaren anger stämpelns storlek i sifferfältet eller med knapparna för större och mindre ska appen ändra stämpelns storlek med bibehållna proportioner. | Must | Active | Källa: BH-015, BG-004 (tangentbordsalternativ). |
+| FR-STA-007 | När användaren väljer "alla sidor" för vattenstämpeln ska appen lägga stämpeln på alla sidor i resultatet. | Must | Active | Källa: BH-004. |
+| FR-STA-008 | När användaren markerar eller avmarkerar en sida i resultatraden för vattenstämpeln ska appen lägga till eller ta bort stämpeln på just den sidan. | Must | Active | Källa: BH-004. Valet görs med tangentbord eller mus (BG-004). |
+| FR-STA-009 | När användaren väljer en ny bild medan en vattenstämpel finns ska appen ersätta den tidigare bilden och behålla opacitet, storleksförhållande, placering och sidval. | Must | Active | Källa: BH-004 (en stämpel per fil), BG-003. |
+| FR-STA-010 | När användaren väljer att ta bort vattenstämpeln ska appen ta bort stämpeln från alla sidor. | Must | Active | Källa: BH-004. |
+| FR-STA-011 | Om användaren väljer en bildfil som inte är PNG eller JPEG, är skadad eller är större än 20 MB så ska appen avvisa bilden och visa ett meddelande som namnger filen och orsaken. | Must | Active | Källa: DS-04. |
+| FR-STA-012 | Medan "alla sidor" är valt för vattenstämpeln, när en sida läggs till i resultatet, ska appen lägga stämpeln även på den nya sidan. | Must | Active | Källa: BH-004, BG-003. |
+| FR-STA-013 | Där vridning av vattenstämpeln ingår ska appen låta användaren vrida stämpeln. | Won't | Active | Källa: BG-002. Inte i version 1 (ägaren 2026-11-12). |
+
 ### 3.2 External interface requirements
 *(fas 4)*
 
