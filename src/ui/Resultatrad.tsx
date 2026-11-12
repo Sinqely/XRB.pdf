@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'preact/hooks'
 import { vaxlaPaSida } from '../karna/markning'
 import { texter } from '../karna/texter'
 import { Hjalpknapp, type Hjalpavsnitt } from './Hjalp'
-import { flyttaSida, flyttaSteg, taBortResultatsida, type Andring } from '../karna/arbetsyta'
+import { flyttaSida, flyttaSteg, taBortResultatsida, type Andring, vridSida } from '../karna/arbetsyta'
 import type { Arbetsyta } from '../karna/typer'
 import { Ikon } from './ikoner'
 import { miniatyr, useMiniatyrer } from './dokumentregister'
@@ -75,6 +75,10 @@ export function Resultatrad({ yta, andra, aktivId, sattAktiv, hjalp }: Props) {
                 e.preventDefault()
                 fokusEfter.current = { id: r.id, plats }
                 andra((y) => flyttaSteg(y, r.id, e.key === 'ArrowLeft' || e.key === 'ArrowUp' ? -1 : 1))
+              } else if ((e.key === 'r' || e.key === 'R') && !e.ctrlKey && !e.metaKey && !e.altKey) {
+                // R vrider åt höger, Skift+R åt vänster (FR-SID-010).
+                e.preventDefault()
+                andra((y) => vridSida(y, r.id, e.shiftKey ? -1 : 1))
               } else if (e.key === 'Delete' || e.key === 'Backspace') {
                 e.preventDefault()
                 fokusEfter.current = { id: null, plats }
@@ -116,7 +120,7 @@ export function Resultatrad({ yta, andra, aktivId, sattAktiv, hjalp }: Props) {
                   <span class="resultatetikett" title={texter.resultatEtikettKort(plats + 1, dn, n)} aria-hidden="true">
                     <strong>{plats + 1}</strong> · {dn} s. {n}
                   </span>
-                  <Sidbild m={miniatyr(r.dokumentId, r.sidindex)} />
+                  <Sidbild m={miniatyr(r.dokumentId, r.sidindex)} vridning={r.vridning} />
                   <span class="ikonrad">
                     <Knapp ikon="vanster" etikett={texter.flyttaVanster(n, dn)} inaktiv={plats === 0} forklaring={texter.redanForst}
                       klick={() => { fokusEfter.current = { id: r.id, plats }; andra((y) => flyttaSteg(y, r.id, -1)) }} />

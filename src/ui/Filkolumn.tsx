@@ -1,6 +1,7 @@
 // Kolumn 1 Filer i SCR-APP-001 (FEAT-001 ui-design.md): släppyta, dokumentkort och miniatyrrutnät.
 import { texter } from '../karna/texter'
 import { Hjalpknapp, type Hjalpavsnitt } from './Hjalp'
+import type { Storsida } from './StorVisning'
 import { arVald, laggTillAlla, taBortAlla, taBortDokument, vaxlaSida, type Andring } from '../karna/arbetsyta'
 import type { Arbetsyta, Dokument } from '../karna/typer'
 import { Ikon } from './ikoner'
@@ -9,6 +10,8 @@ import { miniatyr, useMiniatyrer } from './dokumentregister'
 interface Props {
   /** Öppnar hjälpen vid ett avsnitt (FR-DOK-001). */
   hjalp: (a: Hjalpavsnitt) => void
+  /** Visar en sida stort (FR-SID-012). */
+  visaStort: (s: Storsida) => void
   yta: Arbetsyta
   andra: (fn: (y: Arbetsyta) => Andring) => void
   oppnaFilval: () => void
@@ -18,7 +21,7 @@ interface Props {
   stangFel: (i: number) => void
 }
 
-export function Filkolumn({ yta, andra, oppnaFilval, dragOver, lasesIn, fel, stangFel, hjalp }: Props) {
+export function Filkolumn({ yta, andra, oppnaFilval, dragOver, lasesIn, fel, stangFel, hjalp, visaStort }: Props) {
   useMiniatyrer()
   const tom = yta.dokument.length === 0 && !lasesIn
   return (
@@ -48,7 +51,7 @@ export function Filkolumn({ yta, andra, oppnaFilval, dragOver, lasesIn, fel, sta
       {tom && <p class="dampad liten">{texter.ingress}</p>}
       <ul class="dokumentlista">
         {yta.dokument.map((d) => (
-          <Dokumentkort key={d.id} d={d} yta={yta} andra={andra} />
+          <Dokumentkort key={d.id} d={d} yta={yta} andra={andra} visaStort={visaStort} />
         ))}
         {lasesIn && (
           <li class="dokumentkort">
@@ -63,7 +66,7 @@ export function Filkolumn({ yta, andra, oppnaFilval, dragOver, lasesIn, fel, sta
   )
 }
 
-function Dokumentkort({ d, yta, andra }: { d: Dokument; yta: Arbetsyta; andra: Props['andra'] }) {
+function Dokumentkort({ d, yta, andra, visaStort }: { d: Dokument; yta: Arbetsyta; andra: Props['andra']; visaStort: Props['visaStort'] }) {
   const valda = Array.from({ length: d.sidantal }, (_, i) => arVald(yta, d.id, i))
   const allaValda = valda.every(Boolean)
   const ingaValda = !valda.some(Boolean)
@@ -133,6 +136,9 @@ function Dokumentkort({ d, yta, andra }: { d: Dokument; yta: Arbetsyta; andra: P
                   {texter.sidaKort(i + 1)}
                 </span>
               </button>
+              <button type="button" class="ikonknapp forstora" aria-label={texter.visaSidaStort(i + 1, d.namn)} title={texter.visaStort} onClick={() => visaStort({ dokumentId: d.id, sidindex: i, vridning: 0, namn: d.namn })}>
+                <Ikon namn="forstora" storlek={16} />
+              </button>
             </li>
           )
         })}
@@ -141,8 +147,9 @@ function Dokumentkort({ d, yta, andra }: { d: Dokument; yta: Arbetsyta; andra: P
   )
 }
 
-export function Sidbild({ m }: { m: ReturnType<typeof miniatyr> }) {
+export function Sidbild({ m, vridning = 0 }: { m: ReturnType<typeof miniatyr>; vridning?: number }) {
   if (m === null) return <span class="sidbild sidbild-platta">{texter.ritar}</span>
   if (m === 'fel') return <span class="sidbild sidbild-platta">{texter.sidanKundeInteVisas}</span>
-  return <img class="sidbild" src={m} alt="" />
+  // Vriden sida visas vriden i resultatraden (FR-SID-010); bilden själv är ritad som originalet.
+  return <img class={`sidbild${vridning ? ' sidbild-vriden' : ''}`} src={m} alt="" style={vridning ? { transform: `rotate(${vridning}deg) scale(${vridning % 180 ? 0.7 : 1})` } : undefined} />
 }

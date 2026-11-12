@@ -99,3 +99,30 @@ describe('ordna resultatet', () => {
     expect(new Set(y.resultat.map((r) => r.id)).size).toBe(4)
   })
 })
+
+// FEAT-004: vrida (FR-SID-010) och lägga till en gång till (FR-SID-013).
+describe('vrida och lägga till igen', () => {
+  const d4 = { id: 'v', namn: 'Vrid.pdf', bytes: new Uint8Array([1]), sidantal: 2, storlekByte: 1 }
+  const bas4 = () => A.laggTillAlla(A.laggTillDokument(tomArbetsyta, d4).yta, 'v').yta
+  it('vrider 90 grader åt höger och vänster, runt hela varvet', () => {
+    let y = bas4()
+    const id = y.resultat[0]!.id
+    const a = A.vridSida(y, id, 1)
+    expect(a.yta.resultat[0]!.vridning).toBe(90)
+    expect(a.meddelande).toBe('Sida 1 ur Vrid.pdf vriden åt höger, 90 grader från originalet.')
+    y = A.vridSida(a.yta, id, -1).yta
+    expect(y.resultat[0]!.vridning).toBe(0)
+    y = A.vridSida(y, id, -1).yta
+    expect(y.resultat[0]!.vridning).toBe(270)
+    expect(y.resultat[1]!.vridning).toBe(0)
+  })
+  it('lägger till sidan en gång till direkt efter, med samma vridning', () => {
+    let y = bas4()
+    const id = y.resultat[0]!.id
+    y = A.vridSida(y, id, 1).yta
+    const a = A.laggTillIgen(y, id)
+    expect(a.yta.resultat.map((r) => [r.sidindex, r.vridning])).toEqual([[0, 90], [0, 90], [1, 0]])
+    expect(new Set(a.yta.resultat.map((r) => r.id)).size).toBe(3)
+    expect(a.meddelande).toBe('Sida 1 ur Vrid.pdf tillagd en gång till på plats 2.')
+  })
+})

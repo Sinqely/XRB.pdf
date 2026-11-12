@@ -2,7 +2,7 @@
 // varje operation ger en ny arbetsyta och ett meddelande till statusytan (FR-SID-014).
 import { texter } from './texter'
 import { nyttId } from './tillstand'
-import type { Arbetsyta, Dokument, Resultatsida } from './typer'
+import type { Arbetsyta, Dokument, Resultatsida, Vridning } from './typer'
 
 export interface Andring {
   readonly yta: Arbetsyta
@@ -105,4 +105,27 @@ export function taBortResultatsida(yta: Arbetsyta, resultatId: string): Andring 
   if (!r) return ingen(yta)
   const { sida, namn } = beskriv(yta, r)
   return { yta: { ...yta, resultat: yta.resultat.filter((x) => x.id !== resultatId) }, meddelande: texter.sidaBorttagen(sida, namn) }
+}
+
+/** Vrider sidan 90 grader; bara visningsriktningen ändras, inte innehållet (FR-SID-010, BG-009). */
+export function vridSida(yta: Arbetsyta, resultatId: string, riktning: -1 | 1): Andring {
+  const r = yta.resultat.find((x) => x.id === resultatId)
+  if (!r) return ingen(yta)
+  const vridning = (((r.vridning + riktning * 90) % 360) + 360) % 360 as Vridning
+  const { sida, namn } = beskriv(yta, r)
+  return {
+    yta: { ...yta, resultat: yta.resultat.map((x) => (x.id === resultatId ? { ...x, vridning } : x)) },
+    meddelande: texter.sidaVriden(sida, namn, riktning, vridning),
+  }
+}
+
+/** Lägger till sidan en gång till, direkt efter förekomsten (FR-SID-013). */
+export function laggTillIgen(yta: Arbetsyta, resultatId: string): Andring {
+  const i = yta.resultat.findIndex((x) => x.id === resultatId)
+  if (i < 0) return ingen(yta)
+  const r = yta.resultat[i]!
+  const kopia: Resultatsida = { ...ny(yta, r.dokumentId, r.sidindex), vridning: r.vridning }
+  const resultat = [...yta.resultat.slice(0, i + 1), kopia, ...yta.resultat.slice(i + 1)]
+  const { sida, namn } = beskriv(yta, r)
+  return { yta: { ...yta, resultat }, meddelande: texter.sidaIgen(sida, namn, i + 2) }
 }

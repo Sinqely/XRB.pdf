@@ -235,3 +235,11 @@ kbd { font: inherit; font-weight: 700; }
 .dokumenttext p, .dokumenttext ul { margin: 0; }
 .dokumenttext ul { padding-left: var(--space-6); }
 .tabellyta { overflow-x: auto; }
+
+/* Vrida och stor visning SCR-APP-007 (FEAT-004) */
+.storvisning-yta { display: grid; place-items: center; overflow: auto; max-height: 80vh; }
+.storvisning-yta canvas { box-shadow: 0 0 0 var(--storlek-kant-bredd) var(--ui-kant); }
+.sidatgarder { display: flex; gap: var(--space-1); align-items: center; }
+.miniatyrnat li { position: relative; }
+.forstora { position: absolute; top: var(--space-1); right: var(--space-1); width: 28px; height: 28px; min-width: 0; background: var(--ui-yta); }
+.resultatsida .sidbild-vriden { transition: transform .15s; }

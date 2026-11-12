@@ -6,6 +6,8 @@ import type { Arbetsyta } from '../karna/typer'
 import { ritaSida, type Sidmatt } from '../las/pdfjs-adapter'
 import { pdfFor, useMiniatyrer } from './dokumentregister'
 import { Ikon } from './ikoner'
+import { laggTillIgen, vridSida, type Andring } from '../karna/arbetsyta'
+import type { Storsida } from './StorVisning'
 
 export type Skala = 'anpassa' | number
 
@@ -15,9 +17,12 @@ interface Props {
   sattAktiv: (id: string) => void
   /** Ritar överlägg (stämpel, etikett, marginal) ovanpå sidan; får sidans mått i punkter och skalan. */
   overlagg?: (matt: Sidmatt, skala: number, resultatId: string) => ComponentChildren
+  /** Vrida, lägga till igen (FEAT-004). */
+  andra?: (fn: (nu: Arbetsyta) => Andring) => void
+  visaStort?: (s: Storsida) => void
 }
 
-export function Forhandsvisning({ yta, aktivId, sattAktiv, overlagg }: Props) {
+export function Forhandsvisning({ yta, aktivId, sattAktiv, overlagg, andra, visaStort }: Props) {
   useMiniatyrer()
   const canvas = useRef<HTMLCanvasElement>(null)
   const yta_ = useRef<HTMLDivElement>(null)
@@ -100,6 +105,24 @@ export function Forhandsvisning({ yta, aktivId, sattAktiv, overlagg }: Props) {
         <button type="button" class="ikonknapp" aria-label={texter.nastaSida} title={texter.nastaSida} aria-disabled={index === total - 1} onClick={() => ga(1)}>
           <Ikon namn="hoger" />
         </button>
+        {andra && (
+          <span class="sidatgarder" role="group" aria-label={texter.sidatgarder}>
+            <button type="button" class="ikonknapp" aria-label={texter.vridVanster} title={texter.vridVanster} aria-keyshortcuts="Shift+R" onClick={() => andra((y) => vridSida(y, sida.id, -1))}>
+              <Ikon namn="vridVanster" />
+            </button>
+            <button type="button" class="ikonknapp" aria-label={texter.vridHoger} title={texter.vridHoger} aria-keyshortcuts="R" onClick={() => andra((y) => vridSida(y, sida.id, 1))}>
+              <Ikon namn="vrid" />
+            </button>
+            {visaStort && (
+              <button type="button" class="ikonknapp" aria-label={texter.visaStort} title={texter.visaStort} onClick={() => visaStort({ dokumentId: sida.dokumentId, sidindex: sida.sidindex, vridning: sida.vridning, namn: dok.namn })}>
+                <Ikon namn="forstora" />
+              </button>
+            )}
+            <button type="button" class="ikonknapp" aria-label={texter.laggTillIgen} title={texter.laggTillIgen} onClick={() => andra((y) => laggTillIgen(y, sida.id))}>
+              <Ikon namn="plus" />
+            </button>
+          </span>
+        )}
         <span class="skalval">
           <button type="button" class="ikonknapp" aria-label={texter.zoomaUt} title={texter.zoomaUt} onClick={() => zooma(0.8)}>
             <Ikon namn="minus" />

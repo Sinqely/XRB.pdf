@@ -23,6 +23,7 @@ import { EtikettPanel } from './EtikettPanel'
 import { useSnitt } from './typsnitt'
 import { DoldDialog } from './DoldDialog'
 import { OmDialog } from './Om'
+import { StorVisning, type Storsida } from './StorVisning'
 import { HjalpDialog, KortkommandoDialog, type Hjalpavsnitt } from './Hjalp'
 
 const tillstand = skapaTillstand()
@@ -47,6 +48,11 @@ export function App() {
   const [hjalp, sattHjalp] = useState<null | { avsnitt: Hjalpavsnitt | null }>(null)
   const [kortkommandon, sattKortkommandon] = useState(false)
   const [om, sattOm] = useState(false)
+  const [stor, sattStor] = useState<Storsida | null>(null)
+  const visaStort = (sida: Storsida) => {
+    hjalpFore.current = document.activeElement as HTMLElement | null
+    sattStor(sida)
+  }
   const hjalpFore = useRef<HTMLElement | null>(null)
   const oppnaHjalp = (avsnitt: Hjalpavsnitt | null) => {
     hjalpFore.current = document.activeElement as HTMLElement | null
@@ -292,6 +298,7 @@ export function App() {
           oppnaFilval={() => filval.current?.click()}
           dragOver={dragOver}
           hjalp={oppnaHjalp}
+          visaStort={visaStort}
           lasesIn={lasesIn}
           fel={fel}
           stangFel={(i) => sattFel((f) => f.filter((_, j) => j !== i))}
@@ -316,6 +323,8 @@ export function App() {
             yta={yta}
             aktivId={aktivId}
             sattAktiv={sattAktiv}
+            andra={andra}
+            visaStort={visaStort}
             overlagg={(matt, skala, resultatId) => <Overlagg yta={yta} matt={matt} skala={skala} resultatId={resultatId} andra={andra} />}
           />
         </section>
@@ -343,6 +352,15 @@ export function App() {
           visaKortkommandon={() => {
             sattHjalp(null)
             sattKortkommandon(true)
+          }}
+        />
+      )}
+      {stor && (
+        <StorVisning
+          sida={stor}
+          stang={() => {
+            sattStor(null)
+            tillbaka()
           }}
         />
       )}

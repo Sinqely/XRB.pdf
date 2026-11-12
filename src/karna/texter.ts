@@ -51,6 +51,17 @@ export const texter = {
     n === 0 ? `${namn} borttagen.` : `${namn} borttagen. ${sidor(n)} togs bort ur resultatet.`,
   sidaTillagd: (n: number, namn: string, plats: number) => `Sida ${n} ur ${namn} tillagd på plats ${plats}.`,
   sidaBorttagen: (n: number, namn: string) => `Sida ${n} ur ${namn} borttagen ur resultatet.`,
+  sidaVriden: (n: number, namn: string, riktning: -1 | 1, grader: number) =>
+    `Sida ${n} ur ${namn} vriden åt ${riktning === 1 ? 'höger' : 'vänster'}${grader ? `, ${grader} grader från originalet` : ', tillbaka som i originalet'}.`,
+  sidaIgen: (n: number, namn: string, plats: number) => `Sida ${n} ur ${namn} tillagd en gång till på plats ${plats}.`,
+  vridVanster: 'Vrid åt vänster',
+  vridHoger: 'Vrid åt höger',
+  visaStort: 'Visa stort',
+  visaSidaStort: (n: number, namn: string) => `Visa sida ${n} ur ${namn} stort`,
+  laggTillIgen: 'Lägg till en gång till',
+  storVisning: (n: number, namn: string) => `Sida ${n} ur ${namn}`,
+  stangVisning: 'Stäng',
+  sidatgarder: 'Den visade sidan',
   sidaFlyttad: (n: number, namn: string, plats: number) => `Sida ${n} ur ${namn} flyttad till plats ${plats}.`,
   allaTillagda: (antal: number, namn: string, totalt: number) =>
     `${sidor(antal)} ur ${namn} tillagda. Resultatet har ${sidor(totalt)}.`,
@@ -290,6 +301,7 @@ export const texter = {
       text: [
         'Klicka på en miniatyr för att lägga till sidan sist i resultatet, och klicka igen för att ta bort den. "Lägg till alla sidor" tar med hela filen.',
         'Ordna sidorna i resultatraden genom att dra dem, med pilknapparna eller med Alt och piltangenterna. Förhandsvisningen visar den valda sidan stort.',
+        'Knapparna under förhandsvisningen vrider den visade sidan, visar den stort och lägger till den en gång till. Förstoringsknappen på en miniatyr visar sidan stort.',
       ],
     },
     {
@@ -355,6 +367,7 @@ export const texter = {
         ['Enter eller blanksteg på en miniatyr', 'Lägg till eller ta bort sidan'],
         ['Alt+vänster- eller högerpil', 'Flytta sidan i resultatet'],
         ['Delete eller Backsteg', 'Ta bort sidan ur resultatet'],
+        ['R och Skift+R', 'Vrid sidan åt höger eller vänster'],
       ],
     },
     {
